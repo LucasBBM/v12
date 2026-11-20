@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08080b">
 <title>App — Editor de vídeos</title>
-
 <style>
 :root{
   color-scheme:dark;
@@ -37,7 +36,6 @@ button:disabled{opacity:.4;cursor:not-allowed}
 button.primary{background:#f2f2f5;color:#101014}
 button.ghost{background:transparent;border:1px solid var(--line)}
 button.wide{width:100%}
-
 header{
   height:64px;
   display:flex;
@@ -54,13 +52,11 @@ header{
 .brand{font-weight:750;letter-spacing:.3px}
 .step{margin-left:auto;color:var(--muted);font-size:13px}
 .step{display:none!important}
-
 main{max-width:760px;margin:auto;padding:20px 16px 44px}
 .screen{display:none}
 .screen.active{display:block}
 h1{font-size:24px;margin:6px 0 8px}
 p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
-
 .drop{
   border:1.5px dashed #555565;
   border-radius:20px;
@@ -70,7 +66,6 @@ p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
 }
 .drop .symbol{font-size:38px;margin-bottom:10px}
 .drop p{color:var(--muted);margin:8px 0 18px}
-
 .filelist{margin:18px 0;display:grid;gap:8px}
 .file{
   display:flex;
@@ -103,7 +98,6 @@ p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
   align-items:center;
   justify-content:center;
 }
-
 .player-wrap{
   background:#000;
   border:1px solid #282832;
@@ -155,12 +149,10 @@ canvas{
   text-shadow:0 2px 16px #000;
   pointer-events:none;
 }
-
 .controls{display:flex;gap:10px;margin:14px 0}
 .controls>*{flex:1}
 .video-nav{margin-top:10px}
 .return-import{margin-top:10px}
-
 .timeline{
   background:var(--panel);
   padding:14px;
@@ -175,7 +167,6 @@ canvas{
   margin-bottom:9px;
 }
 input[type=range]{width:100%;accent-color:#fff}
-
 .note{
   color:var(--muted);
   font-size:13px;
@@ -190,7 +181,6 @@ input[type=range]{width:100%;accent-color:#fff}
   font-size:18px;
   margin:30px 0;
 }
-
 .dial{
   display:flex;
   align-items:center;
@@ -222,7 +212,6 @@ input[type=range]{width:100%;accent-color:#fff}
   z-index:2;
 }
 .dial span{font-size:42px}
-
 .status{
   color:var(--muted);
   font-size:13px;
@@ -268,7 +257,6 @@ a.button{
 a.button.primary{background:#f2f2f5;color:#101014}
 a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
 .hidden{display:none!important}
-
 @media(min-width:650px){
   main{padding-top:28px}
   .player-wrap{min-height:350px}
@@ -276,18 +264,15 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
 }
 </style>
 </head>
-
 <body>
 <header>
   <button id="backBtn" class="back hidden" aria-label="Voltar">‹</button>
   <div class="brand">App</div>
   <div class="step" id="stepLabel" aria-hidden="true"></div>
 </header>
-
 <main>
   <section id="importScreen" class="screen active">
     <h1>Importar vídeos</h1>
-
     <div class="drop">
       <div class="symbol">＋</div>
       <strong>Escolha vídeos do dispositivo</strong>
@@ -295,14 +280,11 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       <button class="primary" id="pickBtn">Selecionar vídeos</button>
       <input id="fileInput" type="file" accept="video/*" multiple class="hidden">
     </div>
-
     <div id="fileList" class="filelist"></div>
     <button id="startBtn" class="primary wide" disabled>Começar</button>
   </section>
-
   <section id="centerScreen" class="screen">
     <h1>Posicionamento do enquadramento</h1>
-
     <div class="player-wrap" id="centerWrap">
       <canvas id="centerCanvas"></canvas>
       <div class="overlay">
@@ -310,7 +292,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         <div id="centerCount" class="countdown"></div>
       </div>
     </div>
-
     <div class="timeline">
       <div class="timeline-top">
         <span id="centerTime">00:00</span>
@@ -318,28 +299,23 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       </div>
       <input id="centerSeek" type="range" min="0" max="1000" value="0">
     </div>
-
     <div class="controls">
       <button id="centerPlay">▶ Reproduzir</button>
       <button id="centerRestart">↻ Reiniciar ajustes</button>
     </div>
-
     <div class="controls video-nav">
       <button id="centerPrev" class="ghost">← Vídeo anterior</button>
       <button id="centerNext" class="ghost">Próximo vídeo →</button>
     </div>
-
     <button id="centerImport" class="ghost wide return-import">
       Voltar à importação
     </button>
-
     <div id="centerStatus" class="status" role="status"></div>
     <p class="note">
       Arraste o marcador até o ponto que deseja manter no centro. Os ajustes
       são registrados ao longo do vídeo.
     </p>
   </section>
-
   <section id="instructionScreen" class="screen">
     <h1>Orientação para rotação</h1>
     <div class="instruction">
@@ -349,15 +325,12 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     </div>
     <button id="instructionContinue" class="primary wide">Continuar</button>
   </section>
-
   <section id="rotateScreen" class="screen">
     <h1>Rotação dos vídeos</h1>
-
     <div class="player-wrap">
       <canvas id="rotateCanvas"></canvas>
       <div id="rotateCount" class="countdown"></div>
     </div>
-
     <div
       class="dial"
       id="rotateDial"
@@ -371,9 +344,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       <span id="angleReadout">0°</span>
       <i class="dial-knob" id="dialKnob"></i>
     </div>
-
     <div id="rotateLoadStatus" class="status" role="status"></div>
-
     <div class="timeline">
       <div class="timeline-top">
         <span id="rotateTime">00:00</span>
@@ -381,35 +352,28 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       </div>
       <input id="rotateSeek" type="range" min="0" max="1000" value="0">
     </div>
-
     <div class="controls">
       <button id="rotatePlay">▶ Reproduzir</button>
       <button id="rotateRestart">↻ Reiniciar ajustes</button>
     </div>
-
     <div class="controls video-nav">
       <button id="rotatePrev" class="ghost">← Vídeo anterior</button>
       <button id="rotateNext" class="ghost">Próximo vídeo →</button>
     </div>
-
     <button id="rotateImport" class="ghost wide return-import">
       Voltar à importação
     </button>
-
     <div id="rotateStatus" class="status" role="status"></div>
     <p class="note">
       Gire o controle para alinhar os ombros. Os ajustes deste vídeo são
       independentes dos ajustes dos outros vídeos.
     </p>
   </section>
-
   <section id="previewScreen" class="screen">
     <h1>Pré-visualização final</h1>
-
     <div class="player-wrap">
       <canvas id="previewCanvas"></canvas>
     </div>
-
     <div class="timeline">
       <div class="timeline-top">
         <span id="previewTime">Pronto para reproduzir</span>
@@ -419,22 +383,17 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         <div id="exportProgress"></div>
       </div>
     </div>
-
     <div class="controls">
       <button id="previewPlay">▶ Reproduzir compilação</button>
       <button id="exportBtn" class="primary">Exportar</button>
     </div>
-
     <button id="shareBtn" class="primary wide hidden">
       Compartilhar/salvar no dispositivo
     </button>
-
     <a id="downloadLink" class="button ghost wide hidden" href="#" download>
       Baixar vídeo
     </a>
-
     <div id="exportStatus" class="status" role="status"></div>
-
     <div class="export-info">
       <p>
         O app tenta usar MP4 quando o navegador realmente oferece esse formato.
@@ -453,11 +412,9 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         usando uma das opções oferecidas pelo Android.
       </p>
     </div>
-
     <button class="ghost wide" id="startOver">Começar novamente</button>
   </section>
 </main>
-
 <video
   id="sourceVideo"
   playsinline
@@ -466,13 +423,10 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
   style="position:fixed;width:2px;height:2px;left:-10px;top:-10px;opacity:.01;pointer-events:none"
   aria-hidden="true"
 ></video>
-
 <script>
 (()=>{
   'use strict';
-
   const $ = id => document.getElementById(id);
-
   const screens = [
     'importScreen',
     'centerScreen',
@@ -480,14 +434,12 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     'rotateScreen',
     'previewScreen'
   ];
-
   const EXPORT_FPS = 30;
   const MOBILE_MAX_DIMENSION = 854;
   const DESKTOP_MAX_DIMENSION = 1280;
   const MOBILE_VIDEO_BITRATE = 700000;
   const DESKTOP_VIDEO_BITRATE = 1800000;
   const AUDIO_BITRATE = 64000;
-
   /*
     MP4 é tentado primeiro. O app só usa um MIME informado pelo próprio
     MediaRecorder e nunca apenas troca a extensão de um arquivo WebM.
@@ -504,57 +456,45 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     {mime:'video/webm;codecs=vp9',extension:'webm',audio:false},
     {mime:'video/webm',extension:'webm',audio:false}
   ];
-
   let files = [];
   let urls = [];
   let centerData = [];
   let rotateData = [];
   let stageIndex = 0;
   let mode = 'center';
-
   let playing = false;
   let raf = 0;
   let dragging = false;
   let loadingVideo = false;
   let loadToken = 0;
-
   let countdownTimer = null;
   let countdownResolve = null;
   let countdownToken = 0;
-
   let previewRunning = false;
   let previewRaf = 0;
   let previewStopResolver = null;
-
   let exportBusy = false;
   let outputObjectUrl = '';
   let outputFile = null;
   let outputOpfsEntry = null;
-
   let exportAudioContext = null;
   let exportAudioSource = null;
   let exportAudioDestination = null;
-
   const video = $('sourceVideo');
   const centerCanvas = $('centerCanvas');
   const rotateCanvas = $('rotateCanvas');
   const previewCanvas = $('previewCanvas');
-
   const cctx = centerCanvas.getContext('2d');
   const rctx = rotateCanvas.getContext('2d');
   const pctx = previewCanvas.getContext('2d');
-
   const fmt = time => {
     if (!Number.isFinite(time) || time < 0) return '00:00';
-
     const seconds = Math.floor(time);
     const minutes = Math.floor(seconds / 60);
     const remainder = seconds % 60;
-
     return String(minutes).padStart(2, '0') + ':' +
       String(remainder).padStart(2, '0');
   };
-
   function formatBytes(bytes) {
     if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
     if (bytes < 1024) return bytes + ' B';
@@ -563,132 +503,103 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     }
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
-
   function isMobileDevice() {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
   }
-
   function show(id, label, back = true) {
     screens.forEach(screenId => {
       $(screenId).classList.toggle('active', screenId === id);
     });
-
     $('stepLabel').textContent = label;
     $('backBtn').classList.toggle('hidden', !back);
   }
-
   function getCappedDimensions(width, height, maxDimension) {
     if (!width || !height) {
       return {width:640,height:360};
     }
-
     const scale = Math.min(
       1,
       maxDimension / Math.max(width, height)
     );
-
     const even = value => Math.max(2, Math.floor(value / 2) * 2);
-
     return {
       width:even(width * scale),
       height:even(height * scale)
     };
   }
-
   function dims(canvas) {
     const size = getCappedDimensions(
       video.videoWidth || 640,
       video.videoHeight || 360,
       DESKTOP_MAX_DIMENSION
     );
-
     canvas.width = size.width;
     canvas.height = size.height;
     canvas.style.aspectRatio = size.width + '/' + size.height;
   }
-
   function addKey(array, time, value) {
     if (!array) return;
-
     const existing = array.findIndex(key => Math.abs(key.t - time) < 0.025);
-
     if (existing >= 0) {
       array[existing].v = value;
     } else {
       array.push({t:time,v:value});
     }
-
     array.sort((a, b) => a.t - b.t);
   }
-
   function valueAt(array, time, fallback) {
     if (!array || !array.length) return fallback;
     if (time <= array[0].t) return array[0].v;
     if (time >= array[array.length - 1].t) {
       return array[array.length - 1].v;
     }
-
     for (let index = 1; index < array.length; index++) {
       if (time <= array[index].t) {
         const first = array[index - 1];
         const second = array[index];
         const portion = (time - first.t) / (second.t - first.t);
-
         if (
           typeof first.v === 'number' &&
           typeof second.v === 'number'
         ) {
           return first.v + (second.v - first.v) * portion;
         }
-
         return {
           x:first.v.x + (second.v.x - first.v.x) * portion,
           y:first.v.y + (second.v.y - first.v.y) * portion
         };
       }
     }
-
     return fallback;
   }
-
   function drawFit(ctx, canvas, angle = 0, point = null) {
     if (!video.videoWidth) return;
-
     const width = canvas.width;
     const height = canvas.height;
-
     ctx.clearRect(0, 0, width, height);
     ctx.save();
     ctx.translate(width / 2, height / 2);
     ctx.rotate(angle * Math.PI / 180);
-
     if (point) {
       ctx.translate(
         (0.5 - point.x) * width,
         (0.5 - point.y) * height
       );
     }
-
     ctx.drawImage(video, -width / 2, -height / 2, width, height);
     ctx.restore();
   }
-
   function drawAdjustedFrame(ctx, canvas, point, angle, mirrored = false) {
     if (!video.videoWidth) return;
-
     const width = canvas.width;
     const height = canvas.height;
-
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
-
     ctx.save();
     ctx.translate(width / 2, height / 2);
-
     if (mirrored) {
       ctx.scale(-1, 1);
     }
-
     ctx.rotate(angle * Math.PI / 180);
     ctx.translate(
       (0.5 - point.x) * width,
@@ -697,153 +608,115 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     ctx.drawImage(video, -width / 2, -height / 2, width, height);
     ctx.restore();
   }
-
   function markerPos(point) {
     $('centerMarker').style.left = (point.x * 100) + '%';
     $('centerMarker').style.top = (point.y * 100) + '%';
   }
-
   function stopPlayback() {
     playing = false;
-
     if (raf) {
       cancelAnimationFrame(raf);
     }
-
     raf = 0;
     video.pause();
     $('centerPlay').textContent = '▶ Reproduzir';
     $('rotatePlay').textContent = '▶ Reproduzir';
   }
-
   function cancelCountdown() {
     countdownToken++;
-
     if (countdownTimer !== null) {
       clearInterval(countdownTimer);
       countdownTimer = null;
     }
-
     const resolve = countdownResolve;
     countdownResolve = null;
-
     if (resolve) resolve();
-
     $('centerCount').textContent = '';
     $('rotateCount').textContent = '';
   }
-
   function stopPreviewPlayback() {
     previewRunning = false;
-
     if (previewRaf) {
       cancelAnimationFrame(previewRaf);
     }
-
     previewRaf = 0;
     video.pause();
-
     const resolve = previewStopResolver;
     previewStopResolver = null;
-
     if (resolve) resolve();
-
     $('previewPlay').textContent = '▶ Reproduzir compilação';
   }
-
   async function removeOpfsEntry(entry) {
     if (!entry || !entry.directory || !entry.name) return;
-
     try {
       await entry.directory.removeEntry(entry.name);
     } catch (_) {}
   }
-
   function clearExportResult() {
     if (outputObjectUrl) {
       URL.revokeObjectURL(outputObjectUrl);
       outputObjectUrl = '';
     }
-
     const oldEntry = outputOpfsEntry;
     outputOpfsEntry = null;
     outputFile = null;
-
     if (oldEntry) {
       removeOpfsEntry(oldEntry);
     }
-
     $('downloadLink').removeAttribute('href');
     $('downloadLink').classList.add('hidden');
     $('shareBtn').classList.add('hidden');
   }
-
   function clearAllEdits() {
     centerData = [];
     rotateData = [];
   }
-
   function returnToImport() {
     if (exportBusy) return;
-
     loadToken++;
     loadingVideo = false;
-
     cancelCountdown();
     stopPreviewPlayback();
     stopPlayback();
-
     clearAllEdits();
     clearExportResult();
-
     stageIndex = 0;
     mode = 'center';
     video.muted = true;
-
     $('centerStatus').textContent = '';
     $('rotateStatus').textContent = '';
     $('rotateLoadStatus').textContent = '';
-
     show('importScreen', 'Importação', false);
     updateNavigationButtons();
     $('startBtn').disabled = !files.length;
   }
-
   function updateNavigationButtons() {
     const noFiles = files.length === 0;
     const atFirst = stageIndex <= 0;
     const atLast = files.length === 0 || stageIndex >= files.length - 1;
-
     $('centerPrev').disabled = loadingVideo || noFiles || atFirst;
     $('rotatePrev').disabled = loadingVideo || noFiles || atFirst;
-
     $('centerNext').disabled = loadingVideo || noFiles;
     $('rotateNext').disabled = loadingVideo || noFiles;
-
     $('centerRestart').disabled = loadingVideo || noFiles;
     $('rotateRestart').disabled = loadingVideo || noFiles;
     $('centerPlay').disabled = loadingVideo || noFiles;
     $('rotatePlay').disabled = loadingVideo || noFiles;
-
     $('centerNext').textContent = atLast
       ? 'Concluir enquadramento →'
       : 'Próximo vídeo →';
-
     $('rotateNext').textContent = atLast
       ? 'Concluir rotação →'
       : 'Próximo vídeo →';
   }
-
   function refreshCenterFrame() {
     if (!video.videoWidth || !files.length) return;
-
     const time = video.currentTime || 0;
     const point = valueAt(
       centerData[stageIndex],
       time,
       {x:0.5,y:0.5}
     );
-
     markerPos(point);
     drawFit(cctx, centerCanvas);
     $('centerTime').textContent = fmt(time);
@@ -851,10 +724,8 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       ? String(Math.round(time / video.duration * 1000))
       : '0';
   }
-
   function refreshRotateFrame() {
     if (!video.videoWidth || !files.length) return;
-
     const time = video.currentTime || 0;
     const angle = valueAt(rotateData[stageIndex], time, 0);
     const point = valueAt(
@@ -862,120 +733,93 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       time,
       {x:0.5,y:0.5}
     );
-
     drawFit(rctx, rotateCanvas, angle, point);
-
     $('angleReadout').textContent = Math.round(angle) + '°';
     $('rotateDial').style.setProperty('--dial-angle', angle + 'deg');
     $('rotateDial').setAttribute(
       'aria-valuenow',
       String(Math.round(angle))
     );
-
     $('rotateTime').textContent = fmt(time);
     $('rotateSeek').value = video.duration
       ? String(Math.round(time / video.duration * 1000))
       : '0';
   }
-
   function loop() {
     if (!playing) return;
-
     if (mode === 'center') refreshCenterFrame();
     if (mode === 'rotate') refreshRotateFrame();
-
     if (video.ended) {
       stopPlayback();
       return;
     }
-
     raf = requestAnimationFrame(loop);
   }
-
   video.addEventListener('ended', () => {
     if (playing) stopPlayback();
   });
-
   async function waitForVideoReady() {
     if (video.readyState >= 2 && video.videoWidth > 0) return;
-
     await new Promise((resolve, reject) => {
       let settled = false;
-
       const finish = error => {
         if (settled) return;
         settled = true;
-
         clearTimeout(timer);
         video.removeEventListener('loadeddata', onReady);
         video.removeEventListener('canplay', onReady);
         video.removeEventListener('error', onError);
-
         error ? reject(error) : resolve();
       };
-
       const onReady = () => {
         if (video.readyState >= 2 && video.videoWidth > 0) {
           finish();
         }
       };
-
       const onError = () => {
         finish(new Error(
           'O navegador não conseguiu decodificar este vídeo. ' +
           'Tente um MP4 H.264.'
         ));
       };
-
       const timer = setTimeout(() => {
         finish(new Error(
           'O vídeo não ficou pronto a tempo. Tente novamente ou escolha outro arquivo.'
         ));
       }, 30000);
-
       video.addEventListener('loadeddata', onReady);
       video.addEventListener('canplay', onReady);
       video.addEventListener('error', onError);
       onReady();
     });
   }
-
   function seekVideo(time) {
     if (!video.videoWidth) return Promise.resolve();
-
     if (
       Math.abs(video.currentTime - time) < 0.025 &&
       !video.seeking
     ) {
       return Promise.resolve();
     }
-
     return new Promise((resolve, reject) => {
       let settled = false;
-
       const finish = error => {
         if (settled) return;
         settled = true;
-
         clearTimeout(timer);
         video.removeEventListener('seeked', onSeeked);
         video.removeEventListener('error', onError);
-
         error ? reject(error) : resolve();
       };
-
       const onSeeked = () => finish();
       const onError = () => {
         finish(new Error('Não foi possível reposicionar o vídeo.'));
       };
-
       const timer = setTimeout(() => {
         finish(new Error('O vídeo demorou demais para reposicionar.'));
       }, 10000);
-
       video.addEventListener('seeked', onSeeked);
       video.addEventListener('error', onError);
-
       try {
         video.currentTime = time;
       } catch (error) {
@@ -983,102 +827,79 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     });
   }
-
   async function setVideoSource(index, resetTime = true) {
     const target = urls[index];
-
     if (!target) {
       throw new Error(
         'Vídeo não encontrado. Volte à importação e selecione os arquivos novamente.'
       );
     }
-
     video.pause();
     video.preload = 'auto';
-
     if (video.src !== target) {
       video.src = target;
       video.load();
     }
-
     await waitForVideoReady();
-
     if (resetTime) {
       await seekVideo(0);
     }
   }
-
   async function loadAt(index, kind) {
     if (index < 0 || index >= files.length || loadingVideo) {
       return false;
     }
-
     const token = ++loadToken;
-
     loadingVideo = true;
     cancelCountdown();
     stopPlayback();
-
     stageIndex = index;
     mode = kind;
     updateNavigationButtons();
-
     try {
       await setVideoSource(index, true);
-
       if (token !== loadToken) return false;
-
       if (kind === 'center') {
         dims(centerCanvas);
-
         if (!centerData[index]) {
           centerData[index] = [
             {t:0,v:{x:0.5,y:0.5}}
           ];
         }
-
         $('centerDuration').textContent = fmt(video.duration);
         $('centerTime').textContent = '00:00';
         $('centerSeek').value = '0';
         $('centerStatus').textContent = '';
-
         const point = valueAt(
           centerData[index],
           0,
           {x:0.5,y:0.5}
         );
-
         markerPos(point);
         drawFit(cctx, centerCanvas);
       } else {
         dims(rotateCanvas);
-
         if (!rotateData[index]) {
           rotateData[index] = [{t:0,v:0}];
         }
-
         $('rotateDuration').textContent = fmt(video.duration);
         $('rotateTime').textContent = '00:00';
         $('rotateSeek').value = '0';
         $('rotateStatus').textContent = '';
-
         const angle = valueAt(rotateData[index], 0, 0);
         const point = valueAt(
           centerData[index],
           0,
           {x:0.5,y:0.5}
         );
-
         $('rotateDial').style.setProperty('--dial-angle', angle + 'deg');
         $('rotateDial').setAttribute(
           'aria-valuenow',
           String(Math.round(angle))
         );
         $('angleReadout').textContent = Math.round(angle) + '°';
-
         drawFit(rctx, rotateCanvas, angle, point);
       }
-
       return true;
     } finally {
       if (token === loadToken) {
@@ -1087,30 +908,22 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     }
   }
-
   async function countdownAndPlay(kind) {
     cancelCountdown();
     const token = countdownToken;
-
     stopPlayback();
     mode = kind;
-
     try {
       await seekVideo(0);
     } catch (_) {}
-
     if (token !== countdownToken) return;
-
     const element = $(
       kind === 'center' ? 'centerCount' : 'rotateCount'
     );
-
     let number = 3;
     element.textContent = String(number);
-
     await new Promise(resolve => {
       countdownResolve = resolve;
-
       countdownTimer = setInterval(() => {
         if (token !== countdownToken) {
           clearInterval(countdownTimer);
@@ -1119,9 +932,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           resolve();
           return;
         }
-
         number--;
-
         if (number <= 0) {
           clearInterval(countdownTimer);
           countdownTimer = null;
@@ -1133,34 +944,26 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         }
       }, 1000);
     });
-
     if (token !== countdownToken) return;
-
     const requiredScreen = kind === 'center'
       ? 'centerScreen'
       : 'rotateScreen';
-
     if (!$(requiredScreen).classList.contains('active')) return;
-
     try {
       await video.play();
       playing = true;
-
       if (kind === 'center') {
         $('centerPlay').textContent = 'Ⅱ Pausar';
       } else {
         $('rotatePlay').textContent = 'Ⅱ Pausar';
       }
-
       loop();
     } catch (_) {
       element.textContent = 'Toque em reproduzir';
     }
   }
-
   function pointFromEvent(event) {
     const rect = centerCanvas.getBoundingClientRect();
-
     return {
       x:Math.max(
         0,
@@ -1172,163 +975,123 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       )
     };
   }
-
   $('pickBtn').onclick = () => $('fileInput').click();
-
   function renderFileList() {
     $('fileList').innerHTML = '';
-
     files.forEach((file, index) => {
       const row = document.createElement('div');
       row.className = 'file';
-
       const number = document.createElement('span');
       number.className = 'num';
       number.textContent = (index + 1) + '.';
-
       const name = document.createElement('span');
       name.className = 'fname';
       name.textContent = file.name;
       name.title = file.name;
-
       const size = document.createElement('small');
       size.textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
-
       const remove = document.createElement('button');
       remove.className = 'remove-file';
       remove.type = 'button';
       remove.textContent = '×';
       remove.setAttribute('aria-label', 'Remover ' + file.name);
       remove.title = 'Remover vídeo';
-
       remove.onclick = () => {
         if (urls[index]) {
           URL.revokeObjectURL(urls[index]);
         }
-
         files.splice(index, 1);
         urls.splice(index, 1);
         clearAllEdits();
-
         renderFileList();
         updateNavigationButtons();
-
         if (!files.length) {
           video.pause();
           video.removeAttribute('src');
           video.load();
         }
       };
-
       row.append(number, name, size, remove);
       $('fileList').appendChild(row);
     });
-
     $('startBtn').disabled = !files.length;
   }
-
   $('fileInput').onchange = event => {
     const incoming = Array.from(event.target.files || []);
     event.target.value = '';
-
     if (!incoming.length) return;
-
     stopPlayback();
     urls.forEach(url => URL.revokeObjectURL(url));
-
     files = incoming;
     urls = files.map(file => URL.createObjectURL(file));
-
     clearAllEdits();
     renderFileList();
     updateNavigationButtons();
   };
-
   $('startBtn').onclick = async () => {
     if (!files.length) return;
-
     clearAllEdits();
     stageIndex = 0;
     mode = 'center';
-
     show('centerScreen', 'Enquadramento');
-
     try {
       const loaded = await loadAt(0, 'center');
-
       if (!loaded || !$('centerScreen').classList.contains('active')) {
         return;
       }
-
       await countdownAndPlay('center');
     } catch (error) {
       show('importScreen', 'Importação', false);
       alert(error.message);
     }
   };
-
   centerCanvas.addEventListener('pointerdown', event => {
     if (loadingVideo || !files.length) return;
-
     dragging = true;
-
     try {
       centerCanvas.setPointerCapture(event.pointerId);
     } catch (_) {}
-
     const point = pointFromEvent(event);
     addKey(centerData[stageIndex], video.currentTime, point);
     markerPos(point);
   });
-
   centerCanvas.addEventListener('pointermove', event => {
     if (!dragging || loadingVideo) return;
-
     const point = pointFromEvent(event);
     addKey(centerData[stageIndex], video.currentTime, point);
     markerPos(point);
   });
-
   centerCanvas.addEventListener('pointerup', () => {
     dragging = false;
   });
-
   centerCanvas.addEventListener('pointercancel', () => {
     dragging = false;
   });
-
   async function toggleStagePlayback(kind) {
     if (loadingVideo || !files.length) return;
-
     if (playing) {
       stopPlayback();
       return;
     }
-
     cancelCountdown();
     mode = kind;
-
     if (video.ended) {
       try {
         await seekVideo(0);
       } catch (_) {}
     }
-
     try {
       await video.play();
       playing = true;
-
       if (kind === 'center') {
         $('centerPlay').textContent = 'Ⅱ Pausar';
       } else {
         $('rotatePlay').textContent = 'Ⅱ Pausar';
       }
-
       loop();
     } catch (_) {}
   }
-
-  function resetSelectedEdits(kind) {
+  async function resetSelectedEdits(kind) {
     if (loadingVideo || !files.length) return;
 
     cancelCountdown();
@@ -1348,41 +1111,45 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         'Ajustes de rotação deste vídeo reiniciados.';
     }
 
-    const refresh = () => {
-      if (stageIndex !== index || mode !== kind) return;
-
-      if (kind === 'center') {
-        refreshCenterFrame();
-      } else {
-        refreshRotateFrame();
-      }
-    };
-
-    if (video.currentTime > 0.025) {
-      video.addEventListener('seeked', refresh, {once:true});
-
-      try {
-        video.currentTime = 0;
-      } catch (_) {
-        refresh();
-      }
-    } else {
-      refresh();
-    }
-  }
-
-  async function navigateTo(index, kind) {
-    if (loadingVideo || index < 0 || index >= files.length) return;
+    mode = kind;
 
     try {
+      await seekVideo(0);
+    } catch (error) {
+      const statusId = kind === 'center'
+        ? 'centerStatus'
+        : 'rotateStatus';
+
+      $(statusId).textContent =
+        'Ajustes reiniciados, mas não foi possível voltar ao início: ' +
+        error.message;
+      return;
+    }
+
+    if (stageIndex !== index || mode !== kind) return;
+
+    if (kind === 'center') {
+      refreshCenterFrame();
+    } else {
+      refreshRotateFrame();
+    }
+
+    const requiredScreen = kind === 'center'
+      ? 'centerScreen'
+      : 'rotateScreen';
+
+    if (!$(requiredScreen).classList.contains('active')) return;
+
+    await countdownAndPlay(kind);
+  }
+  async function navigateTo(index, kind) {
+    if (loadingVideo || index < 0 || index >= files.length) return;
+    try {
       const loaded = await loadAt(index, kind);
-
       if (!loaded) return;
-
       const requiredScreen = kind === 'center'
         ? 'centerScreen'
         : 'rotateScreen';
-
       if ($(requiredScreen).classList.contains('active')) {
         await countdownAndPlay(kind);
       }
@@ -1390,89 +1157,63 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       alert(error.message);
     }
   }
-
   $('centerPlay').onclick = () => toggleStagePlayback('center');
   $('rotatePlay').onclick = () => toggleStagePlayback('rotate');
-
   $('centerRestart').onclick = () => resetSelectedEdits('center');
   $('rotateRestart').onclick = () => resetSelectedEdits('rotate');
-
   $('centerSeek').oninput = event => {
     if (loadingVideo) return;
-
     cancelCountdown();
     stopPlayback();
-
     const time =
       Number(event.target.value) / 1000 * (video.duration || 0);
-
     video.addEventListener('seeked', refreshCenterFrame, {once:true});
-
     try {
       video.currentTime = time;
     } catch (_) {}
-
     refreshCenterFrame();
   };
-
   $('rotateSeek').oninput = event => {
     if (loadingVideo) return;
-
     cancelCountdown();
     stopPlayback();
-
     const time =
       Number(event.target.value) / 1000 * (video.duration || 0);
-
     video.addEventListener('seeked', refreshRotateFrame, {once:true});
-
     try {
       video.currentTime = time;
     } catch (_) {}
-
     refreshRotateFrame();
   };
-
   $('centerPrev').onclick = () => {
     if (stageIndex > 0) {
       navigateTo(stageIndex - 1, 'center');
     }
   };
-
   $('centerNext').onclick = () => {
     if (loadingVideo) return;
-
     if (stageIndex + 1 < files.length) {
       navigateTo(stageIndex + 1, 'center');
       return;
     }
-
     cancelCountdown();
     stopPlayback();
     show('instructionScreen', 'Instruções');
   };
-
   $('centerImport').onclick = returnToImport;
-
   $('instructionContinue').onclick = async () => {
     const button = $('instructionContinue');
-
     if (button.disabled) return;
-
     button.disabled = true;
     button.textContent = 'Carregando vídeo…';
     $('rotateLoadStatus').textContent =
       'Preparando o vídeo reenquadrado…';
-
     show('rotateScreen', 'Rotação');
-
     try {
       const loaded = await loadAt(0, 'rotate');
-
       if (!loaded || !$('rotateScreen').classList.contains('active')) {
         return;
       }
-
       $('rotateLoadStatus').textContent = '';
       await countdownAndPlay('rotate');
     } catch (error) {
@@ -1483,18 +1224,14 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       button.textContent = 'Continuar';
     }
   };
-
   function setRotationAngle(angle) {
     if (!files.length || loadingVideo) return;
-
     const roundedAngle = Math.max(-180, Math.min(180, Math.round(angle)));
-
     addKey(
       rotateData[stageIndex],
       video.currentTime,
       roundedAngle
     );
-
     $('angleReadout').textContent = roundedAngle + '°';
     $('rotateDial').style.setProperty(
       '--dial-angle',
@@ -1504,89 +1241,68 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       'aria-valuenow',
       String(roundedAngle)
     );
-
     const point = valueAt(
       centerData[stageIndex],
       video.currentTime,
       {x:0.5,y:0.5}
     );
-
     drawFit(rctx, rotateCanvas, roundedAngle, point);
   }
-
   function angleFromDialEvent(event) {
     const rect = $('rotateDial').getBoundingClientRect();
     const dx = event.clientX - (rect.left + rect.width / 2);
     const dy = event.clientY - (rect.top + rect.height / 2);
-
     return Math.atan2(dx, -dy) * 180 / Math.PI;
   }
-
   let dialDragging = false;
-
   $('rotateDial').addEventListener('pointerdown', event => {
     if (loadingVideo || !files.length) return;
-
     dialDragging = true;
-
     try {
       $('rotateDial').setPointerCapture(event.pointerId);
     } catch (_) {}
-
     setRotationAngle(angleFromDialEvent(event));
     event.preventDefault();
   });
-
   $('rotateDial').addEventListener('pointermove', event => {
     if (dialDragging) {
       setRotationAngle(angleFromDialEvent(event));
     }
   });
-
   $('rotateDial').addEventListener('pointerup', () => {
     dialDragging = false;
   });
-
   $('rotateDial').addEventListener('pointercancel', () => {
     dialDragging = false;
   });
-
   $('rotateDial').addEventListener('keydown', event => {
     const current =
       Number($('rotateDial').getAttribute('aria-valuenow')) || 0;
-
     if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
       event.preventDefault();
       setRotationAngle(current - 1);
     }
-
     if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
       event.preventDefault();
       setRotationAngle(current + 1);
     }
   });
-
   $('rotatePrev').onclick = () => {
     if (stageIndex > 0) {
       navigateTo(stageIndex - 1, 'rotate');
     }
   };
-
   $('rotateNext').onclick = async () => {
     if (loadingVideo) return;
-
     if (stageIndex + 1 < files.length) {
       await navigateTo(stageIndex + 1, 'rotate');
       return;
     }
-
     cancelCountdown();
     stopPlayback();
     stageIndex = 0;
     mode = 'preview';
-
     show('previewScreen', 'Pré-visualização', true);
-
     try {
       await preparePreview();
     } catch (error) {
@@ -1594,32 +1310,24 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         'Não foi possível preparar a pré-visualização: ' + error.message;
     }
   };
-
   $('rotateImport').onclick = returnToImport;
-
   async function preparePreview() {
     if (!files.length) return;
-
     stageIndex = 0;
     mode = 'preview';
-
     await setVideoSource(0, true);
     dims(previewCanvas);
-
     $('previewTime').textContent = 'Pronto para reproduzir';
     $('previewDuration').textContent = 'Compilação';
     $('exportProgress').style.width = '0%';
-
     const point = valueAt(
       centerData[0],
       0,
       {x:0.5,y:0.5}
     );
     const angle = valueAt(rotateData[0], 0, 0);
-
     drawAdjustedFrame(pctx, previewCanvas, point, angle, false);
   }
-
   function drawPreviewFrame(index, mirrored, time) {
     const point = valueAt(
       centerData[index],
@@ -1627,7 +1335,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       {x:0.5,y:0.5}
     );
     const angle = valueAt(rotateData[index], time, 0);
-
     drawAdjustedFrame(
       pctx,
       previewCanvas,
@@ -1635,62 +1342,47 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       angle,
       mirrored
     );
-
     $('previewTime').textContent =
       `Vídeo ${index + 1} · ` +
       `${mirrored ? 'espelhado' : 'original'} · ${fmt(time)}`;
   }
-
   function playPreviewPass(index, mirrored) {
     return new Promise((resolve, reject) => {
       let finished = false;
-
       const finish = error => {
         if (finished) return;
         finished = true;
-
         if (previewRaf) {
           cancelAnimationFrame(previewRaf);
         }
-
         previewRaf = 0;
         video.removeEventListener('ended', onEnded);
         video.pause();
-
         if (previewStopResolver === finish) {
           previewStopResolver = null;
         }
-
         error ? reject(error) : resolve();
       };
-
       const onEnded = () => {
         drawPreviewFrame(index, Boolean(mirrored), video.currentTime || 0);
         finish();
       };
-
       const draw = () => {
         if (finished) return;
-
         if (!previewRunning) {
           finish();
           return;
         }
-
         const time = video.currentTime || 0;
         drawPreviewFrame(index, Boolean(mirrored), time);
-
         if (video.ended) {
           finish();
           return;
         }
-
         previewRaf = requestAnimationFrame(draw);
       };
-
       previewStopResolver = finish;
       video.addEventListener('ended', onEnded, {once:true});
-
       video.play()
         .then(() => {
           if (!finished) draw();
@@ -1698,18 +1390,14 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         .catch(error => finish(error));
     });
   }
-
   $('previewPlay').onclick = async () => {
     if (previewRunning) {
       stopPreviewPlayback();
       return;
     }
-
     if (!files.length) return;
-
     previewRunning = true;
     $('previewPlay').textContent = 'Ⅱ Pausar';
-
     try {
       for (
         let index = 0;
@@ -1717,9 +1405,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         index++
       ) {
         await setVideoSource(index, true);
-
         if (!previewRunning) break;
-
         for (
           let mirrored = 0;
           mirrored < 2 && previewRunning;
@@ -1737,7 +1423,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       $('previewPlay').textContent = '▶ Reproduzir compilação';
     }
   };
-
   function supportState(mime) {
     if (
       typeof MediaRecorder === 'undefined' ||
@@ -1745,14 +1430,12 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     ) {
       return null;
     }
-
     try {
       return MediaRecorder.isTypeSupported(mime);
     } catch (_) {
       return null;
     }
   }
-
   function getPreferredProfile() {
     const mp4Profiles = MIME_PROFILES.filter(
       profile => profile.extension === 'mp4'
@@ -1760,29 +1443,22 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     const webmProfiles = MIME_PROFILES.filter(
       profile => profile.extension === 'webm'
     );
-
     const supportedMp4 = mp4Profiles.find(
       profile => supportState(profile.mime) === true
     );
     if (supportedMp4) return supportedMp4;
-
     const supportedWebm = webmProfiles.find(
       profile => supportState(profile.mime) === true
     );
     if (supportedWebm) return supportedWebm;
-
     return mp4Profiles[0] || webmProfiles[0];
   }
-
   function mimeExtension(mime, fallback = 'webm') {
     const value = String(mime || '').toLowerCase();
-
     if (value.includes('mp4')) return 'mp4';
     if (value.includes('webm')) return 'webm';
-
     return fallback;
   }
-
   function requestSaveFilePicker(profile) {
     if (typeof window.showSaveFilePicker !== 'function') {
       return Promise.resolve({
@@ -1792,11 +1468,9 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         unavailable:true
       });
     }
-
     const extension = profile.extension;
     const mime = extension === 'mp4' ? 'video/mp4' : 'video/webm';
     const suffix = extension === 'mp4' ? '.mp4' : '.webm';
-
     try {
       return window.showSaveFilePicker({
         suggestedName:'App-compilacao' + suffix,
@@ -1826,16 +1500,13 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       });
     }
   }
-
   async function prepareAudioCapture() {
     const AudioContextClass =
       window.AudioContext || window.webkitAudioContext;
-
     if (!AudioContextClass) {
       video.muted = true;
       return [];
     }
-
     try {
       if (!exportAudioContext) {
         exportAudioContext = new AudioContextClass();
@@ -1843,16 +1514,12 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           exportAudioContext.createMediaStreamDestination();
         exportAudioSource =
           exportAudioContext.createMediaElementSource(video);
-
         exportAudioSource.connect(exportAudioDestination);
       }
-
       if (exportAudioContext.state === 'suspended') {
         await exportAudioContext.resume();
       }
-
       video.muted = false;
-
       return exportAudioDestination.stream
         .getAudioTracks()
         .filter(track => track.readyState === 'live');
@@ -1862,7 +1529,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       return [];
     }
   }
-
   function createMediaRecorder(
     canvasStream,
     audioTracks,
@@ -1873,13 +1539,10 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         'Este navegador não oferece suporte à gravação de vídeo.'
       );
     }
-
     const videoTrack = canvasStream.getVideoTracks()[0];
-
     if (!videoTrack) {
       throw new Error('Não foi possível capturar o vídeo final.');
     }
-
     const candidates = MIME_PROFILES
       .map((profile, index) => ({
         profile,
@@ -1893,13 +1556,10 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           if (value === null) return 1;
           return 2;
         };
-
         return rank(first.support) - rank(second.support) ||
           first.index - second.index;
       });
-
     let lastError = null;
-
     for (const item of candidates) {
       const profile = item.profile;
       const tracks = [
@@ -1907,16 +1567,13 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         ...(profile.audio ? audioTracks : [])
       ];
       const stream = new MediaStream(tracks);
-
       const options = {
         mimeType:profile.mime,
         videoBitsPerSecond:videoBitrate
       };
-
       if (profile.audio) {
         options.audioBitsPerSecond = AUDIO_BITRATE;
       }
-
       const attempts = [
         options,
         {
@@ -1925,12 +1582,10 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         },
         {mimeType:profile.mime}
       ];
-
       for (const option of attempts) {
         try {
           const recorder = new MediaRecorder(stream, option);
           const mime = recorder.mimeType || profile.mime;
-
           return {
             recorder,
             stream,
@@ -1943,9 +1598,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         }
       }
     }
-
     const fallbackStream = new MediaStream([videoTrack]);
-
     for (const options of [
       {videoBitsPerSecond:videoBitrate},
       {}
@@ -1953,7 +1606,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       try {
         const recorder = new MediaRecorder(fallbackStream, options);
         const mime = recorder.mimeType || 'video/webm';
-
         return {
           recorder,
           stream:fallbackStream,
@@ -1965,7 +1617,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         lastError = error;
       }
     }
-
     throw new Error(
       'Não foi possível iniciar o gravador deste navegador.' +
       (lastError && lastError.message
@@ -1973,7 +1624,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         : '')
     );
   }
-
   async function createDiskSink(extension, saveSelection) {
     if (
       saveSelection &&
@@ -1982,7 +1632,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     ) {
       try {
         const writable = await saveSelection.handle.createWritable();
-
         return {
           type:'picker',
           handle:saveSelection.handle,
@@ -1993,7 +1642,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         console.warn('Não foi possível abrir o arquivo escolhido:', error);
       }
     }
-
     try {
       if (
         navigator.storage &&
@@ -2004,13 +1652,11 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         const name =
           'App-compilacao-' + Date.now() + '-' + randomPart +
           '.' + extension;
-
         const handle = await directory.getFileHandle(
           name,
           {create:true}
         );
         const writable = await handle.createWritable();
-
         return {
           type:'opfs',
           directory,
@@ -2022,45 +1668,34 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     } catch (error) {
       console.warn('Armazenamento temporário indisponível:', error);
     }
-
     return null;
   }
-
   function pauseRecorder(recorder) {
     if (!recorder || recorder.state !== 'recording') return;
-
     try {
       recorder.pause();
     } catch (_) {}
   }
-
   function resumeRecorder(recorder) {
     if (!recorder || recorder.state !== 'paused') return;
-
     try {
       recorder.resume();
     } catch (_) {}
   }
-
   function stopRecorder(recorder) {
     if (!recorder || recorder.state === 'inactive') {
       return Promise.resolve();
     }
-
     return new Promise((resolve, reject) => {
       let settled = false;
-
       const finish = error => {
         if (settled) return;
         settled = true;
-
         clearTimeout(timer);
         recorder.removeEventListener('stop', onStop);
         recorder.removeEventListener('error', onError);
-
         error ? reject(error) : resolve();
       };
-
       const onStop = () => finish();
       const onError = event => {
         finish(
@@ -2068,14 +1703,11 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           new Error('Erro ao finalizar a gravação do vídeo.')
         );
       };
-
       const timer = setTimeout(() => {
         finish(new Error('A finalização da gravação demorou demais.'));
       }, 30000);
-
       recorder.addEventListener('stop', onStop, {once:true});
       recorder.addEventListener('error', onError, {once:true});
-
       try {
         if (recorder.state !== 'inactive') {
           recorder.stop();
@@ -2087,7 +1719,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     });
   }
-
   async function playVideoForExport() {
     try {
       await video.play();
@@ -2095,27 +1726,21 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     } catch (firstError) {
       if (!video.muted) {
         video.muted = true;
-
         try {
           await video.play();
           return;
         } catch (_) {}
       }
-
       throw firstError;
     }
   }
-
   async function readFileHeader(file) {
     const slice = file.slice(0, 16);
-
     if (typeof slice.arrayBuffer === 'function') {
       return new Uint8Array(await slice.arrayBuffer());
     }
-
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
       reader.onload = () => resolve(new Uint8Array(reader.result));
       reader.onerror = () => reject(
         new Error('Não foi possível verificar o arquivo exportado.')
@@ -2123,7 +1748,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       reader.readAsArrayBuffer(slice);
     });
   }
-
   async function validateOutputFile(file, extension) {
     if (!file || !Number.isFinite(file.size) || file.size < 1024) {
       throw new Error(
@@ -2131,9 +1755,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         'Nenhum arquivo foi oferecido para baixar.'
       );
     }
-
     const header = await readFileHeader(file);
-
     if (extension === 'mp4') {
       const marker = String.fromCharCode(
         header[4] || 0,
@@ -2141,7 +1763,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         header[6] || 0,
         header[7] || 0
       );
-
       if (marker !== 'ftyp') {
         throw new Error(
           'O gravador informou MP4, mas os dados não têm o cabeçalho ' +
@@ -2155,7 +1776,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         header[1] === 0x45 &&
         header[2] === 0xDF &&
         header[3] === 0xA3;
-
       if (!isWebm) {
         throw new Error(
           'Os dados gravados não têm o cabeçalho de um WebM válido. ' +
@@ -2164,26 +1784,20 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     }
   }
-
   function getMemoryLimitBytes() {
     if (!isMobileDevice()) {
       return 192 * 1024 * 1024;
     }
-
     const deviceMemory = Number(navigator.deviceMemory) || 0;
-
     if (deviceMemory > 0 && deviceMemory <= 2) {
       return 16 * 1024 * 1024;
     }
-
     return 32 * 1024 * 1024;
   }
-
   async function renderCompilation(saveSelection, audioTracks) {
     if (!files.length) {
       throw new Error('Não há vídeos para exportar.');
     }
-
     let canvasStream = null;
     let recorderSetup = null;
     let sink = null;
@@ -2193,104 +1807,82 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     let writeError = null;
     let receivedBytes = 0;
     let writeChain = Promise.resolve();
-
     const chunks = [];
-
     try {
       await setVideoSource(0, true);
-
       const mobile = isMobileDevice();
       const maxDimension = mobile
         ? MOBILE_MAX_DIMENSION
         : DESKTOP_MAX_DIMENSION;
-
       const dimensions = getCappedDimensions(
         video.videoWidth,
         video.videoHeight,
         maxDimension
       );
-
       previewCanvas.width = dimensions.width;
       previewCanvas.height = dimensions.height;
       previewCanvas.style.aspectRatio =
         dimensions.width + '/' + dimensions.height;
-
       const width = dimensions.width;
       const height = dimensions.height;
-
       if (!width || !height) {
         throw new Error('Não foi possível obter a resolução do vídeo.');
       }
-
       const durations = [];
-
       for (let index = 0; index < files.length; index++) {
         await setVideoSource(index, true);
-
         if (!Number.isFinite(video.duration) || video.duration <= 0) {
           throw new Error(
             'Duração inválida no vídeo ' + (index + 1) + '.'
           );
         }
-
         durations.push(video.duration);
       }
-
       await setVideoSource(0, true);
-
       if (typeof previewCanvas.captureStream !== 'function') {
         throw new Error(
           'Este navegador não permite capturar o vídeo final. ' +
           'Tente usar uma versão atualizada do Chrome.'
         );
       }
-
       canvasStream = previewCanvas.captureStream(EXPORT_FPS);
-
       if (!canvasStream || !canvasStream.getVideoTracks().length) {
         throw new Error('Não foi possível capturar os quadros do vídeo.');
       }
-
       const videoBitrate = mobile
         ? MOBILE_VIDEO_BITRATE
         : DESKTOP_VIDEO_BITRATE;
-
       recorderSetup = createMediaRecorder(
         canvasStream,
         audioTracks,
         videoBitrate
       );
-
       const recorder = recorderSetup.recorder;
       const extension = recorderSetup.extension;
       const actualMime = recorderSetup.mime || 'video/webm';
-
       sink = await createDiskSink(extension, saveSelection);
+
       if (isMobileDevice() && !sink) {
-  throw new Error(
-    'Exportação cancelada para evitar falta de memória. ' +
-    'O navegador não disponibilizou um destino de gravação em disco. ' +
-    'Tente salvar pelo seletor de arquivos ou use outro navegador.'
-  );
-}
+        throw new Error(
+          'Exportação cancelada para evitar falta de memória. ' +
+          'O navegador não disponibilizou um destino de gravação em disco. ' +
+          'Tente salvar pelo seletor de arquivos ou use outro navegador.'
+        );
+      }
 
       const totalSeconds =
         durations.reduce((sum, duration) => sum + duration, 0) * 2;
-
       if (!sink) {
         const actualAudioBitrate = recorderSetup.hasAudio
           ? AUDIO_BITRATE
           : 0;
-
         const estimatedBytes = Math.ceil(
           totalSeconds *
           (videoBitrate + actualAudioBitrate) /
           8 *
           2.2
         );
-
         const limit = getMemoryLimitBytes();
-
         if (estimatedBytes > limit) {
           throw new Error(
             'Este navegador não oferece gravação direta em disco e a ' +
@@ -2302,14 +1894,12 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           );
         }
       }
-
       const firstPoint = valueAt(
         centerData[0],
         0,
         {x:0.5,y:0.5}
       );
       const firstAngle = valueAt(rotateData[0], 0, 0);
-
       drawAdjustedFrame(
         pctx,
         previewCanvas,
@@ -2317,19 +1907,14 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         firstAngle,
         false
       );
-
       recorder.addEventListener('dataavailable', event => {
         if (!event.data || event.data.size === 0) return;
-
         receivedBytes += event.data.size;
-
         if (sink) {
           const data = event.data;
-
           writeChain = writeChain
             .then(async () => {
               if (writeError) return;
-
               await sink.writable.write(data);
             })
             .catch(error => {
@@ -2339,25 +1924,20 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           chunks.push(event.data);
         }
       });
-
       recorder.addEventListener('error', event => {
         recorderError =
           event.error ||
           new Error('O navegador encontrou um erro durante a gravação.');
       });
-
       try {
         recorder.start(1000);
       } catch (_) {
         recorder.start();
       }
-
       if (recorder.state !== 'recording') {
         throw new Error('O gravador não iniciou.');
       }
-
       let completedSeconds = 0;
-
       function updateProgress(index, mirrored, time) {
         const duration = durations[index];
         const safeTime = Math.max(0, Math.min(duration, time));
@@ -2368,7 +1948,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         const percent = totalSeconds
           ? Math.min(100, absolute / totalSeconds * 100)
           : 0;
-
         $('exportProgress').style.width = percent + '%';
         $('previewTime').textContent =
           `${fmt(absolute)} / ${fmt(totalSeconds)} · ` +
@@ -2376,71 +1955,54 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           `${mirrored ? 'espelhado' : 'original'}`;
         $('previewDuration').textContent = fmt(totalSeconds);
       }
-
       async function renderPass(index, mirrored) {
         pauseRecorder(recorder);
-
         await seekVideo(0);
-
         if (recorderError) throw recorderError;
         if (writeError) throw writeError;
-
         resumeRecorder(recorder);
-
         const duration = durations[index];
-
         await new Promise((resolve, reject) => {
           let finished = false;
           let finishing = false;
           let animationFrame = 0;
           let finalFrameTimer = null;
           let passTimeout = null;
-
           const finish = error => {
             if (finished) return;
             finished = true;
-
             if (animationFrame) {
               cancelAnimationFrame(animationFrame);
             }
-
             if (finalFrameTimer) {
               clearTimeout(finalFrameTimer);
             }
-
             if (passTimeout) {
               clearTimeout(passTimeout);
             }
-
             video.removeEventListener('ended', onEnded);
             video.pause();
-
             error ? reject(error) : resolve();
           };
-
           const paint = () => {
             if (recorderError) {
               finish(recorderError);
               return null;
             }
-
             if (writeError) {
               finish(writeError);
               return null;
             }
-
             const time = Math.max(
               0,
               Math.min(duration, video.currentTime || 0)
             );
-
             const point = valueAt(
               centerData[index],
               time,
               {x:0.5,y:0.5}
             );
             const angle = valueAt(rotateData[index], time, 0);
-
             drawAdjustedFrame(
               pctx,
               previewCanvas,
@@ -2448,56 +2010,41 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
               angle,
               mirrored
             );
-
             updateProgress(index, mirrored, time);
             return time;
           };
-
           const finishSegment = () => {
             if (finishing || finished) return;
             finishing = true;
-
             if (animationFrame) {
               cancelAnimationFrame(animationFrame);
               animationFrame = 0;
             }
-
             if (paint() === null) return;
-
             video.pause();
-
             finalFrameTimer = setTimeout(() => {
               pauseRecorder(recorder);
               finish();
             }, 140);
           };
-
           const onEnded = () => finishSegment();
-
           const draw = () => {
             if (finished || finishing) return;
-
             const time = paint();
-
             if (time === null) return;
-
             if (video.ended || time >= duration - 0.025) {
               finishSegment();
               return;
             }
-
             animationFrame = requestAnimationFrame(draw);
           };
-
           passTimeout = setTimeout(() => {
             finish(new Error(
               'A reprodução parou antes de concluir a exportação. ' +
               'Tente novamente com a tela ligada.'
             ));
           }, Math.max(30000, duration * 2000 + 15000));
-
           video.addEventListener('ended', onEnded);
-
           playVideoForExport()
             .then(() => {
               if (!finished) draw();
@@ -2509,12 +2056,9 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
               ));
             });
         });
-
         completedSeconds += duration;
         updateProgress(index, mirrored, duration);
-
         if (recorderError) throw recorderError;
-
         if (writeError) {
           throw new Error(
             'Não foi possível gravar os dados no armazenamento: ' +
@@ -2522,54 +2066,42 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           );
         }
       }
-
       for (let index = 0; index < files.length; index++) {
         if (index > 0) {
           pauseRecorder(recorder);
           await setVideoSource(index, true);
           resumeRecorder(recorder);
         }
-
         for (let mirrored = 0; mirrored < 2; mirrored++) {
           $('exportStatus').textContent =
             `Processando vídeo ${index + 1} de ${files.length}: ` +
             `${mirrored ? 'cópia espelhada' : 'original'}…`;
-
           await renderPass(index, Boolean(mirrored));
         }
       }
-
       await stopRecorder(recorder);
       await writeChain;
-
       if (recorderError) throw recorderError;
-
       if (writeError) {
         throw new Error(
           'Não foi possível gravar os dados no armazenamento: ' +
           writeError.message
         );
       }
-
       if (receivedBytes === 0) {
         throw new Error(
           'O gravador não forneceu dados de vídeo. ' +
           'Tente novamente ou use outro navegador.'
         );
       }
-
       $('exportProgress').style.width = '100%';
       $('previewTime').textContent =
         `${fmt(totalSeconds)} / ${fmt(totalSeconds)}`;
-
       let file;
-
       if (sink) {
         await sink.writable.close();
         sinkClosed = true;
-
         file = await sink.handle.getFile();
-
         if (!file || file.size === 0) {
           throw new Error(
             'O navegador informou que terminou, mas o arquivo salvo ficou ' +
@@ -2579,7 +2111,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       } else {
         const mime = actualMime || 'video/webm';
         const name = 'App-compilacao.' + extension;
-
         if (typeof File === 'function') {
           file = new File(chunks, name, {
             type:mime,
@@ -2592,17 +2123,13 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           } catch (_) {}
         }
       }
-
       await validateOutputFile(file, extension);
-
       const opfsEntry = sink && sink.type === 'opfs'
         ? {directory:sink.directory,name:sink.name}
         : null;
-
       if (opfsEntry) {
         keepOpfsEntry = true;
       }
-
       return {
         file,
         mime:actualMime,
@@ -2613,23 +2140,19 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       };
     } finally {
       const recorder = recorderSetup && recorderSetup.recorder;
-
       if (recorder && recorder.state !== 'inactive') {
         try {
           await stopRecorder(recorder);
         } catch (_) {}
       }
-
       try {
         await writeChain;
       } catch (_) {}
-
       if (sink && !sinkClosed) {
         try {
           await sink.writable.abort();
         } catch (_) {}
       }
-
       if (
         sink &&
         sink.type === 'opfs' &&
@@ -2640,7 +2163,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           name:sink.name
         });
       }
-
       if (canvasStream) {
         canvasStream.getTracks().forEach(track => {
           try {
@@ -2648,10 +2170,8 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           } catch (_) {}
         });
       }
-
       video.pause();
       video.muted = true;
-
       if (
         exportAudioContext &&
         exportAudioContext.state === 'running'
@@ -2662,26 +2182,20 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     }
   }
-
   function showExportedFile(result) {
     clearExportResult();
-
     outputFile = result.file;
     outputOpfsEntry = result.opfsEntry || null;
     outputObjectUrl = URL.createObjectURL(result.file);
-
     const name = result.file.name ||
       ('App-compilacao.' + result.extension);
-
     const link = $('downloadLink');
     link.href = outputObjectUrl;
     link.download = name;
     link.textContent =
       'Baixar vídeo ' + result.extension.toUpperCase();
     link.classList.remove('hidden');
-
     let shareAvailable = false;
-
     if (
       outputFile &&
       typeof File === 'function' &&
@@ -2693,10 +2207,8 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           : new File([outputFile], name, {
               type:result.mime || 'video/webm'
             });
-
         shareAvailable = typeof navigator.canShare !== 'function' ||
           navigator.canShare({files:[shareFile]});
-
         if (shareAvailable) {
           outputFile = shareFile;
         }
@@ -2704,20 +2216,16 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         shareAvailable = false;
       }
     }
-
     $('shareBtn').classList.toggle('hidden', !shareAvailable);
   }
-
   $('shareBtn').onclick = async () => {
     if (!outputFile || typeof navigator.share !== 'function') return;
-
     try {
       await navigator.share({
         files:[outputFile],
         title:'App — vídeo compilado',
         text:'Vídeo editado pelo aplicativo App'
       });
-
       $('exportStatus').textContent =
         'Arquivo enviado ao menu de compartilhamento. Escolha onde salvá-lo.';
     } catch (error) {
@@ -2727,13 +2235,11 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       }
     }
   };
-
   function updateEnvironmentNote() {
     const note = $('environmentNote');
     const localContent =
       location.protocol === 'content:' ||
       location.protocol === 'file:';
-
     if (location.protocol === 'content:') {
       note.textContent =
         'A página está aberta por content://. Alguns navegadores Android ' +
@@ -2751,56 +2257,44 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         'movido para uma pasta de mídia.';
     }
   }
-
   $('exportBtn').onclick = async () => {
     if (exportBusy) return;
-
     if (!files.length) {
       $('exportStatus').textContent =
         'Não há vídeos para exportar.';
       return;
     }
-
     if (typeof window.MediaRecorder === 'undefined') {
       $('exportStatus').textContent =
         'Este navegador não oferece suporte à exportação de vídeos.';
       return;
     }
-
     const preferred = getPreferredProfile();
-
     exportBusy = true;
     $('exportBtn').disabled = true;
     $('previewPlay').disabled = true;
     $('startOver').disabled = true;
     $('backBtn').disabled = true;
-
     stopPreviewPlayback();
     stopPlayback();
     clearExportResult();
-
     $('exportProgress').style.width = '0%';
     $('exportStatus').textContent = 'Preparando a exportação…';
-
     /*
       O seletor é acionado imediatamente no clique do usuário. Alguns
       navegadores exigem que essa chamada ocorra dentro da interação.
     */
     const savePromise = requestSaveFilePicker(preferred);
     const audioPromise = prepareAudioCapture();
-
     try {
       const saveSelection = await savePromise;
-
       if (saveSelection.cancelled) {
         await audioPromise;
         video.muted = true;
         $('exportStatus').textContent = 'Salvamento cancelado.';
         return;
       }
-
       const audioTracks = await audioPromise;
-
       if (saveSelection.handle) {
         $('exportStatus').textContent =
           'Preparando o arquivo no local escolhido…';
@@ -2808,14 +2302,11 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
         $('exportStatus').textContent =
           'Exportando em tempo real. Mantenha a página aberta…';
       }
-
       const result = await renderCompilation(
         saveSelection,
         audioTracks
       );
-
       showExportedFile(result);
-
       if (result.storage === 'picker') {
         $('exportStatus').textContent =
           result.extension.toUpperCase() +
@@ -2847,39 +2338,29 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     } finally {
       video.muted = true;
       exportBusy = false;
-
       $('exportBtn').disabled = false;
       $('previewPlay').disabled = false;
       $('startOver').disabled = false;
       $('backBtn').disabled = false;
     }
   };
-
   $('backBtn').onclick = returnToImport;
-
   $('startOver').onclick = () => {
     if (exportBusy) return;
-
     returnToImport();
-
     urls.forEach(url => URL.revokeObjectURL(url));
-
     urls = [];
     files = [];
     centerData = [];
     rotateData = [];
-
     $('fileInput').value = '';
     $('fileList').innerHTML = '';
     $('startBtn').disabled = true;
-
     video.pause();
     video.removeAttribute('src');
     video.load();
-
     updateNavigationButtons();
   };
-
   updateEnvironmentNote();
   updateNavigationButtons();
 })();
