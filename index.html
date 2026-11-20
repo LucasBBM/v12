@@ -1,2369 +1,2433 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#08080b">
-<title>App — Editor de vídeos</title>
-<style>
-:root{
-  color-scheme:dark;
-  --bg:#08080b;
-  --panel:#17171e;
-  --panel2:#22222c;
-  --muted:#a6a6b2;
-  --line:#343440;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:#f7f7fa;
-  font:16px system-ui,-apple-system,Segoe UI,sans-serif;
-  min-height:100vh;
-}
-button,input{font:inherit}
-button{
-  border:0;
-  color:#fff;
-  background:#292934;
-  border-radius:14px;
-  padding:13px 17px;
-  cursor:pointer;
-  font-weight:600;
-}
-button:disabled{opacity:.4;cursor:not-allowed}
-button.primary{background:#f2f2f5;color:#101014}
-button.ghost{background:transparent;border:1px solid var(--line)}
-button.wide{width:100%}
-header{
-  height:64px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:0 16px;
-  border-bottom:1px solid #202029;
-  position:sticky;
-  top:0;
-  background:#08080bf2;
-  z-index:5;
-}
-.back{font-size:28px;background:transparent;padding:3px 8px}
-.brand{font-weight:750;letter-spacing:.3px}
-.step{margin-left:auto;color:var(--muted);font-size:13px}
-.step{display:none!important}
-main{max-width:760px;margin:auto;padding:20px 16px 44px}
-.screen{display:none}
-.screen.active{display:block}
-h1{font-size:24px;margin:6px 0 8px}
-p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
-.drop{
-  border:1.5px dashed #555565;
-  border-radius:20px;
-  padding:34px 18px;
-  text-align:center;
-  background:#111117;
-}
-.drop .symbol{font-size:38px;margin-bottom:10px}
-.drop p{color:var(--muted);margin:8px 0 18px}
-.filelist{margin:18px 0;display:grid;gap:8px}
-.file{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:var(--panel);
-  padding:12px;
-  border-radius:12px;
-}
-.file small{color:var(--muted);display:block}
-.file .num{color:var(--muted);font-size:13px}
-.file .fname{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  flex:1;
-  min-width:0;
-}
-.file .remove-file{
-  flex:0 0 34px;
-  width:34px;
-  height:34px;
-  padding:0;
-  border-radius:50%;
-  background:#30303a;
-  color:#fff;
-  font-size:22px;
-  line-height:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.player-wrap{
-  background:#000;
-  border:1px solid #282832;
-  border-radius:16px;
-  overflow:hidden;
-  position:relative;
-  min-height:220px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-canvas{
-  display:block;
-  width:100%;
-  max-height:58vh;
-  aspect-ratio:16/9;
-  object-fit:contain;
-  touch-action:none;
-}
-.overlay{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-}
-.marker{
-  position:absolute;
-  width:64px;
-  height:64px;
-  border:3px solid white;
-  border-radius:50%;
-  background:#ffffff22;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:700;
-  text-shadow:0 1px 4px #000;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-  box-shadow:0 0 0 2px #0005;
-}
-.countdown{
-  position:absolute;
-  font-size:64px;
-  font-weight:800;
-  text-shadow:0 2px 16px #000;
-  pointer-events:none;
-}
-.controls{display:flex;gap:10px;margin:14px 0}
-.controls>*{flex:1}
-.video-nav{margin-top:10px}
-.return-import{margin-top:10px}
-.timeline{
-  background:var(--panel);
-  padding:14px;
-  border-radius:14px;
-  margin:14px 0;
-}
-.timeline-top{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:13px;
-  margin-bottom:9px;
-}
-input[type=range]{width:100%;accent-color:#fff}
-.note{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
-  margin:12px 2px;
-}
-.instruction{
-  padding:24px;
-  background:var(--panel);
-  border-radius:18px;
-  line-height:1.65;
-  font-size:18px;
-  margin:30px 0;
-}
-.dial{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:18px auto;
-  width:190px;
-  height:190px;
-  border:10px solid #777783;
-  border-radius:50%;
-  position:relative;
-  background:#0b0b10;
-  touch-action:none;
-  cursor:grab;
-  user-select:none;
-  -webkit-user-select:none;
-}
-.dial:active{cursor:grabbing}
-.dial-knob{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:0 1px 8px #0008;
-  transform:translate(-50%,-50%) rotate(var(--dial-angle,0deg)) translateY(-85px);
-  pointer-events:none;
-  z-index:2;
-}
-.dial span{font-size:42px}
-.status{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:12px;
-  min-height:20px;
-  line-height:1.5;
-}
-.progress{
-  height:7px;
-  background:#292934;
-  border-radius:10px;
-  overflow:hidden;
-  margin:14px 0;
-}
-.progress>div{
-  height:100%;
-  width:0;
-  background:#eee;
-  transition:width .15s;
-}
-.export-info{
-  background:var(--panel);
-  padding:16px;
-  border-radius:14px;
-  line-height:1.5;
-  color:var(--muted);
-  font-size:14px;
-  margin:16px 0;
-}
-.export-info p{margin:0 0 10px}
-.export-info p:last-child{margin-bottom:0}
-a.button{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  text-decoration:none;
-  border-radius:14px;
-  padding:13px 17px;
-  margin:10px 0;
-  font-weight:600;
-}
-a.button.primary{background:#f2f2f5;color:#101014}
-a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
-.hidden{display:none!important}
-@media(min-width:650px){
-  main{padding-top:28px}
-  .player-wrap{min-height:350px}
-  canvas{max-height:62vh}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor de vídeos de jiu-jitsu</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111318;
+      --panel: #1b1e26;
+      --panel-light: #242832;
+      --text: #f5f6f8;
+      --muted: #aab0bc;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger: #b42332;
+      --danger-hover: #921c29;
+      --border: #343a46;
+      --success: #70d398;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #343a46;
+    }
+
+    button.secondary:hover:not(:disabled) {
+      background: #454c59;
+    }
+
+    button.delete-video {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      background: var(--danger);
+    }
+
+    button.delete-video:hover:not(:disabled) {
+      background: var(--danger-hover);
+    }
+
+    .app-shell {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .app-header {
+      padding: 8px 2px 18px;
+    }
+
+    .app-header h1 {
+      margin: 0;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+    }
+
+    .app-header p {
+      margin: 7px 0 0;
+      color: var(--muted);
+    }
+
+    .screen {
+      display: none;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+    }
+
+    .screen-description {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .file-picker-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 16px 0;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .video-list {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .video-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel-light);
+      overflow-wrap: anywhere;
+    }
+
+    .video-list .empty-list {
+      color: var(--muted);
+    }
+
+    .video-info {
+      margin: 10px 0 14px;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .video-frame {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 180px;
+      margin: 14px 0;
+      border-radius: 14px;
+      background: #050505;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      max-height: 68vh;
+      height: auto;
+      background: #050505;
+      object-fit: contain;
+      touch-action: none;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) 56px;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--panel-light);
+    }
+
+    .time-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #7da7ff;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .button-row.single {
+      grid-template-columns: 1fr;
+    }
+
+    .rotation-control {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--panel-light);
+    }
+
+    .rotation-control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .rotation-presets {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .status {
+      min-height: 1.5em;
+      margin: 13px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .countdown-overlay {
+      position: fixed;
+      z-index: 20;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgb(0 0 0 / 45%);
+      pointer-events: none;
+    }
+
+    .countdown-overlay[hidden] {
+      display: none;
+    }
+
+    .countdown-number {
+      display: grid;
+      place-items: center;
+      width: 130px;
+      height: 130px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: rgb(15 18 24 / 85%);
+      font-size: 4rem;
+      font-weight: 800;
+      box-shadow: 0 8px 35px rgb(0 0 0 / 40%);
+    }
+
+    .preview-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .export-box {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel-light);
+    }
+
+    .export-box progress {
+      width: 100%;
+      height: 12px;
+      margin-top: 8px;
+      accent-color: var(--primary);
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #16794b;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .download-link:hover {
+      background: #12633d;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .hidden-video {
+      position: fixed;
+      left: -20px;
+      bottom: 0;
+      width: 2px;
+      height: 2px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 560px) {
+      .app-shell {
+        padding: 10px;
+      }
+
+      .screen {
+        padding: 14px;
+        border-radius: 14px;
+      }
+
+      .button-row {
+        grid-template-columns: 1fr;
+      }
+
+      .video-frame {
+        min-height: 140px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <button id="backBtn" class="back hidden" aria-label="Voltar">‹</button>
-  <div class="brand">App</div>
-  <div class="step" id="stepLabel" aria-hidden="true"></div>
-</header>
-<main>
-  <section id="importScreen" class="screen active">
-    <h1>Importar vídeos</h1>
-    <div class="drop">
-      <div class="symbol">＋</div>
-      <strong>Escolha vídeos do dispositivo</strong>
-      <p>Você pode selecionar vários arquivos de uma vez.</p>
-      <button class="primary" id="pickBtn">Selecionar vídeos</button>
-      <input id="fileInput" type="file" accept="video/*" multiple class="hidden">
-    </div>
-    <div id="fileList" class="filelist"></div>
-    <button id="startBtn" class="primary wide" disabled>Começar</button>
-  </section>
-  <section id="centerScreen" class="screen">
-    <h1>Posicionamento do enquadramento</h1>
-    <div class="player-wrap" id="centerWrap">
-      <canvas id="centerCanvas"></canvas>
-      <div class="overlay">
-        <div id="centerMarker" class="marker">Centro</div>
-        <div id="centerCount" class="countdown"></div>
-      </div>
-    </div>
-    <div class="timeline">
-      <div class="timeline-top">
-        <span id="centerTime">00:00</span>
-        <span id="centerDuration">00:00</span>
-      </div>
-      <input id="centerSeek" type="range" min="0" max="1000" value="0">
-    </div>
-    <div class="controls">
-      <button id="centerPlay">▶ Reproduzir</button>
-      <button id="centerRestart">↻ Reiniciar ajustes</button>
-    </div>
-    <div class="controls video-nav">
-      <button id="centerPrev" class="ghost">← Vídeo anterior</button>
-      <button id="centerNext" class="ghost">Próximo vídeo →</button>
-    </div>
-    <button id="centerImport" class="ghost wide return-import">
-      Voltar à importação
-    </button>
-    <div id="centerStatus" class="status" role="status"></div>
-    <p class="note">
-      Arraste o marcador até o ponto que deseja manter no centro. Os ajustes
-      são registrados ao longo do vídeo.
-    </p>
-  </section>
-  <section id="instructionScreen" class="screen">
-    <h1>Orientação para rotação</h1>
-    <div class="instruction">
-      Em cada vídeo, mantenha a linha dos ombros do lutador desejado alinhada
-      com a horizontal, com o ombro direito à direita e o ombro esquerdo à
-      esquerda.
-    </div>
-    <button id="instructionContinue" class="primary wide">Continuar</button>
-  </section>
-  <section id="rotateScreen" class="screen">
-    <h1>Rotação dos vídeos</h1>
-    <div class="player-wrap">
-      <canvas id="rotateCanvas"></canvas>
-      <div id="rotateCount" class="countdown"></div>
-    </div>
-    <div
-      class="dial"
-      id="rotateDial"
-      role="slider"
-      aria-label="Controle circular de rotação"
-      aria-valuemin="-180"
-      aria-valuemax="180"
-      aria-valuenow="0"
-      tabindex="0"
-    >
-      <span id="angleReadout">0°</span>
-      <i class="dial-knob" id="dialKnob"></i>
-    </div>
-    <div id="rotateLoadStatus" class="status" role="status"></div>
-    <div class="timeline">
-      <div class="timeline-top">
-        <span id="rotateTime">00:00</span>
-        <span id="rotateDuration">00:00</span>
-      </div>
-      <input id="rotateSeek" type="range" min="0" max="1000" value="0">
-    </div>
-    <div class="controls">
-      <button id="rotatePlay">▶ Reproduzir</button>
-      <button id="rotateRestart">↻ Reiniciar ajustes</button>
-    </div>
-    <div class="controls video-nav">
-      <button id="rotatePrev" class="ghost">← Vídeo anterior</button>
-      <button id="rotateNext" class="ghost">Próximo vídeo →</button>
-    </div>
-    <button id="rotateImport" class="ghost wide return-import">
-      Voltar à importação
-    </button>
-    <div id="rotateStatus" class="status" role="status"></div>
-    <p class="note">
-      Gire o controle para alinhar os ombros. Os ajustes deste vídeo são
-      independentes dos ajustes dos outros vídeos.
-    </p>
-  </section>
-  <section id="previewScreen" class="screen">
-    <h1>Pré-visualização final</h1>
-    <div class="player-wrap">
-      <canvas id="previewCanvas"></canvas>
-    </div>
-    <div class="timeline">
-      <div class="timeline-top">
-        <span id="previewTime">Pronto para reproduzir</span>
-        <span id="previewDuration">Compilação</span>
-      </div>
-      <div class="progress">
-        <div id="exportProgress"></div>
-      </div>
-    </div>
-    <div class="controls">
-      <button id="previewPlay">▶ Reproduzir compilação</button>
-      <button id="exportBtn" class="primary">Exportar</button>
-    </div>
-    <button id="shareBtn" class="primary wide hidden">
-      Compartilhar/salvar no dispositivo
-    </button>
-    <a id="downloadLink" class="button ghost wide hidden" href="#" download>
-      Baixar vídeo
-    </a>
-    <div id="exportStatus" class="status" role="status"></div>
-    <div class="export-info">
-      <p>
-        O app tenta usar MP4 quando o navegador realmente oferece esse formato.
-        Caso contrário, usa WebM. Não é feita uma conversão artificial da
-        extensão.
-      </p>
-      <p>
-        Em celulares, a exportação usa resolução e tamanho limitados para
-        reduzir o risco de falta de memória. Quando disponível, o app grava
-        diretamente em um arquivo ou armazenamento temporário do navegador.
-      </p>
-      <p id="environmentNote"></p>
-      <p>
-        Depois de exportar, toque em “Compartilhar/salvar no dispositivo” ou
-        “Baixar vídeo”. O arquivo ainda não está na Galeria até você salvá-lo
-        usando uma das opções oferecidas pelo Android.
-      </p>
-    </div>
-    <button class="ghost wide" id="startOver">Começar novamente</button>
-  </section>
-</main>
-<video
-  id="sourceVideo"
-  playsinline
-  muted
-  preload="auto"
-  style="position:fixed;width:2px;height:2px;left:-10px;top:-10px;opacity:.01;pointer-events:none"
-  aria-hidden="true"
-></video>
-<script>
-(()=>{
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const screens = [
-    'importScreen',
-    'centerScreen',
-    'instructionScreen',
-    'rotateScreen',
-    'previewScreen'
-  ];
-  const EXPORT_FPS = 30;
-  const MOBILE_MAX_DIMENSION = 854;
-  const DESKTOP_MAX_DIMENSION = 1280;
-  const MOBILE_VIDEO_BITRATE = 700000;
-  const DESKTOP_VIDEO_BITRATE = 1800000;
-  const AUDIO_BITRATE = 64000;
-  /*
-    MP4 é tentado primeiro. O app só usa um MIME informado pelo próprio
-    MediaRecorder e nunca apenas troca a extensão de um arquivo WebM.
-  */
-  const MIME_PROFILES = [
-    {mime:'video/mp4;codecs=avc1.42E01E,mp4a.40.2',extension:'mp4',audio:true},
-    {mime:'video/mp4',extension:'mp4',audio:true},
-    {mime:'video/mp4;codecs=avc1.42E01E',extension:'mp4',audio:false},
-    {mime:'video/mp4',extension:'mp4',audio:false},
-    {mime:'video/webm;codecs=vp8,opus',extension:'webm',audio:true},
-    {mime:'video/webm;codecs=vp9,opus',extension:'webm',audio:true},
-    {mime:'video/webm',extension:'webm',audio:true},
-    {mime:'video/webm;codecs=vp8',extension:'webm',audio:false},
-    {mime:'video/webm;codecs=vp9',extension:'webm',audio:false},
-    {mime:'video/webm',extension:'webm',audio:false}
-  ];
-  let files = [];
-  let urls = [];
-  let centerData = [];
-  let rotateData = [];
-  let stageIndex = 0;
-  let mode = 'center';
-  let playing = false;
-  let raf = 0;
-  let dragging = false;
-  let loadingVideo = false;
-  let loadToken = 0;
-  let countdownTimer = null;
-  let countdownResolve = null;
-  let countdownToken = 0;
-  let previewRunning = false;
-  let previewRaf = 0;
-  let previewStopResolver = null;
-  let exportBusy = false;
-  let outputObjectUrl = '';
-  let outputFile = null;
-  let outputOpfsEntry = null;
-  let exportAudioContext = null;
-  let exportAudioSource = null;
-  let exportAudioDestination = null;
-  const video = $('sourceVideo');
-  const centerCanvas = $('centerCanvas');
-  const rotateCanvas = $('rotateCanvas');
-  const previewCanvas = $('previewCanvas');
-  const cctx = centerCanvas.getContext('2d');
-  const rctx = rotateCanvas.getContext('2d');
-  const pctx = previewCanvas.getContext('2d');
-  const fmt = time => {
-    if (!Number.isFinite(time) || time < 0) return '00:00';
-    const seconds = Math.floor(time);
-    const minutes = Math.floor(seconds / 60);
-    const remainder = seconds % 60;
-    return String(minutes).padStart(2, '0') + ':' +
-      String(remainder).padStart(2, '0');
-  };
-  function formatBytes(bytes) {
-    if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) {
-      return (bytes / 1024).toFixed(1) + ' KB';
+  <div class="app-shell">
+    <header class="app-header">
+      <h1>Editor de vídeos de jiu-jitsu</h1>
+      <p>Posicione, gire e prepare seus vídeos para a pré-visualização.</p>
+    </header>
+
+    <main>
+      <section id="importScreen" class="screen active">
+        <h2>Importar vídeos</h2>
+        <p class="screen-description">
+          Selecione um ou mais vídeos. Você poderá ajustar a posição e a rotação
+          de cada um separadamente.
+        </p>
+
+        <div class="file-picker-row">
+          <button id="chooseFilesButton" type="button">Selecionar vídeos</button>
+          <input
+            id="fileInput"
+            class="visually-hidden"
+            type="file"
+            accept="video/*"
+            multiple
+          >
+          <span id="selectedCount" class="status">Nenhum vídeo selecionado.</span>
+        </div>
+
+        <ul id="videoList" class="video-list">
+          <li class="empty-list">Os vídeos selecionados aparecerão aqui.</li>
+        </ul>
+
+        <button id="startEditingButton" type="button" disabled>
+          Começar ajustes de posição
+        </button>
+        <p id="importStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section id="centerScreen" class="screen">
+        <h2>Etapa 1 — Ajustar posição</h2>
+        <p class="screen-description">
+          Arraste a imagem para ajustar sua posição. Os ajustes são guardados
+          separadamente para cada vídeo.
+        </p>
+
+        <div id="centerVideoInfo" class="video-info"></div>
+        <div class="video-frame">
+          <canvas id="centerCanvas" width="640" height="360"></canvas>
+        </div>
+
+        <div class="timeline">
+          <span id="centerTimeLabel" class="time-label">00:00</span>
+          <input id="centerTimeline" type="range" min="0" max="0.01" step="0.01" value="0">
+          <span id="centerDurationLabel" class="time-label">00:00</span>
+        </div>
+
+        <div class="button-row">
+          <button id="centerPlayButton" type="button">▶ Reproduzir</button>
+          <button id="centerResetButton" class="secondary" type="button">
+            ↻ Reiniciar ajustes
+          </button>
+        </div>
+
+        <div class="button-row">
+          <button id="centerPrevButton" class="secondary" type="button">
+            ← Vídeo anterior
+          </button>
+          <button id="centerNextButton" class="secondary" type="button">
+            Próximo vídeo →
+          </button>
+        </div>
+
+        <div class="button-row">
+          <button id="centerReturnButton" class="secondary" type="button">
+            Voltar à importação
+          </button>
+          <button id="toRotationButton" type="button">
+            Etapa de rotação →
+          </button>
+        </div>
+
+        <button id="centerDeleteButton" class="delete-video" type="button">
+          Excluir vídeo
+        </button>
+        <p id="centerStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section id="rotateScreen" class="screen">
+        <h2>Etapa 2 — Ajustar rotação</h2>
+        <p class="screen-description">
+          Ajuste o ângulo do vídeo. Os ajustes de posição feitos na etapa
+          anterior serão mantidos.
+        </p>
+
+        <div id="rotateVideoInfo" class="video-info"></div>
+        <div class="video-frame">
+          <canvas id="rotateCanvas" width="640" height="360"></canvas>
+        </div>
+
+        <div class="timeline">
+          <span id="rotateTimeLabel" class="time-label">00:00</span>
+          <input id="rotateTimeline" type="range" min="0" max="0.01" step="0.01" value="0">
+          <span id="rotateDurationLabel" class="time-label">00:00</span>
+        </div>
+
+        <div class="rotation-control">
+          <label for="rotateRange">
+            <span>Rotação</span>
+            <span id="rotateValue">0°</span>
+          </label>
+          <input id="rotateRange" type="range" min="-180" max="180" step="1" value="0">
+          <div class="rotation-presets">
+            <button class="secondary" type="button" data-rotation="-90">−90°</button>
+            <button class="secondary" type="button" data-rotation="0">0°</button>
+            <button class="secondary" type="button" data-rotation="90">+90°</button>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="rotatePlayButton" type="button">▶ Reproduzir</button>
+          <button id="rotateResetButton" class="secondary" type="button">
+            ↻ Reiniciar ajustes
+          </button>
+        </div>
+
+        <div class="button-row">
+          <button id="rotatePrevButton" class="secondary" type="button">
+            ← Vídeo anterior
+          </button>
+          <button id="rotateNextButton" class="secondary" type="button">
+            Próximo vídeo →
+          </button>
+        </div>
+
+        <div class="button-row">
+          <button id="rotateReturnButton" class="secondary" type="button">
+            Voltar à importação
+          </button>
+          <button id="toPreviewButton" type="button">
+            Pré-visualização final →
+          </button>
+        </div>
+
+        <button id="rotateDeleteButton" class="delete-video" type="button">
+          Excluir vídeo
+        </button>
+        <p id="rotateStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section id="previewScreen" class="screen">
+        <h2>Pré-visualização final</h2>
+        <p class="screen-description">
+          Cada vídeo aparece primeiro com os ajustes e, em seguida, espelhado
+          horizontalmente.
+        </p>
+
+        <div class="video-frame">
+          <canvas id="previewCanvas" width="640" height="360"></canvas>
+        </div>
+
+        <div class="timeline">
+          <span id="previewTimeLabel" class="time-label">00:00</span>
+          <input id="previewTimeline" type="range" min="0" max="0.01" step="0.01" value="0">
+          <span id="previewDurationLabel" class="time-label">00:00</span>
+        </div>
+
+        <div class="preview-meta">
+          <span id="previewSegmentLabel">Pré-visualização</span>
+        </div>
+
+        <div class="button-row">
+          <button id="previewPlayButton" type="button">▶ Reproduzir</button>
+          <button id="previewResetButton" class="secondary" type="button">
+            ↻ Reiniciar pré-visualização
+          </button>
+        </div>
+
+        <div class="button-row">
+          <button id="exportButton" type="button">Exportar vídeo</button>
+          <button id="backToRotationButton" class="secondary" type="button">
+            Voltar aos ajustes de rotação
+          </button>
+        </div>
+
+        <div class="export-box">
+          <p id="exportStatus" class="status" aria-live="polite">
+            A exportação ainda não foi iniciada.
+          </p>
+          <progress id="exportProgress" max="100" value="0"></progress>
+          <a
+            id="downloadLink"
+            class="download-link"
+            href="#"
+            download
+            hidden
+          >Baixar vídeo exportado</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="countdownOverlay" class="countdown-overlay" hidden>
+    <div id="countdownNumber" class="countdown-number">3</div>
+  </div>
+
+  <video id="editorVideo" class="hidden-video" playsinline webkit-playsinline></video>
+  <video id="renderVideo" class="hidden-video" playsinline webkit-playsinline></video>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    let clips = [];
+    let stageIndex = 0;
+    let currentStage = "position";
+    let activeScreen = "importScreen";
+    let editorLoadToken = 0;
+
+    let countdownTimer = null;
+    let countdownCancelResolve = null;
+    let countdownGeneration = 0;
+
+    let previewTimeline = [];
+    let previewTotalDuration = 0;
+    let previewGlobalTime = 0;
+    let previewSegmentIndex = -1;
+    let previewMirror = false;
+    let previewPlaying = false;
+    let previewPlayToken = 0;
+    let previewSeekToken = 0;
+    let previewPreparationToken = 0;
+    let loadedRenderClipId = null;
+
+    let exportInProgress = false;
+    let downloadObjectUrl = null;
+
+    let audioContext = null;
+    let renderMediaSource = null;
+    let audioMonitorGain = null;
+    let audioRecordGain = null;
+    let audioRecordDestination = null;
+
+    const editorVideo = $("editorVideo");
+    const renderVideo = $("renderVideo");
+
+    function isMobileDevice() {
+      return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform));
     }
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  }
-  function isMobileDevice() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-  }
-  function show(id, label, back = true) {
-    screens.forEach(screenId => {
-      $(screenId).classList.toggle('active', screenId === id);
-    });
-    $('stepLabel').textContent = label;
-    $('backBtn').classList.toggle('hidden', !back);
-  }
-  function getCappedDimensions(width, height, maxDimension) {
-    if (!width || !height) {
-      return {width:640,height:360};
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
     }
-    const scale = Math.min(
-      1,
-      maxDimension / Math.max(width, height)
-    );
-    const even = value => Math.max(2, Math.floor(value / 2) * 2);
-    return {
-      width:even(width * scale),
-      height:even(height * scale)
-    };
-  }
-  function dims(canvas) {
-    const size = getCappedDimensions(
-      video.videoWidth || 640,
-      video.videoHeight || 360,
-      DESKTOP_MAX_DIMENSION
-    );
-    canvas.width = size.width;
-    canvas.height = size.height;
-    canvas.style.aspectRatio = size.width + '/' + size.height;
-  }
-  function addKey(array, time, value) {
-    if (!array) return;
-    const existing = array.findIndex(key => Math.abs(key.t - time) < 0.025);
-    if (existing >= 0) {
-      array[existing].v = value;
-    } else {
-      array.push({t:time,v:value});
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+      const whole = Math.floor(seconds);
+      const minutes = Math.floor(whole / 60);
+      const remaining = whole % 60;
+      return String(minutes).padStart(2, "0") + ":" +
+        String(remaining).padStart(2, "0");
     }
-    array.sort((a, b) => a.t - b.t);
-  }
-  function valueAt(array, time, fallback) {
-    if (!array || !array.length) return fallback;
-    if (time <= array[0].t) return array[0].v;
-    if (time >= array[array.length - 1].t) {
-      return array[array.length - 1].v;
+
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes < 0) return "tamanho desconhecido";
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
     }
-    for (let index = 1; index < array.length; index++) {
-      if (time <= array[index].t) {
-        const first = array[index - 1];
-        const second = array[index];
-        const portion = (time - first.t) / (second.t - first.t);
-        if (
-          typeof first.v === 'number' &&
-          typeof second.v === 'number'
-        ) {
-          return first.v + (second.v - first.v) * portion;
-        }
-        return {
-          x:first.v.x + (second.v.x - first.v.x) * portion,
-          y:first.v.y + (second.v.y - first.v.y) * portion
-        };
+
+    function makeId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
       }
+      return "clip-" + Date.now() + "-" + Math.random().toString(16).slice(2);
     }
-    return fallback;
-  }
-  function drawFit(ctx, canvas, angle = 0, point = null) {
-    if (!video.videoWidth) return;
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.clearRect(0, 0, width, height);
-    ctx.save();
-    ctx.translate(width / 2, height / 2);
-    ctx.rotate(angle * Math.PI / 180);
-    if (point) {
-      ctx.translate(
-        (0.5 - point.x) * width,
-        (0.5 - point.y) * height
-      );
-    }
-    ctx.drawImage(video, -width / 2, -height / 2, width, height);
-    ctx.restore();
-  }
-  function drawAdjustedFrame(ctx, canvas, point, angle, mirrored = false) {
-    if (!video.videoWidth) return;
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, width, height);
-    ctx.save();
-    ctx.translate(width / 2, height / 2);
-    if (mirrored) {
-      ctx.scale(-1, 1);
-    }
-    ctx.rotate(angle * Math.PI / 180);
-    ctx.translate(
-      (0.5 - point.x) * width,
-      (0.5 - point.y) * height
-    );
-    ctx.drawImage(video, -width / 2, -height / 2, width, height);
-    ctx.restore();
-  }
-  function markerPos(point) {
-    $('centerMarker').style.left = (point.x * 100) + '%';
-    $('centerMarker').style.top = (point.y * 100) + '%';
-  }
-  function stopPlayback() {
-    playing = false;
-    if (raf) {
-      cancelAnimationFrame(raf);
-    }
-    raf = 0;
-    video.pause();
-    $('centerPlay').textContent = '▶ Reproduzir';
-    $('rotatePlay').textContent = '▶ Reproduzir';
-  }
-  function cancelCountdown() {
-    countdownToken++;
-    if (countdownTimer !== null) {
-      clearInterval(countdownTimer);
-      countdownTimer = null;
-    }
-    const resolve = countdownResolve;
-    countdownResolve = null;
-    if (resolve) resolve();
-    $('centerCount').textContent = '';
-    $('rotateCount').textContent = '';
-  }
-  function stopPreviewPlayback() {
-    previewRunning = false;
-    if (previewRaf) {
-      cancelAnimationFrame(previewRaf);
-    }
-    previewRaf = 0;
-    video.pause();
-    const resolve = previewStopResolver;
-    previewStopResolver = null;
-    if (resolve) resolve();
-    $('previewPlay').textContent = '▶ Reproduzir compilação';
-  }
-  async function removeOpfsEntry(entry) {
-    if (!entry || !entry.directory || !entry.name) return;
-    try {
-      await entry.directory.removeEntry(entry.name);
-    } catch (_) {}
-  }
-  function clearExportResult() {
-    if (outputObjectUrl) {
-      URL.revokeObjectURL(outputObjectUrl);
-      outputObjectUrl = '';
-    }
-    const oldEntry = outputOpfsEntry;
-    outputOpfsEntry = null;
-    outputFile = null;
-    if (oldEntry) {
-      removeOpfsEntry(oldEntry);
-    }
-    $('downloadLink').removeAttribute('href');
-    $('downloadLink').classList.add('hidden');
-    $('shareBtn').classList.add('hidden');
-  }
-  function clearAllEdits() {
-    centerData = [];
-    rotateData = [];
-  }
-  function returnToImport() {
-    if (exportBusy) return;
-    loadToken++;
-    loadingVideo = false;
-    cancelCountdown();
-    stopPreviewPlayback();
-    stopPlayback();
-    clearAllEdits();
-    clearExportResult();
-    stageIndex = 0;
-    mode = 'center';
-    video.muted = true;
-    $('centerStatus').textContent = '';
-    $('rotateStatus').textContent = '';
-    $('rotateLoadStatus').textContent = '';
-    show('importScreen', 'Importação', false);
-    updateNavigationButtons();
-    $('startBtn').disabled = !files.length;
-  }
-  function updateNavigationButtons() {
-    const noFiles = files.length === 0;
-    const atFirst = stageIndex <= 0;
-    const atLast = files.length === 0 || stageIndex >= files.length - 1;
-    $('centerPrev').disabled = loadingVideo || noFiles || atFirst;
-    $('rotatePrev').disabled = loadingVideo || noFiles || atFirst;
-    $('centerNext').disabled = loadingVideo || noFiles;
-    $('rotateNext').disabled = loadingVideo || noFiles;
-    $('centerRestart').disabled = loadingVideo || noFiles;
-    $('rotateRestart').disabled = loadingVideo || noFiles;
-    $('centerPlay').disabled = loadingVideo || noFiles;
-    $('rotatePlay').disabled = loadingVideo || noFiles;
-    $('centerNext').textContent = atLast
-      ? 'Concluir enquadramento →'
-      : 'Próximo vídeo →';
-    $('rotateNext').textContent = atLast
-      ? 'Concluir rotação →'
-      : 'Próximo vídeo →';
-  }
-  function refreshCenterFrame() {
-    if (!video.videoWidth || !files.length) return;
-    const time = video.currentTime || 0;
-    const point = valueAt(
-      centerData[stageIndex],
-      time,
-      {x:0.5,y:0.5}
-    );
-    markerPos(point);
-    drawFit(cctx, centerCanvas);
-    $('centerTime').textContent = fmt(time);
-    $('centerSeek').value = video.duration
-      ? String(Math.round(time / video.duration * 1000))
-      : '0';
-  }
-  function refreshRotateFrame() {
-    if (!video.videoWidth || !files.length) return;
-    const time = video.currentTime || 0;
-    const angle = valueAt(rotateData[stageIndex], time, 0);
-    const point = valueAt(
-      centerData[stageIndex],
-      time,
-      {x:0.5,y:0.5}
-    );
-    drawFit(rctx, rotateCanvas, angle, point);
-    $('angleReadout').textContent = Math.round(angle) + '°';
-    $('rotateDial').style.setProperty('--dial-angle', angle + 'deg');
-    $('rotateDial').setAttribute(
-      'aria-valuenow',
-      String(Math.round(angle))
-    );
-    $('rotateTime').textContent = fmt(time);
-    $('rotateSeek').value = video.duration
-      ? String(Math.round(time / video.duration * 1000))
-      : '0';
-  }
-  function loop() {
-    if (!playing) return;
-    if (mode === 'center') refreshCenterFrame();
-    if (mode === 'rotate') refreshRotateFrame();
-    if (video.ended) {
-      stopPlayback();
-      return;
-    }
-    raf = requestAnimationFrame(loop);
-  }
-  video.addEventListener('ended', () => {
-    if (playing) stopPlayback();
-  });
-  async function waitForVideoReady() {
-    if (video.readyState >= 2 && video.videoWidth > 0) return;
-    await new Promise((resolve, reject) => {
-      let settled = false;
-      const finish = error => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        video.removeEventListener('loadeddata', onReady);
-        video.removeEventListener('canplay', onReady);
-        video.removeEventListener('error', onError);
-        error ? reject(error) : resolve();
+
+    function createClip(file) {
+      return {
+        id: makeId(),
+        file,
+        url: URL.createObjectURL(file),
+        duration: null,
+        width: null,
+        height: null,
+        positionKeys: [{ t: 0, x: 0.5, y: 0.5 }],
+        rotationKeys: [{ t: 0, a: 0 }]
       };
-      const onReady = () => {
-        if (video.readyState >= 2 && video.videoWidth > 0) {
-          finish();
-        }
-      };
-      const onError = () => {
-        finish(new Error(
-          'O navegador não conseguiu decodificar este vídeo. ' +
-          'Tente um MP4 H.264.'
-        ));
-      };
-      const timer = setTimeout(() => {
-        finish(new Error(
-          'O vídeo não ficou pronto a tempo. Tente novamente ou escolha outro arquivo.'
-        ));
-      }, 30000);
-      video.addEventListener('loadeddata', onReady);
-      video.addEventListener('canplay', onReady);
-      video.addEventListener('error', onError);
-      onReady();
-    });
-  }
-  function seekVideo(time) {
-    if (!video.videoWidth) return Promise.resolve();
-    if (
-      Math.abs(video.currentTime - time) < 0.025 &&
-      !video.seeking
-    ) {
-      return Promise.resolve();
     }
-    return new Promise((resolve, reject) => {
-      let settled = false;
-      const finish = error => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        video.removeEventListener('seeked', onSeeked);
-        video.removeEventListener('error', onError);
-        error ? reject(error) : resolve();
-      };
-      const onSeeked = () => finish();
-      const onError = () => {
-        finish(new Error('Não foi possível reposicionar o vídeo.'));
-      };
-      const timer = setTimeout(() => {
-        finish(new Error('O vídeo demorou demais para reposicionar.'));
-      }, 10000);
-      video.addEventListener('seeked', onSeeked);
-      video.addEventListener('error', onError);
-      try {
-        video.currentTime = time;
-      } catch (error) {
-        finish(error);
-      }
-    });
-  }
-  async function setVideoSource(index, resetTime = true) {
-    const target = urls[index];
-    if (!target) {
-      throw new Error(
-        'Vídeo não encontrado. Volte à importação e selecione os arquivos novamente.'
-      );
+
+    function resetClipEdits(clip) {
+      clip.positionKeys = [{ t: 0, x: 0.5, y: 0.5 }];
+      clip.rotationKeys = [{ t: 0, a: 0 }];
     }
-    video.pause();
-    video.preload = 'auto';
-    if (video.src !== target) {
-      video.src = target;
-      video.load();
+
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach((screen) => {
+        screen.classList.toggle("active", screen.id === id);
+      });
+      activeScreen = id;
     }
-    await waitForVideoReady();
-    if (resetTime) {
-      await seekVideo(0);
+
+    function statusElementForStage(stage = currentStage) {
+      return stage === "position" ? $("centerStatus") : $("rotateStatus");
     }
-  }
-  async function loadAt(index, kind) {
-    if (index < 0 || index >= files.length || loadingVideo) {
-      return false;
-    }
-    const token = ++loadToken;
-    loadingVideo = true;
-    cancelCountdown();
-    stopPlayback();
-    stageIndex = index;
-    mode = kind;
-    updateNavigationButtons();
-    try {
-      await setVideoSource(index, true);
-      if (token !== loadToken) return false;
-      if (kind === 'center') {
-        dims(centerCanvas);
-        if (!centerData[index]) {
-          centerData[index] = [
-            {t:0,v:{x:0.5,y:0.5}}
-          ];
-        }
-        $('centerDuration').textContent = fmt(video.duration);
-        $('centerTime').textContent = '00:00';
-        $('centerSeek').value = '0';
-        $('centerStatus').textContent = '';
-        const point = valueAt(
-          centerData[index],
-          0,
-          {x:0.5,y:0.5}
-        );
-        markerPos(point);
-        drawFit(cctx, centerCanvas);
+
+    function updateImportList() {
+      const list = $("videoList");
+      list.replaceChildren();
+
+      if (clips.length === 0) {
+        const empty = document.createElement("li");
+        empty.className = "empty-list";
+        empty.textContent = "Os vídeos selecionados aparecerão aqui.";
+        list.appendChild(empty);
+        $("selectedCount").textContent = "Nenhum vídeo selecionado.";
       } else {
-        dims(rotateCanvas);
-        if (!rotateData[index]) {
-          rotateData[index] = [{t:0,v:0}];
-        }
-        $('rotateDuration').textContent = fmt(video.duration);
-        $('rotateTime').textContent = '00:00';
-        $('rotateSeek').value = '0';
-        $('rotateStatus').textContent = '';
-        const angle = valueAt(rotateData[index], 0, 0);
-        const point = valueAt(
-          centerData[index],
-          0,
-          {x:0.5,y:0.5}
-        );
-        $('rotateDial').style.setProperty('--dial-angle', angle + 'deg');
-        $('rotateDial').setAttribute(
-          'aria-valuenow',
-          String(Math.round(angle))
-        );
-        $('angleReadout').textContent = Math.round(angle) + '°';
-        drawFit(rctx, rotateCanvas, angle, point);
+        clips.forEach((clip, index) => {
+          const item = document.createElement("li");
+          const name = document.createElement("span");
+          const details = document.createElement("span");
+
+          name.textContent = (index + 1) + ". " + clip.file.name;
+          details.textContent = clip.duration
+            ? formatTime(clip.duration)
+            : "";
+
+          item.append(name, details);
+          list.appendChild(item);
+        });
+
+        $("selectedCount").textContent =
+          clips.length + (clips.length === 1
+            ? " vídeo selecionado."
+            : " vídeos selecionados.");
       }
-      return true;
-    } finally {
-      if (token === loadToken) {
-        loadingVideo = false;
-        updateNavigationButtons();
+
+      $("startEditingButton").disabled = clips.length === 0;
+    }
+
+    function addSelectedFiles(fileList) {
+      const incoming = Array.from(fileList || []);
+      let added = 0;
+
+      for (const file of incoming) {
+        const looksLikeVideo = file.type.startsWith("video/") ||
+          /\.(mp4|mov|webm|m4v|mkv|avi|3gp|mpeg|mpg)$/i.test(file.name);
+
+        if (!looksLikeVideo) continue;
+
+        const duplicate = clips.some((clip) =>
+          clip.file.name === file.name &&
+          clip.file.size === file.size &&
+          clip.file.lastModified === file.lastModified
+        );
+
+        if (duplicate) continue;
+
+        clips.push(createClip(file));
+        added++;
+      }
+
+      updateImportList();
+
+      if (added > 0) {
+        $("importStatus").textContent =
+          added + (added === 1
+            ? " vídeo adicionado."
+            : " vídeos adicionados.");
+      } else if (incoming.length > 0) {
+        $("importStatus").textContent =
+          "Nenhum vídeo novo foi adicionado. Verifique o formato ou se os vídeos já estavam na lista.";
       }
     }
-  }
-  async function countdownAndPlay(kind) {
-    cancelCountdown();
-    const token = countdownToken;
-    stopPlayback();
-    mode = kind;
-    try {
-      await seekVideo(0);
-    } catch (_) {}
-    if (token !== countdownToken) return;
-    const element = $(
-      kind === 'center' ? 'centerCount' : 'rotateCount'
-    );
-    let number = 3;
-    element.textContent = String(number);
-    await new Promise(resolve => {
-      countdownResolve = resolve;
-      countdownTimer = setInterval(() => {
-        if (token !== countdownToken) {
-          clearInterval(countdownTimer);
-          countdownTimer = null;
-          countdownResolve = null;
+
+    function getCanvasDimensions(clip, maxDimension = null) {
+      const limit = maxDimension ||
+        (isMobileDevice() ? 854 : 1280);
+      const sourceWidth = clip && clip.width ? clip.width : 16;
+      const sourceHeight = clip && clip.height ? clip.height : 9;
+      const scale = Math.min(1, limit / Math.max(sourceWidth, sourceHeight));
+
+      let width = Math.max(2, Math.round(sourceWidth * scale));
+      let height = Math.max(2, Math.round(sourceHeight * scale));
+
+      width -= width % 2;
+      height -= height % 2;
+
+      return { width: Math.max(2, width), height: Math.max(2, height) };
+    }
+
+    function setCanvasDimensions(canvas, clip) {
+      const size = getCanvasDimensions(clip);
+      canvas.width = size.width;
+      canvas.height = size.height;
+    }
+
+    function waitForMetadata(video, timeoutMs = 15000) {
+      return new Promise((resolve, reject) => {
+        if (video.readyState >= 1 && video.videoWidth > 0 && video.videoHeight > 0) {
           resolve();
           return;
         }
-        number--;
-        if (number <= 0) {
-          clearInterval(countdownTimer);
-          countdownTimer = null;
-          countdownResolve = null;
-          element.textContent = '';
-          resolve();
-        } else {
-          element.textContent = String(number);
-        }
-      }, 1000);
-    });
-    if (token !== countdownToken) return;
-    const requiredScreen = kind === 'center'
-      ? 'centerScreen'
-      : 'rotateScreen';
-    if (!$(requiredScreen).classList.contains('active')) return;
-    try {
-      await video.play();
-      playing = true;
-      if (kind === 'center') {
-        $('centerPlay').textContent = 'Ⅱ Pausar';
-      } else {
-        $('rotatePlay').textContent = 'Ⅱ Pausar';
-      }
-      loop();
-    } catch (_) {
-      element.textContent = 'Toque em reproduzir';
+
+        let timer = null;
+
+        const cleanup = () => {
+          video.removeEventListener("loadedmetadata", onLoaded);
+          video.removeEventListener("error", onError);
+          if (timer) clearTimeout(timer);
+        };
+
+        const onLoaded = () => {
+          cleanup();
+          if (video.videoWidth > 0 && video.videoHeight > 0) {
+            resolve();
+          } else {
+            reject(new Error("O vídeo não informou suas dimensões."));
+          }
+        };
+
+        const onError = () => {
+          cleanup();
+          reject(new Error("O navegador não conseguiu decodificar este vídeo."));
+        };
+
+        video.addEventListener("loadedmetadata", onLoaded);
+        video.addEventListener("error", onError);
+
+        timer = setTimeout(() => {
+          cleanup();
+          reject(new Error("A leitura dos dados do vídeo demorou demais."));
+        }, timeoutMs);
+      });
     }
-  }
-  function pointFromEvent(event) {
-    const rect = centerCanvas.getBoundingClientRect();
-    return {
-      x:Math.max(
-        0,
-        Math.min(1, (event.clientX - rect.left) / rect.width)
-      ),
-      y:Math.max(
-        0,
-        Math.min(1, (event.clientY - rect.top) / rect.height)
-      )
-    };
-  }
-  $('pickBtn').onclick = () => $('fileInput').click();
-  function renderFileList() {
-    $('fileList').innerHTML = '';
-    files.forEach((file, index) => {
-      const row = document.createElement('div');
-      row.className = 'file';
-      const number = document.createElement('span');
-      number.className = 'num';
-      number.textContent = (index + 1) + '.';
-      const name = document.createElement('span');
-      name.className = 'fname';
-      name.textContent = file.name;
-      name.title = file.name;
-      const size = document.createElement('small');
-      size.textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
-      const remove = document.createElement('button');
-      remove.className = 'remove-file';
-      remove.type = 'button';
-      remove.textContent = '×';
-      remove.setAttribute('aria-label', 'Remover ' + file.name);
-      remove.title = 'Remover vídeo';
-      remove.onclick = () => {
-        if (urls[index]) {
-          URL.revokeObjectURL(urls[index]);
+
+    function seekVideo(video, requestedTime) {
+      return new Promise((resolve, reject) => {
+        const duration = Number.isFinite(video.duration) ? video.duration : requestedTime;
+        const target = clamp(requestedTime, 0, Math.max(0, duration));
+
+        if (
+          video.readyState >= 2 &&
+          Math.abs((video.currentTime || 0) - target) < 0.025
+        ) {
+          resolve();
+          return;
         }
-        files.splice(index, 1);
-        urls.splice(index, 1);
-        clearAllEdits();
-        renderFileList();
-        updateNavigationButtons();
-        if (!files.length) {
-          video.pause();
-          video.removeAttribute('src');
+
+        let finished = false;
+        let timer = null;
+
+        const cleanup = () => {
+          video.removeEventListener("seeked", onSeeked);
+          if (timer) clearTimeout(timer);
+        };
+
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          resolve();
+        };
+
+        const onSeeked = () => finish();
+
+        video.addEventListener("seeked", onSeeked);
+
+        try {
+          video.currentTime = target;
+        } catch (error) {
+          cleanup();
+          reject(error);
+          return;
+        }
+
+        timer = setTimeout(finish, 800);
+      });
+    }
+
+    async function readVideoMetadata(url) {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.muted = true;
+      video.playsInline = true;
+
+      const waiting = waitForMetadata(video);
+      video.src = url;
+      video.load();
+
+      try {
+        await waiting;
+        return {
+          duration: Number.isFinite(video.duration) ? video.duration : 0,
+          width: video.videoWidth,
+          height: video.videoHeight
+        };
+      } finally {
+        video.pause();
+        video.removeAttribute("src");
+        try {
           video.load();
+        } catch (_) {}
+      }
+    }
+
+    async function ensureAllMetadata() {
+      for (const clip of clips) {
+        if (
+          Number.isFinite(clip.duration) &&
+          clip.duration > 0 &&
+          clip.width > 0 &&
+          clip.height > 0
+        ) {
+          continue;
         }
-      };
-      row.append(number, name, size, remove);
-      $('fileList').appendChild(row);
-    });
-    $('startBtn').disabled = !files.length;
-  }
-  $('fileInput').onchange = event => {
-    const incoming = Array.from(event.target.files || []);
-    event.target.value = '';
-    if (!incoming.length) return;
-    stopPlayback();
-    urls.forEach(url => URL.revokeObjectURL(url));
-    files = incoming;
-    urls = files.map(file => URL.createObjectURL(file));
-    clearAllEdits();
-    renderFileList();
-    updateNavigationButtons();
-  };
-  $('startBtn').onclick = async () => {
-    if (!files.length) return;
-    clearAllEdits();
-    stageIndex = 0;
-    mode = 'center';
-    show('centerScreen', 'Enquadramento');
-    try {
-      const loaded = await loadAt(0, 'center');
-      if (!loaded || !$('centerScreen').classList.contains('active')) {
+
+        try {
+          const metadata = await readVideoMetadata(clip.url);
+          clip.duration = metadata.duration;
+          clip.width = metadata.width;
+          clip.height = metadata.height;
+        } catch (error) {
+          throw new Error(
+            'Não foi possível ler "' + clip.file.name + '". ' + error.message
+          );
+        }
+      }
+      updateImportList();
+    }
+
+    function updateEditorHeader() {
+      if (!clips.length) return;
+
+      const clip = clips[stageIndex];
+      const label = "Vídeo " + (stageIndex + 1) + " de " + clips.length +
+        " — " + clip.file.name;
+
+      $("centerVideoInfo").textContent = label;
+      $("rotateVideoInfo").textContent = label;
+
+      $("centerPrevButton").disabled = stageIndex <= 0;
+      $("rotatePrevButton").disabled = stageIndex <= 0;
+
+      $("centerNextButton").disabled = stageIndex >= clips.length - 1;
+      $("rotateNextButton").disabled = stageIndex >= clips.length - 1;
+    }
+
+    function normalizeAngle(angle) {
+      const normalized = ((angle + 180) % 360 + 360) % 360 - 180;
+      return Object.is(normalized, -0) ? 0 : normalized;
+    }
+
+    function interpolatePosition(keys, time) {
+      if (!keys || keys.length === 0) return { x: 0.5, y: 0.5 };
+
+      const sorted = keys.slice().sort((a, b) => a.t - b.t);
+
+      if (time <= sorted[0].t) {
+        return { x: sorted[0].x, y: sorted[0].y };
+      }
+
+      const last = sorted[sorted.length - 1];
+      if (time >= last.t) {
+        return { x: last.x, y: last.y };
+      }
+
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const a = sorted[i];
+        const b = sorted[i + 1];
+
+        if (time >= a.t && time <= b.t) {
+          const span = Math.max(0.0001, b.t - a.t);
+          const amount = (time - a.t) / span;
+          return {
+            x: a.x + (b.x - a.x) * amount,
+            y: a.y + (b.y - a.y) * amount
+          };
+        }
+      }
+
+      return { x: 0.5, y: 0.5 };
+    }
+
+    function interpolateRotation(keys, time) {
+      if (!keys || keys.length === 0) return 0;
+
+      const sorted = keys.slice().sort((a, b) => a.t - b.t);
+
+      if (time <= sorted[0].t) return sorted[0].a;
+
+      const last = sorted[sorted.length - 1];
+      if (time >= last.t) return last.a;
+
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const a = sorted[i];
+        const b = sorted[i + 1];
+
+        if (time >= a.t && time <= b.t) {
+          const span = Math.max(0.0001, b.t - a.t);
+          const amount = (time - a.t) / span;
+          const difference = normalizeAngle(b.a - a.a);
+          return normalizeAngle(a.a + difference * amount);
+        }
+      }
+
+      return 0;
+    }
+
+    function setPositionKey(clip, time, position) {
+      const t = Math.max(0, time);
+      const keys = clip.positionKeys || [];
+      const existing = keys.find((key) => Math.abs(key.t - t) < 0.06);
+
+      if (existing) {
+        existing.x = position.x;
+        existing.y = position.y;
+      } else {
+        keys.push({ t, x: position.x, y: position.y });
+      }
+
+      keys.sort((a, b) => a.t - b.t);
+      clip.positionKeys = keys;
+    }
+
+    function setRotationKey(clip, time, angle) {
+      const t = Math.max(0, time);
+      const keys = clip.rotationKeys || [];
+      const existing = keys.find((key) => Math.abs(key.t - t) < 0.06);
+
+      if (existing) {
+        existing.a = angle;
+      } else {
+        keys.push({ t, a: angle });
+      }
+
+      keys.sort((a, b) => a.t - b.t);
+      clip.rotationKeys = keys;
+    }
+
+    function drawTransformedFrame(ctx, video, clip, time, width, height, mirror, applyRotation) {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = "#050505";
+      ctx.fillRect(0, 0, width, height);
+
+      if (
+        !clip ||
+        video.readyState < 2 ||
+        !video.videoWidth ||
+        !video.videoHeight
+      ) {
+        ctx.restore();
         return;
       }
-      await countdownAndPlay('center');
-    } catch (error) {
-      show('importScreen', 'Importação', false);
-      alert(error.message);
+
+      const position = interpolatePosition(clip.positionKeys, time);
+      const angle = applyRotation
+        ? interpolateRotation(clip.rotationKeys, time)
+        : 0;
+
+      const scale = Math.max(
+        width / video.videoWidth,
+        height / video.videoHeight
+      );
+
+      const drawWidth = video.videoWidth * scale;
+      const drawHeight = video.videoHeight * scale;
+
+      ctx.translate(width / 2, height / 2);
+
+      if (mirror) {
+        ctx.scale(-1, 1);
+      }
+
+      ctx.translate(
+        (position.x - 0.5) * width,
+        (position.y - 0.5) * height
+      );
+
+      ctx.rotate(angle * Math.PI / 180);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(
+        video,
+        -drawWidth / 2,
+        -drawHeight / 2,
+        drawWidth,
+        drawHeight
+      );
+
+      ctx.restore();
     }
-  };
-  centerCanvas.addEventListener('pointerdown', event => {
-    if (loadingVideo || !files.length) return;
-    dragging = true;
-    try {
-      centerCanvas.setPointerCapture(event.pointerId);
-    } catch (_) {}
-    const point = pointFromEvent(event);
-    addKey(centerData[stageIndex], video.currentTime, point);
-    markerPos(point);
-  });
-  centerCanvas.addEventListener('pointermove', event => {
-    if (!dragging || loadingVideo) return;
-    const point = pointFromEvent(event);
-    addKey(centerData[stageIndex], video.currentTime, point);
-    markerPos(point);
-  });
-  centerCanvas.addEventListener('pointerup', () => {
-    dragging = false;
-  });
-  centerCanvas.addEventListener('pointercancel', () => {
-    dragging = false;
-  });
-  async function toggleStagePlayback(kind) {
-    if (loadingVideo || !files.length) return;
-    if (playing) {
-      stopPlayback();
-      return;
+
+    function drawEditorFrame() {
+      if (activeScreen !== "centerScreen" && activeScreen !== "rotateScreen") {
+        return;
+      }
+
+      if (!clips.length || !clips[stageIndex]) return;
+
+      const canvas = currentStage === "position"
+        ? $("centerCanvas")
+        : $("rotateCanvas");
+
+      const ctx = canvas.getContext("2d");
+      const time = Number.isFinite(editorVideo.currentTime)
+        ? editorVideo.currentTime
+        : 0;
+
+      drawTransformedFrame(
+        ctx,
+        editorVideo,
+        clips[stageIndex],
+        time,
+        canvas.width,
+        canvas.height,
+        false,
+        currentStage === "rotation"
+      );
     }
-    cancelCountdown();
-    mode = kind;
-    if (video.ended) {
+
+    function editorAnimationLoop() {
+      drawEditorFrame();
+      requestAnimationFrame(editorAnimationLoop);
+    }
+
+    function updateEditorUI() {
+      const duration = Number.isFinite(editorVideo.duration)
+        ? editorVideo.duration
+        : 0;
+      const current = Number.isFinite(editorVideo.currentTime)
+        ? editorVideo.currentTime
+        : 0;
+
+      $("centerTimeline").max = String(Math.max(0.01, duration));
+      $("rotateTimeline").max = String(Math.max(0.01, duration));
+
+      $("centerTimeline").value = String(
+        clamp(current, 0, Math.max(0, duration))
+      );
+      $("rotateTimeline").value = String(
+        clamp(current, 0, Math.max(0, duration))
+      );
+
+      $("centerTimeLabel").textContent = formatTime(current);
+      $("rotateTimeLabel").textContent = formatTime(current);
+      $("centerDurationLabel").textContent = formatTime(duration);
+      $("rotateDurationLabel").textContent = formatTime(duration);
+
+      const ready = clips.length > 0 && duration > 0;
+      $("centerTimeline").disabled = !ready;
+      $("rotateTimeline").disabled = !ready;
+
+      if (clips[stageIndex]) {
+        const angle = interpolateRotation(
+          clips[stageIndex].rotationKeys,
+          current
+        );
+        $("rotateRange").value = String(Math.round(angle));
+        $("rotateValue").textContent = Math.round(angle) + "°";
+      }
+    }
+
+    function updatePlayButtons() {
+      const playing = !editorVideo.paused && !editorVideo.ended;
+      $("centerPlayButton").textContent = playing
+        ? "❚❚ Pausar"
+        : "▶ Reproduzir";
+      $("rotatePlayButton").textContent = playing
+        ? "❚❚ Pausar"
+        : "▶ Reproduzir";
+    }
+
+    async function loadEditorClip(index) {
+      if (!clips.length || index < 0 || index >= clips.length) return;
+
+      cancelCountdown();
+      editorVideo.pause();
+
+      const token = ++editorLoadToken;
+      stageIndex = index;
+      updateEditorHeader();
+
+      const clip = clips[index];
+      const status = statusElementForStage();
+
+      status.classList.remove("success");
+      status.textContent = "Carregando vídeo…";
+
       try {
-        await seekVideo(0);
+        editorVideo.removeAttribute("src");
+        editorVideo.load();
+
+        const metadataPromise = waitForMetadata(editorVideo);
+        editorVideo.src = clip.url;
+        editorVideo.load();
+
+        await metadataPromise;
+        if (token !== editorLoadToken || clips[index] !== clip) return;
+
+        clip.duration = Number.isFinite(editorVideo.duration)
+          ? editorVideo.duration
+          : 0;
+        clip.width = editorVideo.videoWidth;
+        clip.height = editorVideo.videoHeight;
+
+        setCanvasDimensions($("centerCanvas"), clip);
+        setCanvasDimensions($("rotateCanvas"), clip);
+
+        await seekVideo(editorVideo, 0);
+        if (token !== editorLoadToken || clips[index] !== clip) return;
+
+        updateEditorHeader();
+        updateEditorUI();
+        drawEditorFrame();
+        status.textContent = currentStage === "position"
+          ? "Arraste a imagem para ajustar a posição."
+          : "Ajuste o ângulo usando o controle de rotação.";
+      } catch (error) {
+        if (token !== editorLoadToken) return;
+
+        status.textContent =
+          "Não foi possível carregar este vídeo. " +
+          "O navegador pode não conseguir decodificar o arquivo. " +
+          error.message;
+      }
+    }
+
+    async function startEditing() {
+      if (!clips.length) return;
+
+      currentStage = "position";
+      stageIndex = 0;
+      $("centerStatus").textContent = "";
+      showScreen("centerScreen");
+      await loadEditorClip(0);
+    }
+
+    async function switchVideo(direction) {
+      const target = stageIndex + direction;
+      if (target < 0 || target >= clips.length) return;
+      await loadEditorClip(target);
+    }
+
+    function cancelCountdown() {
+      countdownGeneration++;
+
+      if (countdownTimer) {
+        clearTimeout(countdownTimer);
+        countdownTimer = null;
+      }
+
+      const resolve = countdownCancelResolve;
+      countdownCancelResolve = null;
+      if (resolve) resolve(false);
+
+      $("countdownOverlay").hidden = true;
+    }
+
+    async function countdownAndPlay(kind) {
+      cancelCountdown();
+      const generation = countdownGeneration;
+
+      $("countdownOverlay").hidden = false;
+
+      for (let number = 3; number >= 1; number--) {
+        if (generation !== countdownGeneration) return;
+
+        $("countdownNumber").textContent = String(number);
+
+        const continued = await new Promise((resolve) => {
+          countdownCancelResolve = resolve;
+          countdownTimer = setTimeout(() => {
+            countdownTimer = null;
+            if (countdownCancelResolve === resolve) {
+              countdownCancelResolve = null;
+            }
+            resolve(true);
+          }, 1000);
+        });
+
+        if (!continued || generation !== countdownGeneration) return;
+      }
+
+      $("countdownOverlay").hidden = true;
+
+      const requiredScreen = kind === "position"
+        ? "centerScreen"
+        : "rotateScreen";
+
+      if (
+        generation !== countdownGeneration ||
+        currentStage !== kind ||
+        activeScreen !== requiredScreen
+      ) {
+        return;
+      }
+
+      try {
+        await editorVideo.play();
+      } catch (_) {
+        statusElementForStage(kind).textContent =
+          "Ajustes reiniciados. Toque em Reproduzir para iniciar o vídeo.";
+      }
+    }
+
+    async function resetSelectedEdits(kind) {
+      if (!clips.length || !clips[stageIndex]) return;
+
+      const clip = clips[stageIndex];
+      const index = stageIndex;
+
+      cancelCountdown();
+      editorVideo.pause();
+
+      if (kind === "position") {
+        clip.positionKeys = [{ t: 0, x: 0.5, y: 0.5 }];
+        $("centerStatus").textContent =
+          "Ajustes de posição deste vídeo reiniciados.";
+      } else {
+        clip.rotationKeys = [{ t: 0, a: 0 }];
+        $("rotateStatus").textContent =
+          "Ajustes de rotação deste vídeo reiniciados.";
+      }
+
+      currentStage = kind;
+
+      try {
+        await seekVideo(editorVideo, 0);
+      } catch (error) {
+        statusElementForStage(kind).textContent =
+          "Ajustes reiniciados, mas não foi possível voltar ao início: " +
+          error.message;
+        return;
+      }
+
+      if (clips[index] !== clip || stageIndex !== index) return;
+
+      updateEditorUI();
+      drawEditorFrame();
+      await countdownAndPlay(kind);
+    }
+
+    async function toggleEditorPlayback() {
+      cancelCountdown();
+
+      if (editorVideo.paused || editorVideo.ended) {
+        try {
+          await editorVideo.play();
+        } catch (_) {
+          statusElementForStage().textContent =
+            "Não foi possível iniciar a reprodução. Toque novamente em Reproduzir.";
+        }
+      } else {
+        editorVideo.pause();
+      }
+
+      updatePlayButtons();
+    }
+
+    function returnToImportAndClearEdits() {
+      const confirmed = window.confirm(
+        "Voltar à importação? Todos os ajustes de posição e rotação serão apagados. Os vídeos importados serão mantidos."
+      );
+
+      if (!confirmed) return;
+
+      cancelCountdown();
+      editorVideo.pause();
+      pausePreview();
+
+      clips.forEach(resetClipEdits);
+      stageIndex = 0;
+      currentStage = "position";
+      editorLoadToken++;
+
+      $("centerStatus").textContent = "";
+      $("rotateStatus").textContent = "";
+      $("importStatus").textContent =
+        "Os ajustes foram apagados. Os vídeos importados foram mantidos.";
+
+      showScreen("importScreen");
+      updateImportList();
+    }
+
+    async function deleteCurrentVideo() {
+      if (!clips.length || !clips[stageIndex]) return;
+
+      const clip = clips[stageIndex];
+      const confirmed = window.confirm(
+        'Excluir "' + clip.file.name + '" de todo o processo? ' +
+        "O vídeo e seus ajustes de posição e rotação serão removidos, " +
+        "e ele não aparecerá na pré-visualização nem na exportação."
+      );
+
+      if (!confirmed) return;
+
+      const oldIndex = stageIndex;
+
+      cancelCountdown();
+      pausePreview();
+      editorVideo.pause();
+      editorLoadToken++;
+
+      if (loadedRenderClipId === clip.id) {
+        renderVideo.pause();
+        renderVideo.removeAttribute("src");
+        renderVideo.load();
+        loadedRenderClipId = null;
+      }
+
+      clips.splice(oldIndex, 1);
+      URL.revokeObjectURL(clip.url);
+      updateImportList();
+
+      if (clips.length === 0) {
+        stageIndex = 0;
+        editorVideo.removeAttribute("src");
+        editorVideo.load();
+        currentStage = "position";
+        showScreen("importScreen");
+        $("importStatus").textContent =
+          "O último vídeo foi excluído. Importe vídeos para começar novamente.";
+        return;
+      }
+
+      stageIndex = Math.min(oldIndex, clips.length - 1);
+      showScreen(currentStage === "position" ? "centerScreen" : "rotateScreen");
+
+      await loadEditorClip(stageIndex);
+
+      statusElementForStage().textContent =
+        '"' + clip.file.name +
+        '" foi excluído. Os demais vídeos e seus ajustes foram mantidos.';
+    }
+
+    let positionDrag = null;
+
+    $("centerCanvas").addEventListener("pointerdown", (event) => {
+      if (
+        activeScreen !== "centerScreen" ||
+        currentStage !== "position" ||
+        !clips[stageIndex]
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      editorVideo.pause();
+
+      const clip = clips[stageIndex];
+      const position = interpolatePosition(
+        clip.positionKeys,
+        editorVideo.currentTime || 0
+      );
+
+      positionDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        baseX: position.x,
+        baseY: position.y,
+        rect: $("centerCanvas").getBoundingClientRect(),
+        clip
+      };
+
+      try {
+        $("centerCanvas").setPointerCapture(event.pointerId);
+      } catch (_) {}
+    });
+
+    $("centerCanvas").addEventListener("pointermove", (event) => {
+      if (
+        !positionDrag ||
+        positionDrag.pointerId !== event.pointerId ||
+        activeScreen !== "centerScreen"
+      ) {
+        return;
+      }
+
+      const deltaX = (event.clientX - positionDrag.startX) /
+        Math.max(1, positionDrag.rect.width);
+      const deltaY = (event.clientY - positionDrag.startY) /
+        Math.max(1, positionDrag.rect.height);
+
+      const position = {
+        x: clamp(positionDrag.baseX + deltaX, -0.5, 1.5),
+        y: clamp(positionDrag.baseY + deltaY, -0.5, 1.5)
+      };
+
+      setPositionKey(
+        positionDrag.clip,
+        editorVideo.currentTime || 0,
+        position
+      );
+
+      drawEditorFrame();
+    });
+
+    function finishPositionDrag(event) {
+      if (!positionDrag) return;
+      if (event && positionDrag.pointerId !== event.pointerId) return;
+
+      positionDrag = null;
+      $("centerStatus").textContent =
+        "Posição ajustada. O ajuste foi guardado para este vídeo.";
+    }
+
+    $("centerCanvas").addEventListener("pointerup", finishPositionDrag);
+    $("centerCanvas").addEventListener("pointercancel", finishPositionDrag);
+    $("centerCanvas").addEventListener("lostpointercapture", finishPositionDrag);
+
+    async function seekEditorFromRange(range) {
+      if (!clips.length) return;
+
+      try {
+        await seekVideo(editorVideo, Number(range.value));
+        updateEditorUI();
+        drawEditorFrame();
       } catch (_) {}
     }
-    try {
-      await video.play();
-      playing = true;
-      if (kind === 'center') {
-        $('centerPlay').textContent = 'Ⅱ Pausar';
-      } else {
-        $('rotatePlay').textContent = 'Ⅱ Pausar';
-      }
-      loop();
-    } catch (_) {}
-  }
-  async function resetSelectedEdits(kind) {
-    if (loadingVideo || !files.length) return;
 
-    cancelCountdown();
-    stopPlayback();
+    function buildPreviewTimeline() {
+      previewTimeline = [];
+      previewTotalDuration = 0;
 
-    const index = stageIndex;
+      clips.forEach((clip, clipIndex) => {
+        const duration = Number.isFinite(clip.duration)
+          ? clip.duration
+          : 0;
 
-    if (kind === 'center') {
-      centerData[index] = [
-        {t:0,v:{x:0.5,y:0.5}}
-      ];
-      $('centerStatus').textContent =
-        'Ajustes de posição deste vídeo reiniciados.';
-    } else {
-      rotateData[index] = [{t:0,v:0}];
-      $('rotateStatus').textContent =
-        'Ajustes de rotação deste vídeo reiniciados.';
-    }
+        if (duration <= 0) return;
 
-    mode = kind;
+        previewTimeline.push({
+          clip,
+          clipIndex,
+          mirror: false,
+          duration,
+          start: previewTotalDuration
+        });
+        previewTotalDuration += duration;
 
-    try {
-      await seekVideo(0);
-    } catch (error) {
-      const statusId = kind === 'center'
-        ? 'centerStatus'
-        : 'rotateStatus';
-
-      $(statusId).textContent =
-        'Ajustes reiniciados, mas não foi possível voltar ao início: ' +
-        error.message;
-      return;
-    }
-
-    if (stageIndex !== index || mode !== kind) return;
-
-    if (kind === 'center') {
-      refreshCenterFrame();
-    } else {
-      refreshRotateFrame();
-    }
-
-    const requiredScreen = kind === 'center'
-      ? 'centerScreen'
-      : 'rotateScreen';
-
-    if (!$(requiredScreen).classList.contains('active')) return;
-
-    await countdownAndPlay(kind);
-  }
-  async function navigateTo(index, kind) {
-    if (loadingVideo || index < 0 || index >= files.length) return;
-    try {
-      const loaded = await loadAt(index, kind);
-      if (!loaded) return;
-      const requiredScreen = kind === 'center'
-        ? 'centerScreen'
-        : 'rotateScreen';
-      if ($(requiredScreen).classList.contains('active')) {
-        await countdownAndPlay(kind);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-  $('centerPlay').onclick = () => toggleStagePlayback('center');
-  $('rotatePlay').onclick = () => toggleStagePlayback('rotate');
-  $('centerRestart').onclick = () => resetSelectedEdits('center');
-  $('rotateRestart').onclick = () => resetSelectedEdits('rotate');
-  $('centerSeek').oninput = event => {
-    if (loadingVideo) return;
-    cancelCountdown();
-    stopPlayback();
-    const time =
-      Number(event.target.value) / 1000 * (video.duration || 0);
-    video.addEventListener('seeked', refreshCenterFrame, {once:true});
-    try {
-      video.currentTime = time;
-    } catch (_) {}
-    refreshCenterFrame();
-  };
-  $('rotateSeek').oninput = event => {
-    if (loadingVideo) return;
-    cancelCountdown();
-    stopPlayback();
-    const time =
-      Number(event.target.value) / 1000 * (video.duration || 0);
-    video.addEventListener('seeked', refreshRotateFrame, {once:true});
-    try {
-      video.currentTime = time;
-    } catch (_) {}
-    refreshRotateFrame();
-  };
-  $('centerPrev').onclick = () => {
-    if (stageIndex > 0) {
-      navigateTo(stageIndex - 1, 'center');
-    }
-  };
-  $('centerNext').onclick = () => {
-    if (loadingVideo) return;
-    if (stageIndex + 1 < files.length) {
-      navigateTo(stageIndex + 1, 'center');
-      return;
-    }
-    cancelCountdown();
-    stopPlayback();
-    show('instructionScreen', 'Instruções');
-  };
-  $('centerImport').onclick = returnToImport;
-  $('instructionContinue').onclick = async () => {
-    const button = $('instructionContinue');
-    if (button.disabled) return;
-    button.disabled = true;
-    button.textContent = 'Carregando vídeo…';
-    $('rotateLoadStatus').textContent =
-      'Preparando o vídeo reenquadrado…';
-    show('rotateScreen', 'Rotação');
-    try {
-      const loaded = await loadAt(0, 'rotate');
-      if (!loaded || !$('rotateScreen').classList.contains('active')) {
-        return;
-      }
-      $('rotateLoadStatus').textContent = '';
-      await countdownAndPlay('rotate');
-    } catch (error) {
-      $('rotateLoadStatus').textContent = error.message;
-      console.error(error);
-    } finally {
-      button.disabled = false;
-      button.textContent = 'Continuar';
-    }
-  };
-  function setRotationAngle(angle) {
-    if (!files.length || loadingVideo) return;
-    const roundedAngle = Math.max(-180, Math.min(180, Math.round(angle)));
-    addKey(
-      rotateData[stageIndex],
-      video.currentTime,
-      roundedAngle
-    );
-    $('angleReadout').textContent = roundedAngle + '°';
-    $('rotateDial').style.setProperty(
-      '--dial-angle',
-      roundedAngle + 'deg'
-    );
-    $('rotateDial').setAttribute(
-      'aria-valuenow',
-      String(roundedAngle)
-    );
-    const point = valueAt(
-      centerData[stageIndex],
-      video.currentTime,
-      {x:0.5,y:0.5}
-    );
-    drawFit(rctx, rotateCanvas, roundedAngle, point);
-  }
-  function angleFromDialEvent(event) {
-    const rect = $('rotateDial').getBoundingClientRect();
-    const dx = event.clientX - (rect.left + rect.width / 2);
-    const dy = event.clientY - (rect.top + rect.height / 2);
-    return Math.atan2(dx, -dy) * 180 / Math.PI;
-  }
-  let dialDragging = false;
-  $('rotateDial').addEventListener('pointerdown', event => {
-    if (loadingVideo || !files.length) return;
-    dialDragging = true;
-    try {
-      $('rotateDial').setPointerCapture(event.pointerId);
-    } catch (_) {}
-    setRotationAngle(angleFromDialEvent(event));
-    event.preventDefault();
-  });
-  $('rotateDial').addEventListener('pointermove', event => {
-    if (dialDragging) {
-      setRotationAngle(angleFromDialEvent(event));
-    }
-  });
-  $('rotateDial').addEventListener('pointerup', () => {
-    dialDragging = false;
-  });
-  $('rotateDial').addEventListener('pointercancel', () => {
-    dialDragging = false;
-  });
-  $('rotateDial').addEventListener('keydown', event => {
-    const current =
-      Number($('rotateDial').getAttribute('aria-valuenow')) || 0;
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
-      event.preventDefault();
-      setRotationAngle(current - 1);
-    }
-    if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      setRotationAngle(current + 1);
-    }
-  });
-  $('rotatePrev').onclick = () => {
-    if (stageIndex > 0) {
-      navigateTo(stageIndex - 1, 'rotate');
-    }
-  };
-  $('rotateNext').onclick = async () => {
-    if (loadingVideo) return;
-    if (stageIndex + 1 < files.length) {
-      await navigateTo(stageIndex + 1, 'rotate');
-      return;
-    }
-    cancelCountdown();
-    stopPlayback();
-    stageIndex = 0;
-    mode = 'preview';
-    show('previewScreen', 'Pré-visualização', true);
-    try {
-      await preparePreview();
-    } catch (error) {
-      $('exportStatus').textContent =
-        'Não foi possível preparar a pré-visualização: ' + error.message;
-    }
-  };
-  $('rotateImport').onclick = returnToImport;
-  async function preparePreview() {
-    if (!files.length) return;
-    stageIndex = 0;
-    mode = 'preview';
-    await setVideoSource(0, true);
-    dims(previewCanvas);
-    $('previewTime').textContent = 'Pronto para reproduzir';
-    $('previewDuration').textContent = 'Compilação';
-    $('exportProgress').style.width = '0%';
-    const point = valueAt(
-      centerData[0],
-      0,
-      {x:0.5,y:0.5}
-    );
-    const angle = valueAt(rotateData[0], 0, 0);
-    drawAdjustedFrame(pctx, previewCanvas, point, angle, false);
-  }
-  function drawPreviewFrame(index, mirrored, time) {
-    const point = valueAt(
-      centerData[index],
-      time,
-      {x:0.5,y:0.5}
-    );
-    const angle = valueAt(rotateData[index], time, 0);
-    drawAdjustedFrame(
-      pctx,
-      previewCanvas,
-      point,
-      angle,
-      mirrored
-    );
-    $('previewTime').textContent =
-      `Vídeo ${index + 1} · ` +
-      `${mirrored ? 'espelhado' : 'original'} · ${fmt(time)}`;
-  }
-  function playPreviewPass(index, mirrored) {
-    return new Promise((resolve, reject) => {
-      let finished = false;
-      const finish = error => {
-        if (finished) return;
-        finished = true;
-        if (previewRaf) {
-          cancelAnimationFrame(previewRaf);
-        }
-        previewRaf = 0;
-        video.removeEventListener('ended', onEnded);
-        video.pause();
-        if (previewStopResolver === finish) {
-          previewStopResolver = null;
-        }
-        error ? reject(error) : resolve();
-      };
-      const onEnded = () => {
-        drawPreviewFrame(index, Boolean(mirrored), video.currentTime || 0);
-        finish();
-      };
-      const draw = () => {
-        if (finished) return;
-        if (!previewRunning) {
-          finish();
-          return;
-        }
-        const time = video.currentTime || 0;
-        drawPreviewFrame(index, Boolean(mirrored), time);
-        if (video.ended) {
-          finish();
-          return;
-        }
-        previewRaf = requestAnimationFrame(draw);
-      };
-      previewStopResolver = finish;
-      video.addEventListener('ended', onEnded, {once:true});
-      video.play()
-        .then(() => {
-          if (!finished) draw();
-        })
-        .catch(error => finish(error));
-    });
-  }
-  $('previewPlay').onclick = async () => {
-    if (previewRunning) {
-      stopPreviewPlayback();
-      return;
-    }
-    if (!files.length) return;
-    previewRunning = true;
-    $('previewPlay').textContent = 'Ⅱ Pausar';
-    try {
-      for (
-        let index = 0;
-        index < files.length && previewRunning;
-        index++
-      ) {
-        await setVideoSource(index, true);
-        if (!previewRunning) break;
-        for (
-          let mirrored = 0;
-          mirrored < 2 && previewRunning;
-          mirrored++
-        ) {
-          await playPreviewPass(index, Boolean(mirrored));
-        }
-      }
-    } catch (error) {
-      $('exportStatus').textContent =
-        'Não foi possível reproduzir: ' + error.message;
-    } finally {
-      previewRunning = false;
-      previewRaf = 0;
-      $('previewPlay').textContent = '▶ Reproduzir compilação';
-    }
-  };
-  function supportState(mime) {
-    if (
-      typeof MediaRecorder === 'undefined' ||
-      typeof MediaRecorder.isTypeSupported !== 'function'
-    ) {
-      return null;
-    }
-    try {
-      return MediaRecorder.isTypeSupported(mime);
-    } catch (_) {
-      return null;
-    }
-  }
-  function getPreferredProfile() {
-    const mp4Profiles = MIME_PROFILES.filter(
-      profile => profile.extension === 'mp4'
-    );
-    const webmProfiles = MIME_PROFILES.filter(
-      profile => profile.extension === 'webm'
-    );
-    const supportedMp4 = mp4Profiles.find(
-      profile => supportState(profile.mime) === true
-    );
-    if (supportedMp4) return supportedMp4;
-    const supportedWebm = webmProfiles.find(
-      profile => supportState(profile.mime) === true
-    );
-    if (supportedWebm) return supportedWebm;
-    return mp4Profiles[0] || webmProfiles[0];
-  }
-  function mimeExtension(mime, fallback = 'webm') {
-    const value = String(mime || '').toLowerCase();
-    if (value.includes('mp4')) return 'mp4';
-    if (value.includes('webm')) return 'webm';
-    return fallback;
-  }
-  function requestSaveFilePicker(profile) {
-    if (typeof window.showSaveFilePicker !== 'function') {
-      return Promise.resolve({
-        handle:null,
-        extension:null,
-        cancelled:false,
-        unavailable:true
+        previewTimeline.push({
+          clip,
+          clipIndex,
+          mirror: true,
+          duration,
+          start: previewTotalDuration
+        });
+        previewTotalDuration += duration;
       });
     }
-    const extension = profile.extension;
-    const mime = extension === 'mp4' ? 'video/mp4' : 'video/webm';
-    const suffix = extension === 'mp4' ? '.mp4' : '.webm';
-    try {
-      return window.showSaveFilePicker({
-        suggestedName:'App-compilacao' + suffix,
-        types:[{
-          description:extension === 'mp4' ? 'Vídeo MP4' : 'Vídeo WebM',
-          accept:{[mime]:[suffix]}
-        }]
-      }).then(handle => ({
-        handle,
-        extension,
-        cancelled:false,
-        unavailable:false
-      })).catch(error => ({
-        handle:null,
-        extension,
-        cancelled:Boolean(error && error.name === 'AbortError'),
-        unavailable:false,
-        error
-      }));
-    } catch (error) {
-      return Promise.resolve({
-        handle:null,
-        extension,
-        cancelled:Boolean(error && error.name === 'AbortError'),
-        unavailable:false,
-        error
-      });
-    }
-  }
-  async function prepareAudioCapture() {
-    const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) {
-      video.muted = true;
-      return [];
-    }
-    try {
-      if (!exportAudioContext) {
-        exportAudioContext = new AudioContextClass();
-        exportAudioDestination =
-          exportAudioContext.createMediaStreamDestination();
-        exportAudioSource =
-          exportAudioContext.createMediaElementSource(video);
-        exportAudioSource.connect(exportAudioDestination);
+
+    function findPreviewSegment(time) {
+      if (!previewTimeline.length) return -1;
+
+      if (time >= previewTotalDuration) {
+        return previewTimeline.length - 1;
       }
-      if (exportAudioContext.state === 'suspended') {
-        await exportAudioContext.resume();
-      }
-      video.muted = false;
-      return exportAudioDestination.stream
-        .getAudioTracks()
-        .filter(track => track.readyState === 'live');
-    } catch (error) {
-      console.warn('A captura de áudio não está disponível:', error);
-      video.muted = true;
-      return [];
-    }
-  }
-  function createMediaRecorder(
-    canvasStream,
-    audioTracks,
-    videoBitrate
-  ) {
-    if (typeof window.MediaRecorder === 'undefined') {
-      throw new Error(
-        'Este navegador não oferece suporte à gravação de vídeo.'
+
+      return previewTimeline.findIndex((segment) =>
+        time >= segment.start &&
+        time < segment.start + segment.duration
       );
     }
-    const videoTrack = canvasStream.getVideoTracks()[0];
-    if (!videoTrack) {
-      throw new Error('Não foi possível capturar o vídeo final.');
-    }
-    const candidates = MIME_PROFILES
-      .map((profile, index) => ({
-        profile,
-        index,
-        support:supportState(profile.mime)
-      }))
-      .filter(item => !item.profile.audio || audioTracks.length > 0)
-      .sort((first, second) => {
-        const rank = value => {
-          if (value === true) return 0;
-          if (value === null) return 1;
-          return 2;
-        };
-        return rank(first.support) - rank(second.support) ||
-          first.index - second.index;
-      });
-    let lastError = null;
-    for (const item of candidates) {
-      const profile = item.profile;
-      const tracks = [
-        videoTrack,
-        ...(profile.audio ? audioTracks : [])
-      ];
-      const stream = new MediaStream(tracks);
-      const options = {
-        mimeType:profile.mime,
-        videoBitsPerSecond:videoBitrate
-      };
-      if (profile.audio) {
-        options.audioBitsPerSecond = AUDIO_BITRATE;
+
+    async function ensureRenderClip(clip, token = null) {
+      if (
+        loadedRenderClipId === clip.id &&
+        renderVideo.readyState >= 1 &&
+        renderVideo.videoWidth > 0
+      ) {
+        return true;
       }
-      const attempts = [
-        options,
-        {
-          mimeType:profile.mime,
-          videoBitsPerSecond:videoBitrate
-        },
-        {mimeType:profile.mime}
-      ];
-      for (const option of attempts) {
+
+      renderVideo.pause();
+      renderVideo.removeAttribute("src");
+      renderVideo.load();
+
+      const metadataPromise = waitForMetadata(renderVideo);
+      renderVideo.src = clip.url;
+      renderVideo.load();
+
+      await metadataPromise;
+
+      if (token !== null && token !== previewSeekToken) {
+        return false;
+      }
+
+      loadedRenderClipId = clip.id;
+      return true;
+    }
+
+    function drawPreviewFrame() {
+      const canvas = $("previewCanvas");
+      const ctx = canvas.getContext("2d");
+      const segment = previewTimeline[previewSegmentIndex];
+
+      if (!segment) {
+        ctx.fillStyle = "#050505";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      drawTransformedFrame(
+        ctx,
+        renderVideo,
+        segment.clip,
+        Number.isFinite(renderVideo.currentTime)
+          ? renderVideo.currentTime
+          : 0,
+        canvas.width,
+        canvas.height,
+        previewMirror,
+        true
+      );
+    }
+
+    function updatePreviewUI(time = previewGlobalTime) {
+      const safeTime = clamp(time, 0, previewTotalDuration);
+      $("previewTimeline").max = String(Math.max(0.01, previewTotalDuration));
+      $("previewTimeline").value = String(safeTime);
+      $("previewTimeLabel").textContent = formatTime(safeTime);
+      $("previewDurationLabel").textContent =
+        formatTime(previewTotalDuration);
+
+      const index = findPreviewSegment(safeTime);
+      if (index >= 0) {
+        const segment = previewTimeline[index];
+        $("previewSegmentLabel").textContent =
+          "Vídeo " + (segment.clipIndex + 1) + " de " + clips.length +
+          (segment.mirror ? " — espelhado" : " — original");
+      }
+    }
+
+    async function setPreviewGlobalTime(time) {
+      if (!previewTimeline.length) return;
+
+      const token = ++previewSeekToken;
+      const safeTime = clamp(time, 0, previewTotalDuration);
+      const segmentIndex = findPreviewSegment(safeTime);
+
+      if (segmentIndex < 0) return;
+
+      const segment = previewTimeline[segmentIndex];
+      const localTime = clamp(
+        safeTime - segment.start,
+        0,
+        segment.duration
+      );
+
+      previewSegmentIndex = segmentIndex;
+      previewMirror = segment.mirror;
+
+      try {
+        const ready = await ensureRenderClip(segment.clip, token);
+        if (!ready || token !== previewSeekToken) return;
+
+        await seekVideo(renderVideo, localTime);
+        if (token !== previewSeekToken) return;
+
+        previewGlobalTime = safeTime;
+        drawPreviewFrame();
+        updatePreviewUI(safeTime);
+      } catch (error) {
+        if (token === previewSeekToken) {
+          $("exportStatus").textContent =
+            "Não foi possível preparar a pré-visualização: " + error.message;
+        }
+      }
+    }
+
+    function pausePreview() {
+      previewPlaying = false;
+      previewPlayToken++;
+      renderVideo.pause();
+      $("previewPlayButton").textContent = "▶ Reproduzir";
+    }
+
+    async function startPreview() {
+      if (!previewTimeline.length) return;
+
+      if (previewPlaying) {
+        pausePreview();
+        return;
+      }
+
+      if (previewGlobalTime >= previewTotalDuration - 0.02) {
+        await setPreviewGlobalTime(0);
+      }
+
+      const token = ++previewPlayToken;
+      previewPlaying = true;
+      $("previewPlayButton").textContent = "❚❚ Pausar";
+
+      try {
+        await renderVideo.play();
+      } catch (_) {
+        previewPlaying = false;
+        $("previewPlayButton").textContent = "▶ Reproduzir";
+        $("exportStatus").textContent =
+          "Não foi possível iniciar a reprodução. Toque novamente em Reproduzir.";
+        return;
+      }
+
+      if (token !== previewPlayToken) return;
+      requestAnimationFrame(() => previewAnimationTick(token));
+    }
+
+    async function previewAnimationTick(token) {
+      if (!previewPlaying || token !== previewPlayToken) return;
+
+      const segment = previewTimeline[previewSegmentIndex];
+      if (!segment) {
+        pausePreview();
+        return;
+      }
+
+      const localTime = Math.min(
+        segment.duration,
+        Number.isFinite(renderVideo.currentTime)
+          ? renderVideo.currentTime
+          : 0
+      );
+
+      previewGlobalTime = segment.start + localTime;
+      drawPreviewFrame();
+      updatePreviewUI(previewGlobalTime);
+
+      const segmentEnded = renderVideo.ended ||
+        localTime >= segment.duration - 0.035;
+
+      if (segmentEnded) {
+        const nextIndex = previewSegmentIndex + 1;
+
+        if (nextIndex >= previewTimeline.length) {
+          previewGlobalTime = previewTotalDuration;
+          previewPlaying = false;
+          previewPlayToken++;
+          renderVideo.pause();
+          $("previewPlayButton").textContent = "▶ Reproduzir";
+          updatePreviewUI(previewGlobalTime);
+          return;
+        }
+
+        const nextSegment = previewTimeline[nextIndex];
+
+        await setPreviewGlobalTime(nextSegment.start);
+
+        if (!previewPlaying || token !== previewPlayToken) return;
+
         try {
-          const recorder = new MediaRecorder(stream, option);
-          const mime = recorder.mimeType || profile.mime;
+          await renderVideo.play();
+        } catch (_) {
+          pausePreview();
+          return;
+        }
+
+        requestAnimationFrame(() => previewAnimationTick(token));
+        return;
+      }
+
+      requestAnimationFrame(() => previewAnimationTick(token));
+    }
+
+    async function openPreview() {
+      if (!clips.length) return;
+
+      cancelCountdown();
+      editorVideo.pause();
+      pausePreview();
+
+      const token = ++previewPreparationToken;
+      showScreen("previewScreen");
+      $("exportStatus").textContent = "Preparando a pré-visualização…";
+      $("exportProgress").value = 0;
+
+      try {
+        await ensureAllMetadata();
+        if (token !== previewPreparationToken) return;
+
+        setCanvasDimensions($("previewCanvas"), clips[0]);
+        buildPreviewTimeline();
+
+        if (!previewTimeline.length) {
+          throw new Error("Nenhum dos vídeos possui duração válida.");
+        }
+
+        await setPreviewGlobalTime(0);
+        if (token !== previewPreparationToken) return;
+
+        $("exportStatus").textContent =
+          "Pré-visualização pronta. Cada vídeo será seguido por sua versão espelhada.";
+      } catch (error) {
+        if (token === previewPreparationToken) {
+          $("exportStatus").textContent =
+            "Não foi possível preparar a pré-visualização: " + error.message;
+        }
+      }
+    }
+
+    async function returnToRotationFromPreview() {
+      previewPreparationToken++;
+      pausePreview();
+      currentStage = "rotation";
+      showScreen("rotateScreen");
+
+      if (clips.length) {
+        stageIndex = clamp(stageIndex, 0, clips.length - 1);
+        await loadEditorClip(stageIndex);
+      }
+    }
+
+    function supportedRecorderMimeType() {
+      if (!window.MediaRecorder) return "";
+
+      const candidates = [
+        'video/mp4;codecs="avc1.42E01E,mp4a.40.2"',
+        "video/mp4",
+        "video/webm;codecs=vp9,opus",
+        "video/webm;codecs=vp8,opus",
+        "video/webm"
+      ];
+
+      if (typeof MediaRecorder.isTypeSupported !== "function") {
+        return "";
+      }
+
+      return candidates.find((type) => {
+        try {
+          return MediaRecorder.isTypeSupported(type);
+        } catch (_) {
+          return false;
+        }
+      }) || "";
+    }
+
+    function extensionForMime(mime) {
+      return mime && mime.toLowerCase().includes("mp4") ? "mp4" : "webm";
+    }
+
+    function fileNameForExport(extension) {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      return "jiu-jitsu-ajustado-" + timestamp + "." + extension;
+    }
+
+    async function createDiskSink(extension) {
+      const fileName = fileNameForExport(extension);
+      const mime = extension === "mp4" ? "video/mp4" : "video/webm";
+
+      if (typeof window.showSaveFilePicker === "function") {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: fileName,
+            types: [{
+              description: "Vídeo",
+              accept: { [mime]: ["." + extension] }
+            }]
+          });
+
+          const writable = await handle.createWritable();
+
           return {
-            recorder,
-            stream,
-            mime,
-            extension:mimeExtension(mime, profile.extension),
-            hasAudio:profile.audio && audioTracks.length > 0
+            kind: "picker",
+            name: handle.name || fileName,
+            write: (chunk) => writable.write(chunk),
+            close: () => writable.close(),
+            abort: async () => {
+              if (typeof writable.abort === "function") {
+                await writable.abort();
+              }
+            },
+            getFile: () => handle.getFile()
           };
         } catch (error) {
-          lastError = error;
+          if (error && error.name === "AbortError") throw error;
         }
       }
-    }
-    const fallbackStream = new MediaStream([videoTrack]);
-    for (const options of [
-      {videoBitsPerSecond:videoBitrate},
-      {}
-    ]) {
+
       try {
-        const recorder = new MediaRecorder(fallbackStream, options);
-        const mime = recorder.mimeType || 'video/webm';
-        return {
-          recorder,
-          stream:fallbackStream,
-          mime,
-          extension:mimeExtension(mime, 'webm'),
-          hasAudio:false
-        };
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    throw new Error(
-      'Não foi possível iniciar o gravador deste navegador.' +
-      (lastError && lastError.message
-        ? ' ' + lastError.message
-        : '')
-    );
-  }
-  async function createDiskSink(extension, saveSelection) {
-    if (
-      saveSelection &&
-      saveSelection.handle &&
-      saveSelection.extension === extension
-    ) {
-      try {
-        const writable = await saveSelection.handle.createWritable();
-        return {
-          type:'picker',
-          handle:saveSelection.handle,
-          writable,
-          name:saveSelection.handle.name || ('App-compilacao.' + extension)
-        };
-      } catch (error) {
-        console.warn('Não foi possível abrir o arquivo escolhido:', error);
-      }
-    }
-    try {
-      if (
-        navigator.storage &&
-        typeof navigator.storage.getDirectory === 'function'
-      ) {
-        const directory = await navigator.storage.getDirectory();
-        const randomPart = Math.random().toString(36).slice(2, 9);
-        const name =
-          'App-compilacao-' + Date.now() + '-' + randomPart +
-          '.' + extension;
-        const handle = await directory.getFileHandle(
-          name,
-          {create:true}
-        );
-        const writable = await handle.createWritable();
-        return {
-          type:'opfs',
-          directory,
-          handle,
-          writable,
-          name
-        };
-      }
-    } catch (error) {
-      console.warn('Armazenamento temporário indisponível:', error);
-    }
-    return null;
-  }
-  function pauseRecorder(recorder) {
-    if (!recorder || recorder.state !== 'recording') return;
-    try {
-      recorder.pause();
-    } catch (_) {}
-  }
-  function resumeRecorder(recorder) {
-    if (!recorder || recorder.state !== 'paused') return;
-    try {
-      recorder.resume();
-    } catch (_) {}
-  }
-  function stopRecorder(recorder) {
-    if (!recorder || recorder.state === 'inactive') {
-      return Promise.resolve();
-    }
-    return new Promise((resolve, reject) => {
-      let settled = false;
-      const finish = error => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        recorder.removeEventListener('stop', onStop);
-        recorder.removeEventListener('error', onError);
-        error ? reject(error) : resolve();
-      };
-      const onStop = () => finish();
-      const onError = event => {
-        finish(
-          event.error ||
-          new Error('Erro ao finalizar a gravação do vídeo.')
-        );
-      };
-      const timer = setTimeout(() => {
-        finish(new Error('A finalização da gravação demorou demais.'));
-      }, 30000);
-      recorder.addEventListener('stop', onStop, {once:true});
-      recorder.addEventListener('error', onError, {once:true});
-      try {
-        if (recorder.state !== 'inactive') {
-          recorder.stop();
-        } else {
-          finish();
+        if (
+          navigator.storage &&
+          typeof navigator.storage.getDirectory === "function"
+        ) {
+          const root = await navigator.storage.getDirectory();
+          const handle = await root.getFileHandle(fileName, { create: true });
+          const writable = await handle.createWritable();
+
+          return {
+            kind: "opfs",
+            name: fileName,
+            write: (chunk) => writable.write(chunk),
+            close: () => writable.close(),
+            abort: async () => {
+              if (typeof writable.abort === "function") {
+                await writable.abort();
+              }
+              try {
+                await root.removeEntry(fileName);
+              } catch (_) {}
+            },
+            getFile: () => handle.getFile()
+          };
         }
-      } catch (error) {
-        finish(error);
+      } catch (_) {
+        return null;
       }
-    });
-  }
-  async function playVideoForExport() {
-    try {
-      await video.play();
-      return;
-    } catch (firstError) {
-      if (!video.muted) {
-        video.muted = true;
-        try {
-          await video.play();
+
+      return null;
+    }
+
+    async function prepareAudioGraph() {
+      const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContextClass) return [];
+
+      try {
+        if (!audioContext) {
+          audioContext = new AudioContextClass();
+          renderMediaSource =
+            audioContext.createMediaElementSource(renderVideo);
+
+          audioMonitorGain = audioContext.createGain();
+          audioMonitorGain.gain.value = 1;
+
+          audioRecordGain = audioContext.createGain();
+          audioRecordGain.gain.value = 1;
+
+          audioRecordDestination =
+            audioContext.createMediaStreamDestination();
+
+          renderMediaSource.connect(audioMonitorGain);
+          audioMonitorGain.connect(audioContext.destination);
+
+          renderMediaSource.connect(audioRecordGain);
+          audioRecordGain.connect(audioRecordDestination);
+        }
+
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+
+        return audioRecordDestination
+          ? audioRecordDestination.stream.getAudioTracks()
+          : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function createRecorder(stream, mimeType) {
+      const videoBitrate = isMobileDevice() ? 700000 : 4000000;
+      const audioBitrate = isMobileDevice() ? 64000 : 128000;
+
+      const options = {
+        videoBitsPerSecond: videoBitrate,
+        audioBitsPerSecond: audioBitrate
+      };
+
+      if (mimeType) options.mimeType = mimeType;
+
+      try {
+        return new MediaRecorder(stream, options);
+      } catch (firstError) {
+        if (mimeType) {
+          try {
+            return new MediaRecorder(stream, { mimeType });
+          } catch (_) {}
+        }
+        throw firstError;
+      }
+    }
+
+    function validateRecordedFile(file, mime) {
+      return new Promise(async (resolve, reject) => {
+        if (!file || !file.size || file.size < 1000) {
+          reject(new Error(
+            "O arquivo gerado ficou vazio ou pequeno demais. A gravação não foi concluída."
+          ));
           return;
-        } catch (_) {}
-      }
-      throw firstError;
-    }
-  }
-  async function readFileHeader(file) {
-    const slice = file.slice(0, 16);
-    if (typeof slice.arrayBuffer === 'function') {
-      return new Uint8Array(await slice.arrayBuffer());
-    }
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(new Uint8Array(reader.result));
-      reader.onerror = () => reject(
-        new Error('Não foi possível verificar o arquivo exportado.')
-      );
-      reader.readAsArrayBuffer(slice);
-    });
-  }
-  async function validateOutputFile(file, extension) {
-    if (!file || !Number.isFinite(file.size) || file.size < 1024) {
-      throw new Error(
-        'O navegador gerou um arquivo vazio ou incompleto. ' +
-        'Nenhum arquivo foi oferecido para baixar.'
-      );
-    }
-    const header = await readFileHeader(file);
-    if (extension === 'mp4') {
-      const marker = String.fromCharCode(
-        header[4] || 0,
-        header[5] || 0,
-        header[6] || 0,
-        header[7] || 0
-      );
-      if (marker !== 'ftyp') {
-        throw new Error(
-          'O gravador informou MP4, mas os dados não têm o cabeçalho ' +
-          'de um MP4 válido. Tente outro navegador.'
-        );
-      }
-    } else {
-      const isWebm =
-        header.length >= 4 &&
-        header[0] === 0x1A &&
-        header[1] === 0x45 &&
-        header[2] === 0xDF &&
-        header[3] === 0xA3;
-      if (!isWebm) {
-        throw new Error(
-          'Os dados gravados não têm o cabeçalho de um WebM válido. ' +
-          'Tente outro navegador.'
-        );
-      }
-    }
-  }
-  function getMemoryLimitBytes() {
-    if (!isMobileDevice()) {
-      return 192 * 1024 * 1024;
-    }
-    const deviceMemory = Number(navigator.deviceMemory) || 0;
-    if (deviceMemory > 0 && deviceMemory <= 2) {
-      return 16 * 1024 * 1024;
-    }
-    return 32 * 1024 * 1024;
-  }
-  async function renderCompilation(saveSelection, audioTracks) {
-    if (!files.length) {
-      throw new Error('Não há vídeos para exportar.');
-    }
-    let canvasStream = null;
-    let recorderSetup = null;
-    let sink = null;
-    let sinkClosed = false;
-    let keepOpfsEntry = false;
-    let recorderError = null;
-    let writeError = null;
-    let receivedBytes = 0;
-    let writeChain = Promise.resolve();
-    const chunks = [];
-    try {
-      await setVideoSource(0, true);
-      const mobile = isMobileDevice();
-      const maxDimension = mobile
-        ? MOBILE_MAX_DIMENSION
-        : DESKTOP_MAX_DIMENSION;
-      const dimensions = getCappedDimensions(
-        video.videoWidth,
-        video.videoHeight,
-        maxDimension
-      );
-      previewCanvas.width = dimensions.width;
-      previewCanvas.height = dimensions.height;
-      previewCanvas.style.aspectRatio =
-        dimensions.width + '/' + dimensions.height;
-      const width = dimensions.width;
-      const height = dimensions.height;
-      if (!width || !height) {
-        throw new Error('Não foi possível obter a resolução do vídeo.');
-      }
-      const durations = [];
-      for (let index = 0; index < files.length; index++) {
-        await setVideoSource(index, true);
-        if (!Number.isFinite(video.duration) || video.duration <= 0) {
-          throw new Error(
-            'Duração inválida no vídeo ' + (index + 1) + '.'
-          );
         }
-        durations.push(video.duration);
-      }
-      await setVideoSource(0, true);
-      if (typeof previewCanvas.captureStream !== 'function') {
-        throw new Error(
-          'Este navegador não permite capturar o vídeo final. ' +
-          'Tente usar uma versão atualizada do Chrome.'
-        );
-      }
-      canvasStream = previewCanvas.captureStream(EXPORT_FPS);
-      if (!canvasStream || !canvasStream.getVideoTracks().length) {
-        throw new Error('Não foi possível capturar os quadros do vídeo.');
-      }
-      const videoBitrate = mobile
-        ? MOBILE_VIDEO_BITRATE
-        : DESKTOP_VIDEO_BITRATE;
-      recorderSetup = createMediaRecorder(
-        canvasStream,
-        audioTracks,
-        videoBitrate
-      );
-      const recorder = recorderSetup.recorder;
-      const extension = recorderSetup.extension;
-      const actualMime = recorderSetup.mime || 'video/webm';
-      sink = await createDiskSink(extension, saveSelection);
 
-      if (isMobileDevice() && !sink) {
-        throw new Error(
-          'Exportação cancelada para evitar falta de memória. ' +
-          'O navegador não disponibilizou um destino de gravação em disco. ' +
-          'Tente salvar pelo seletor de arquivos ou use outro navegador.'
-        );
-      }
-
-      const totalSeconds =
-        durations.reduce((sum, duration) => sum + duration, 0) * 2;
-      if (!sink) {
-        const actualAudioBitrate = recorderSetup.hasAudio
-          ? AUDIO_BITRATE
-          : 0;
-        const estimatedBytes = Math.ceil(
-          totalSeconds *
-          (videoBitrate + actualAudioBitrate) /
-          8 *
-          2.2
-        );
-        const limit = getMemoryLimitBytes();
-        if (estimatedBytes > limit) {
-          throw new Error(
-            'Este navegador não oferece gravação direta em disco e a ' +
-            'compilação é grande demais para exportar com segurança na ' +
-            'memória do celular (estimativa: ' +
-            formatBytes(estimatedBytes) +
-            '). Abra o app por uma página HTTPS ou use um navegador que ' +
-            'ofereça salvamento direto.'
+        try {
+          const header = new Uint8Array(
+            await file.slice(0, 16).arrayBuffer()
           );
-        }
-      }
-      const firstPoint = valueAt(
-        centerData[0],
-        0,
-        {x:0.5,y:0.5}
-      );
-      const firstAngle = valueAt(rotateData[0], 0, 0);
-      drawAdjustedFrame(
-        pctx,
-        previewCanvas,
-        firstPoint,
-        firstAngle,
-        false
-      );
-      recorder.addEventListener('dataavailable', event => {
-        if (!event.data || event.data.size === 0) return;
-        receivedBytes += event.data.size;
-        if (sink) {
-          const data = event.data;
-          writeChain = writeChain
-            .then(async () => {
-              if (writeError) return;
-              await sink.writable.write(data);
-            })
-            .catch(error => {
-              writeError = error;
-            });
-        } else {
-          chunks.push(event.data);
-        }
-      });
-      recorder.addEventListener('error', event => {
-        recorderError =
-          event.error ||
-          new Error('O navegador encontrou um erro durante a gravação.');
-      });
-      try {
-        recorder.start(1000);
-      } catch (_) {
-        recorder.start();
-      }
-      if (recorder.state !== 'recording') {
-        throw new Error('O gravador não iniciou.');
-      }
-      let completedSeconds = 0;
-      function updateProgress(index, mirrored, time) {
-        const duration = durations[index];
-        const safeTime = Math.max(0, Math.min(duration, time));
-        const absolute = Math.min(
-          totalSeconds,
-          completedSeconds + safeTime
-        );
-        const percent = totalSeconds
-          ? Math.min(100, absolute / totalSeconds * 100)
-          : 0;
-        $('exportProgress').style.width = percent + '%';
-        $('previewTime').textContent =
-          `${fmt(absolute)} / ${fmt(totalSeconds)} · ` +
-          `Vídeo ${index + 1} ` +
-          `${mirrored ? 'espelhado' : 'original'}`;
-        $('previewDuration').textContent = fmt(totalSeconds);
-      }
-      async function renderPass(index, mirrored) {
-        pauseRecorder(recorder);
-        await seekVideo(0);
-        if (recorderError) throw recorderError;
-        if (writeError) throw writeError;
-        resumeRecorder(recorder);
-        const duration = durations[index];
-        await new Promise((resolve, reject) => {
-          let finished = false;
-          let finishing = false;
-          let animationFrame = 0;
-          let finalFrameTimer = null;
-          let passTimeout = null;
-          const finish = error => {
-            if (finished) return;
-            finished = true;
-            if (animationFrame) {
-              cancelAnimationFrame(animationFrame);
-            }
-            if (finalFrameTimer) {
-              clearTimeout(finalFrameTimer);
-            }
-            if (passTimeout) {
-              clearTimeout(passTimeout);
-            }
-            video.removeEventListener('ended', onEnded);
-            video.pause();
-            error ? reject(error) : resolve();
-          };
-          const paint = () => {
-            if (recorderError) {
-              finish(recorderError);
-              return null;
-            }
-            if (writeError) {
-              finish(writeError);
-              return null;
-            }
-            const time = Math.max(
-              0,
-              Math.min(duration, video.currentTime || 0)
-            );
-            const point = valueAt(
-              centerData[index],
-              time,
-              {x:0.5,y:0.5}
-            );
-            const angle = valueAt(rotateData[index], time, 0);
-            drawAdjustedFrame(
-              pctx,
-              previewCanvas,
-              point,
-              angle,
-              mirrored
-            );
-            updateProgress(index, mirrored, time);
-            return time;
-          };
-          const finishSegment = () => {
-            if (finishing || finished) return;
-            finishing = true;
-            if (animationFrame) {
-              cancelAnimationFrame(animationFrame);
-              animationFrame = 0;
-            }
-            if (paint() === null) return;
-            video.pause();
-            finalFrameTimer = setTimeout(() => {
-              pauseRecorder(recorder);
-              finish();
-            }, 140);
-          };
-          const onEnded = () => finishSegment();
-          const draw = () => {
-            if (finished || finishing) return;
-            const time = paint();
-            if (time === null) return;
-            if (video.ended || time >= duration - 0.025) {
-              finishSegment();
-              return;
-            }
-            animationFrame = requestAnimationFrame(draw);
-          };
-          passTimeout = setTimeout(() => {
-            finish(new Error(
-              'A reprodução parou antes de concluir a exportação. ' +
-              'Tente novamente com a tela ligada.'
+
+          const mp4 =
+            header.length >= 8 &&
+            String.fromCharCode(header[4], header[5], header[6], header[7]) === "ftyp";
+
+          const webm =
+            header.length >= 4 &&
+            header[0] === 0x1A &&
+            header[1] === 0x45 &&
+            header[2] === 0xDF &&
+            header[3] === 0xA3;
+
+          if (!mp4 && !webm) {
+            reject(new Error(
+              "O arquivo não contém um cabeçalho MP4 ou WebM reconhecível."
             ));
-          }, Math.max(30000, duration * 2000 + 15000));
-          video.addEventListener('ended', onEnded);
-          playVideoForExport()
-            .then(() => {
-              if (!finished) draw();
-            })
-            .catch(error => {
-              finish(new Error(
-                'Não foi possível reproduzir o vídeo para exportação: ' +
-                error.message
-              ));
-            });
-        });
-        completedSeconds += duration;
-        updateProgress(index, mirrored, duration);
-        if (recorderError) throw recorderError;
-        if (writeError) {
-          throw new Error(
-            'Não foi possível gravar os dados no armazenamento: ' +
-            writeError.message
-          );
+            return;
+          }
+
+          if (mime && mime.includes("mp4") && !mp4) {
+            reject(new Error(
+              "O arquivo gerado não parece ser um MP4 válido."
+            ));
+            return;
+          }
+
+          resolve();
+        } catch (error) {
+          reject(error);
         }
-      }
-      for (let index = 0; index < files.length; index++) {
-        if (index > 0) {
-          pauseRecorder(recorder);
-          await setVideoSource(index, true);
-          resumeRecorder(recorder);
-        }
-        for (let mirrored = 0; mirrored < 2; mirrored++) {
-          $('exportStatus').textContent =
-            `Processando vídeo ${index + 1} de ${files.length}: ` +
-            `${mirrored ? 'cópia espelhada' : 'original'}…`;
-          await renderPass(index, Boolean(mirrored));
-        }
-      }
-      await stopRecorder(recorder);
-      await writeChain;
-      if (recorderError) throw recorderError;
-      if (writeError) {
-        throw new Error(
-          'Não foi possível gravar os dados no armazenamento: ' +
-          writeError.message
-        );
-      }
-      if (receivedBytes === 0) {
-        throw new Error(
-          'O gravador não forneceu dados de vídeo. ' +
-          'Tente novamente ou use outro navegador.'
-        );
-      }
-      $('exportProgress').style.width = '100%';
-      $('previewTime').textContent =
-        `${fmt(totalSeconds)} / ${fmt(totalSeconds)}`;
-      let file;
-      if (sink) {
-        await sink.writable.close();
-        sinkClosed = true;
-        file = await sink.handle.getFile();
-        if (!file || file.size === 0) {
-          throw new Error(
-            'O navegador informou que terminou, mas o arquivo salvo ficou ' +
-            'vazio. Nenhum link de download foi criado.'
-          );
-        }
-      } else {
-        const mime = actualMime || 'video/webm';
-        const name = 'App-compilacao.' + extension;
-        if (typeof File === 'function') {
-          file = new File(chunks, name, {
-            type:mime,
-            lastModified:Date.now()
-          });
-        } else {
-          file = new Blob(chunks, {type:mime});
-          try {
-            file.name = name;
-          } catch (_) {}
-        }
-      }
-      await validateOutputFile(file, extension);
-      const opfsEntry = sink && sink.type === 'opfs'
-        ? {directory:sink.directory,name:sink.name}
-        : null;
-      if (opfsEntry) {
-        keepOpfsEntry = true;
-      }
-      return {
-        file,
-        mime:actualMime,
-        extension,
-        bytes:file.size,
-        storage:sink ? sink.type : 'memory',
-        opfsEntry
-      };
-    } finally {
-      const recorder = recorderSetup && recorderSetup.recorder;
-      if (recorder && recorder.state !== 'inactive') {
-        try {
-          await stopRecorder(recorder);
-        } catch (_) {}
-      }
-      try {
-        await writeChain;
-      } catch (_) {}
-      if (sink && !sinkClosed) {
-        try {
-          await sink.writable.abort();
-        } catch (_) {}
-      }
-      if (
-        sink &&
-        sink.type === 'opfs' &&
-        !keepOpfsEntry
-      ) {
-        await removeOpfsEntry({
-          directory:sink.directory,
-          name:sink.name
-        });
-      }
-      if (canvasStream) {
-        canvasStream.getTracks().forEach(track => {
-          try {
-            track.stop();
-          } catch (_) {}
-        });
-      }
-      video.pause();
-      video.muted = true;
-      if (
-        exportAudioContext &&
-        exportAudioContext.state === 'running'
-      ) {
-        try {
-          await exportAudioContext.suspend();
-        } catch (_) {}
-      }
-    }
-  }
-  function showExportedFile(result) {
-    clearExportResult();
-    outputFile = result.file;
-    outputOpfsEntry = result.opfsEntry || null;
-    outputObjectUrl = URL.createObjectURL(result.file);
-    const name = result.file.name ||
-      ('App-compilacao.' + result.extension);
-    const link = $('downloadLink');
-    link.href = outputObjectUrl;
-    link.download = name;
-    link.textContent =
-      'Baixar vídeo ' + result.extension.toUpperCase();
-    link.classList.remove('hidden');
-    let shareAvailable = false;
-    if (
-      outputFile &&
-      typeof File === 'function' &&
-      typeof navigator.share === 'function'
-    ) {
-      try {
-        const shareFile = outputFile instanceof File
-          ? outputFile
-          : new File([outputFile], name, {
-              type:result.mime || 'video/webm'
-            });
-        shareAvailable = typeof navigator.canShare !== 'function' ||
-          navigator.canShare({files:[shareFile]});
-        if (shareAvailable) {
-          outputFile = shareFile;
-        }
-      } catch (_) {
-        shareAvailable = false;
-      }
-    }
-    $('shareBtn').classList.toggle('hidden', !shareAvailable);
-  }
-  $('shareBtn').onclick = async () => {
-    if (!outputFile || typeof navigator.share !== 'function') return;
-    try {
-      await navigator.share({
-        files:[outputFile],
-        title:'App — vídeo compilado',
-        text:'Vídeo editado pelo aplicativo App'
       });
-      $('exportStatus').textContent =
-        'Arquivo enviado ao menu de compartilhamento. Escolha onde salvá-lo.';
-    } catch (error) {
-      if (error && error.name !== 'AbortError') {
-        $('exportStatus').textContent =
-          'Não foi possível abrir o compartilhamento: ' + error.message;
-      }
     }
-  };
-  function updateEnvironmentNote() {
-    const note = $('environmentNote');
-    const localContent =
-      location.protocol === 'content:' ||
-      location.protocol === 'file:';
-    if (location.protocol === 'content:') {
-      note.textContent =
-        'A página está aberta por content://. Alguns navegadores Android ' +
-        'limitam o salvamento de arquivos nesse modo. Se o compartilhamento ' +
-        'ou download falhar, abra o mesmo HTML por uma página HTTPS.';
-    } else if (localContent || !window.isSecureContext) {
-      note.textContent =
-        'A página não está em uma origem HTTPS. Isso pode desativar o ' +
-        'salvamento direto em alguns navegadores. Se necessário, abra o HTML ' +
-        'por uma página HTTPS.';
-    } else {
-      note.textContent =
-        'Se o navegador permitir, será aberto um seletor para escolher a ' +
-        'pasta de destino. A Galeria pode exigir que o arquivo seja salvo ou ' +
-        'movido para uma pasta de mídia.';
+
+    function waitForAnimationFrame() {
+      return new Promise((resolve) => requestAnimationFrame(resolve));
     }
-  }
-  $('exportBtn').onclick = async () => {
-    if (exportBusy) return;
-    if (!files.length) {
-      $('exportStatus').textContent =
-        'Não há vídeos para exportar.';
-      return;
+
+    function playExportSegment(segment, index, totalSegments, totalDuration) {
+      return new Promise((resolve, reject) => {
+        let animationFrame = null;
+        let timeout = null;
+        let finished = false;
+
+        const cleanup = () => {
+          renderVideo.removeEventListener("ended", onEnded);
+          if (animationFrame !== null) {
+            cancelAnimationFrame(animationFrame);
+          }
+          if (timeout !== null) clearTimeout(timeout);
+        };
+
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          renderVideo.pause();
+          resolve();
+        };
+
+        const fail = (error) => {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          renderVideo.pause();
+          reject(error);
+        };
+
+        const onEnded = () => finish();
+
+        const tick = () => {
+          if (finished) return;
+
+          drawPreviewFrame();
+
+          const localTime = Math.min(
+            segment.duration,
+            Number.isFinite(renderVideo.currentTime)
+              ? renderVideo.currentTime
+              : 0
+          );
+
+          const globalTime = segment.start + localTime;
+          const progress = totalDuration > 0
+            ? globalTime / totalDuration * 100
+            : 0;
+
+          $("exportProgress").value = clamp(progress, 0, 100);
+          $("exportStatus").textContent =
+            "Gravando trecho " + (index + 1) + " de " + totalSegments +
+            " — " + formatTime(globalTime) +
+            " / " + formatTime(totalDuration);
+
+          if (
+            renderVideo.ended ||
+            localTime >= segment.duration - 0.035
+          ) {
+            finish();
+            return;
+          }
+
+          animationFrame = requestAnimationFrame(tick);
+        };
+
+        renderVideo.addEventListener("ended", onEnded);
+
+        timeout = setTimeout(() => {
+          fail(new Error(
+            'A reprodução de "' + segment.clip.file.name +
+            '" não terminou como esperado.'
+          ));
+        }, Math.max(20000, (segment.duration + 25) * 1000));
+
+        renderVideo.play().then(() => {
+          animationFrame = requestAnimationFrame(tick);
+        }).catch((error) => {
+          fail(new Error(
+            "Não foi possível reproduzir um dos vídeos durante a exportação. " +
+            error.message
+          ));
+        });
+      });
     }
-    if (typeof window.MediaRecorder === 'undefined') {
-      $('exportStatus').textContent =
-        'Este navegador não oferece suporte à exportação de vídeos.';
-      return;
-    }
-    const preferred = getPreferredProfile();
-    exportBusy = true;
-    $('exportBtn').disabled = true;
-    $('previewPlay').disabled = true;
-    $('startOver').disabled = true;
-    $('backBtn').disabled = true;
-    stopPreviewPlayback();
-    stopPlayback();
-    clearExportResult();
-    $('exportProgress').style.width = '0%';
-    $('exportStatus').textContent = 'Preparando a exportação…';
-    /*
-      O seletor é acionado imediatamente no clique do usuário. Alguns
-      navegadores exigem que essa chamada ocorra dentro da interação.
-    */
-    const savePromise = requestSaveFilePicker(preferred);
-    const audioPromise = prepareAudioCapture();
-    try {
-      const saveSelection = await savePromise;
-      if (saveSelection.cancelled) {
-        await audioPromise;
-        video.muted = true;
-        $('exportStatus').textContent = 'Salvamento cancelado.';
+
+    async function exportFinalVideo() {
+      if (exportInProgress || !clips.length) return;
+
+      if (!window.MediaRecorder) {
+        $("exportStatus").textContent =
+          "Este navegador não oferece suporte à gravação do vídeo.";
         return;
       }
-      const audioTracks = await audioPromise;
-      if (saveSelection.handle) {
-        $('exportStatus').textContent =
-          'Preparando o arquivo no local escolhido…';
-      } else {
-        $('exportStatus').textContent =
-          'Exportando em tempo real. Mantenha a página aberta…';
+
+      exportInProgress = true;
+      $("exportButton").disabled = true;
+      $("downloadLink").hidden = true;
+      $("exportProgress").value = 0;
+      $("exportStatus").textContent = "Preparando a exportação…";
+
+      const selectedMime = supportedRecorderMimeType();
+      const extension = extensionForMime(selectedMime);
+      const audioTracksPromise = prepareAudioGraph();
+
+      let sink = null;
+      let sinkClosed = false;
+      let recorder = null;
+      let recorderStopPromise = null;
+      let stream = null;
+      let writeQueue = Promise.resolve();
+      let writeError = null;
+      const memoryChunks = [];
+      let previousMonitorGain = null;
+
+      try {
+        sink = await createDiskSink(extension);
+
+        if (isMobileDevice() && !sink) {
+          throw new Error(
+            "Exportação cancelada para evitar falta de memória. " +
+            "O navegador não disponibilizou um destino de gravação em disco. " +
+            "Tente salvar pelo seletor de arquivos ou use outro navegador."
+          );
+        }
+
+        await ensureAllMetadata();
+        setCanvasDimensions($("previewCanvas"), clips[0]);
+        buildPreviewTimeline();
+
+        if (!previewTimeline.length) {
+          throw new Error("Nenhum vídeo válido para exportar.");
+        }
+
+        const audioTracks = await audioTracksPromise;
+
+        stream = $("previewCanvas").captureStream(30);
+        audioTracks.forEach((track) => stream.addTrack(track));
+
+        recorder = createRecorder(stream, selectedMime);
+        const actualMime = recorder.mimeType || selectedMime || "video/webm";
+
+        if (audioMonitorGain) {
+          previousMonitorGain = audioMonitorGain.gain.value;
+          audioMonitorGain.gain.value = 0;
+        }
+
+        let stoppedResolve;
+        let stoppedReject;
+
+        recorderStopPromise = new Promise((resolve, reject) => {
+          stoppedResolve = resolve;
+          stoppedReject = reject;
+        });
+
+        recorder.addEventListener("stop", () => {
+          stoppedResolve();
+        }, { once: true });
+
+        recorder.addEventListener("error", (event) => {
+          stoppedReject(
+            event.error || new Error("Erro durante a gravação do vídeo.")
+          );
+        }, { once: true });
+
+        recorder.addEventListener("dataavailable", (event) => {
+          if (!event.data || event.data.size === 0) return;
+
+          writeQueue = writeQueue.then(async () => {
+            if (writeError) return;
+
+            if (sink) {
+              await sink.write(event.data);
+            } else {
+              memoryChunks.push(event.data);
+            }
+          }).catch((error) => {
+            writeError = error;
+          });
+        });
+
+        const firstSegment = previewTimeline[0];
+        previewSegmentIndex = 0;
+        previewMirror = firstSegment.mirror;
+
+        await ensureRenderClip(firstSegment.clip);
+        await seekVideo(renderVideo, 0);
+        drawPreviewFrame();
+        await waitForAnimationFrame();
+
+        recorder.start(1000);
+
+        for (let i = 0; i < previewTimeline.length; i++) {
+          const segment = previewTimeline[i];
+
+          previewSegmentIndex = i;
+          previewMirror = segment.mirror;
+          previewGlobalTime = segment.start;
+
+          await ensureRenderClip(segment.clip);
+          await seekVideo(renderVideo, 0);
+          drawPreviewFrame();
+          await waitForAnimationFrame();
+
+          await playExportSegment(
+            segment,
+            i,
+            previewTimeline.length,
+            previewTotalDuration
+          );
+        }
+
+        if (recorder.state !== "inactive") {
+          recorder.stop();
+        }
+
+        await recorderStopPromise;
+        await writeQueue;
+
+        if (writeError) throw writeError;
+
+        let outputFile;
+
+        if (sink) {
+          await sink.close();
+          sinkClosed = true;
+          outputFile = await sink.getFile();
+        } else {
+          outputFile = new Blob(memoryChunks, { type: actualMime });
+        }
+
+        await validateRecordedFile(outputFile, actualMime);
+
+        if (sink && sink.kind === "picker") {
+          $("exportStatus").textContent =
+            "Exportação concluída e salva em " +
+            (sink.name || "o local escolhido") +
+            " (" + formatBytes(outputFile.size) + ").";
+          $("exportStatus").classList.add("success");
+        } else {
+          if (downloadObjectUrl) {
+            URL.revokeObjectURL(downloadObjectUrl);
+          }
+
+          downloadObjectUrl = URL.createObjectURL(outputFile);
+          const link = $("downloadLink");
+          link.href = downloadObjectUrl;
+          link.download = sink ? sink.name : fileNameForExport(extension);
+          link.hidden = false;
+
+          $("exportStatus").textContent =
+            "Exportação concluída (" + formatBytes(outputFile.size) +
+            "). Toque no botão abaixo para baixar o vídeo.";
+          $("exportStatus").classList.add("success");
+        }
+
+        $("exportProgress").value = 100;
+      } catch (error) {
+        $("exportStatus").classList.remove("success");
+        $("exportStatus").textContent =
+          error && error.name === "AbortError"
+            ? "Exportação cancelada."
+            : "Não foi possível concluir a exportação: " +
+              (error && error.message ? error.message : String(error));
+
+        if (recorder && recorder.state !== "inactive") {
+          try {
+            recorder.stop();
+          } catch (_) {}
+        }
+
+        if (recorderStopPromise) {
+          try {
+            await Promise.race([
+              recorderStopPromise.catch(() => {}),
+              new Promise((resolve) => setTimeout(resolve, 2500))
+            ]);
+          } catch (_) {}
+        }
+
+        await writeQueue.catch(() => {});
+
+        if (sink && !sinkClosed) {
+          try {
+            await sink.abort();
+          } catch (_) {}
+        }
+      } finally {
+        if (
+          audioMonitorGain &&
+          previousMonitorGain !== null
+        ) {
+          audioMonitorGain.gain.value = previousMonitorGain;
+        }
+
+        if (stream) {
+          stream.getVideoTracks().forEach((track) => track.stop());
+        }
+
+        renderVideo.pause();
+        exportInProgress = false;
+        $("exportButton").disabled = false;
       }
-      const result = await renderCompilation(
-        saveSelection,
-        audioTracks
-      );
-      showExportedFile(result);
-      if (result.storage === 'picker') {
-        $('exportStatus').textContent =
-          result.extension.toUpperCase() +
-          ' válido, verificado e salvo no local escolhido (' +
-          formatBytes(result.bytes) +
-          '). Você também pode compartilhar ou baixar uma cópia.';
-      } else if (result.storage === 'opfs') {
-        $('exportStatus').textContent =
-          result.extension.toUpperCase() +
-          ' válido e verificado (' +
-          formatBytes(result.bytes) +
-          '). Toque em “Compartilhar/salvar no dispositivo” ou “Baixar vídeo”.';
-      } else {
-        $('exportStatus').textContent =
-          result.extension.toUpperCase() +
-          ' válido e verificado (' +
-          formatBytes(result.bytes) +
-          '). O arquivo ainda não foi salvo: use um dos botões abaixo.';
-      }
-    } catch (error) {
-      if (error && error.name === 'ExportCancelledError') {
-        $('exportStatus').textContent = error.message;
-      } else {
-        $('exportStatus').textContent =
-          'Falha na exportação: ' + error.message +
-          ' Tente manter a tela ligada ou abrir o app em uma página HTTPS.';
-        console.error(error);
-      }
-    } finally {
-      video.muted = true;
-      exportBusy = false;
-      $('exportBtn').disabled = false;
-      $('previewPlay').disabled = false;
-      $('startOver').disabled = false;
-      $('backBtn').disabled = false;
     }
-  };
-  $('backBtn').onclick = returnToImport;
-  $('startOver').onclick = () => {
-    if (exportBusy) return;
-    returnToImport();
-    urls.forEach(url => URL.revokeObjectURL(url));
-    urls = [];
-    files = [];
-    centerData = [];
-    rotateData = [];
-    $('fileInput').value = '';
-    $('fileList').innerHTML = '';
-    $('startBtn').disabled = true;
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-    updateNavigationButtons();
-  };
-  updateEnvironmentNote();
-  updateNavigationButtons();
-})();
-</script>
+
+    $("chooseFilesButton").addEventListener("click", () => {
+      $("fileInput").click();
+    });
+
+    $("fileInput").addEventListener("change", (event) => {
+      addSelectedFiles(event.target.files);
+      event.target.value = "";
+    });
+
+    $("startEditingButton").addEventListener("click", startEditing);
+
+    $("centerPlayButton").addEventListener("click", toggleEditorPlayback);
+    $("rotatePlayButton").addEventListener("click", toggleEditorPlayback);
+
+    $("centerResetButton").addEventListener("click", () => {
+      resetSelectedEdits("position");
+    });
+
+    $("rotateResetButton").addEventListener("click", () => {
+      resetSelectedEdits("rotation");
+    });
+
+    $("centerPrevButton").addEventListener("click", () => switchVideo(-1));
+    $("centerNextButton").addEventListener("click", () => switchVideo(1));
+    $("rotatePrevButton").addEventListener("click", () => switchVideo(-1));
+    $("rotateNextButton").addEventListener("click", () => switchVideo(1));
+
+    $("centerReturnButton").addEventListener(
+      "click",
+      returnToImportAndClearEdits
+    );
+    $("rotateReturnButton").addEventListener(
+      "click",
+      returnToImportAndClearEdits
+    );
+
+    $("centerDeleteButton").addEventListener("click", deleteCurrentVideo);
+    $("rotateDeleteButton").addEventListener("click", deleteCurrentVideo);
+
+    $("toRotationButton").addEventListener("click", async () => {
+      if (!clips.length) return;
+
+      cancelCountdown();
+      editorVideo.pause();
+      currentStage = "rotation";
+      stageIndex = 0;
+      showScreen("rotateScreen");
+      await loadEditorClip(0);
+    });
+
+    $("toPreviewButton").addEventListener("click", openPreview);
+    $("backToRotationButton").addEventListener(
+      "click",
+      returnToRotationFromPreview
+    );
+
+    $("centerTimeline").addEventListener("input", (event) => {
+      seekEditorFromRange(event.target);
+    });
+
+    $("rotateTimeline").addEventListener("input", (event) => {
+      seekEditorFromRange(event.target);
+    });
+
+    $("rotateRange").addEventListener("input", (event) => {
+      if (!clips[stageIndex]) return;
+
+      const angle = clamp(Number(event.target.value), -180, 180);
+      setRotationKey(
+        clips[stageIndex],
+        editorVideo.currentTime || 0,
+        angle
+      );
+
+      $("rotateValue").textContent = Math.round(angle) + "°";
+      drawEditorFrame();
+    });
+
+    document.querySelectorAll("[data-rotation]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!clips[stageIndex]) return;
+
+        const angle = Number(button.dataset.rotation);
+        $("rotateRange").value = String(angle);
+        $("rotateValue").textContent = angle + "°";
+
+        setRotationKey(
+          clips[stageIndex],
+          editorVideo.currentTime || 0,
+          angle
+        );
+
+        drawEditorFrame();
+      });
+    });
+
+    editorVideo.addEventListener("timeupdate", () => {
+      updateEditorUI();
+      drawEditorFrame();
+    });
+
+    editorVideo.addEventListener("loadeddata", () => {
+      updateEditorUI();
+      drawEditorFrame();
+    });
+
+    editorVideo.addEventListener("play", updatePlayButtons);
+    editorVideo.addEventListener("pause", updatePlayButtons);
+    editorVideo.addEventListener("ended", updatePlayButtons);
+
+    editorVideo.addEventListener("error", () => {
+      if (
+        activeScreen === "centerScreen" ||
+        activeScreen === "rotateScreen"
+      ) {
+        statusElementForStage().textContent =
+          "O navegador não conseguiu decodificar este vídeo. " +
+          "Tente um arquivo MP4 com vídeo H.264.";
+      }
+    });
+
+    $("previewPlayButton").addEventListener("click", startPreview);
+
+    $("previewResetButton").addEventListener("click", async () => {
+      pausePreview();
+      await setPreviewGlobalTime(0);
+    });
+
+    $("previewTimeline").addEventListener("input", async (event) => {
+      pausePreview();
+      await setPreviewGlobalTime(Number(event.target.value));
+    });
+
+    $("exportButton").addEventListener("click", exportFinalVideo);
+
+    updateImportList();
+    requestAnimationFrame(editorAnimationLoop);
+  </script>
 </body>
 </html>
