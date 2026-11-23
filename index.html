@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>maminha arroz e feijao</title>
+<title>MAT ROOM — Video Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" rel="stylesheet">
@@ -151,7 +151,7 @@ input[type=range]{
   accent-color:#dfe2e3;cursor:pointer
 }
 .toolbar{
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
   gap:5px;margin:14px 0;padding:8px 0;border-top:0;
   border-bottom:0
 }
@@ -258,7 +258,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   <section id="importScreen" class="screen active">
     <h1></h1>
     <div class="drop">
+      <div class="symbol">＋</div>
       <strong>Escolha vídeos do dispositivo</strong>
+      <p>Você pode selecionar vários arquivos de uma vez.</p>
       <button class="primary" id="pickBtn">Selecionar vídeos</button>
       <input id="fileInput" type="file" accept="video/*" multiple class="hidden">
     </div>
@@ -299,6 +301,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       <button id="centerNext" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
         <span class="tool-label">Próximo</span>
+      </button>
+      <button id="centerImport" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
+        <span class="tool-label">Importar</span>
       </button>
       <button id="centerDelete" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">delete</span>
@@ -363,6 +369,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       <button id="rotateNext" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
         <span class="tool-label">Próximo</span>
+      </button>
+      <button id="rotateImport" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
+        <span class="tool-label">Importar</span>
       </button>
       <button id="rotateDelete" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">delete</span>
@@ -1263,6 +1273,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     stopPlayback();
     show('instructionScreen', 'Instruções');
   };
+  $('centerImport').onclick = returnToImport;
   $('instructionContinue').onclick = async () => {
     const button = $('instructionContinue');
     if (button.disabled) return;
@@ -1372,6 +1383,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         'Não foi possível preparar a pré-visualização: ' + error.message;
     }
   };
+  $('rotateImport').onclick = returnToImport;
   async function preparePreview() {
     if (!files.length) return;
     stageIndex = 0;
@@ -2404,4 +2416,3 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 </script>
 </body>
 </html>
-
