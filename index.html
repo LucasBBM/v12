@@ -65,7 +65,7 @@ header{
   align-items:center;
   gap:16px;
   padding:12px 24px;
-  border-bottom:1px solid var(--line);
+  border-bottom:0;
   background:rgba(5,6,7,.94);
 }
 
@@ -80,18 +80,8 @@ main{padding:30px 24px 60px}
 .screen{display:none;animation:screenIn .22s ease-out}
 .screen.active{display:block}
 @keyframes screenIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
-h1{
-  margin:0 0 22px;padding:0 0 13px;
-  color:var(--white);font-size:clamp(20px,3vw,27px);
-  font-weight:650;letter-spacing:.035em;text-transform:uppercase;
-  border-bottom:1px solid var(--line);
-}
+h1{display:none}
 
-#importScreen h1:before{content:"01 / MEDIA INGEST"}
-#centerScreen h1:before{content:"02 / FRAME POSITIONING"}
-#instructionScreen h1:before{content:"03 / ROTATION PROTOCOL"}
-#rotateScreen h1:before{content:"04 / HORIZONTAL ALIGNMENT"}
-#previewScreen h1:before{content:"05 / OUTPUT MONITOR"}
 .wide{width:100%}
 .hidden{display:none!important}
 .primary{
@@ -162,8 +152,8 @@ input[type=range]{
 }
 .toolbar{
   display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
-  gap:5px;margin:14px 0;padding:8px 0;border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line)
+  gap:5px;margin:14px 0;padding:8px 0;border-top:0;
+  border-bottom:0
 }
 .tool-btn{
   appearance:none;-webkit-appearance:none;background:transparent;
@@ -186,11 +176,8 @@ input[type=range]{
   text-align:center;text-transform:uppercase;letter-spacing:.08em;
   word-break:keep-all
 }
-.status{
-  min-height:18px;margin:12px 0;padding:7px 10px;
-  border-left:2px solid #7b858b;background:#0d1012;
-  color:#c2c8cb;font:11px/1.5 ui-monospace,monospace
-}
+.status{display:none!important}
+
 .note{margin:12px 0;padding-left:12px;border-left:1px solid #454d52}
 .instruction{
   margin:18px 0;padding:20px;border:1px solid var(--line);
@@ -234,12 +221,6 @@ a.button{
   letter-spacing:.1em
 }
 a.button:hover{border-color:#858d92;background:#1a1f22}
-.export-info{
-  margin:18px 0;padding:15px;border:1px solid var(--line-soft);
-  background:#090b0d;color:#858d92;font-size:11px;line-height:1.7
-}
-.export-info p{margin:0 0 10px}
-.export-info p:last-child{margin-bottom:0}
 #startOver{margin-top:14px}
 @media(min-width:800px){
   main{padding-top:38px}
@@ -427,24 +408,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       Baixar vídeo
     </a>
     <div id="exportStatus" class="status" role="status"></div>
-    <div class="export-info">
-      <p>
-        O app tenta usar MP4 quando o navegador realmente oferece esse formato.
-        Caso contrário, usa WebM. Não é feita uma conversão artificial da
-        extensão.
-      </p>
-      <p>
-        Em celulares, a exportação usa resolução e tamanho limitados para
-        reduzir o risco de falta de memória. Quando disponível, o app grava
-        diretamente em um arquivo ou armazenamento temporário do navegador.
-      </p>
-      <p id="environmentNote"></p>
-      <p>
-        Depois de exportar, toque em “Compartilhar/salvar no dispositivo” ou
-        “Baixar vídeo”. O arquivo ainda não está na Galeria até você salvá-lo
-        usando uma das opções oferecidas pelo Android.
-      </p>
-    </div>
+
     <button class="ghost wide" id="startOver">Começar novamente</button>
   </section>
 </main>
@@ -2342,28 +2306,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       }
     }
   };
-  function updateEnvironmentNote() {
-    const note = $('environmentNote');
-    const localContent =
-      location.protocol === 'content:' ||
-      location.protocol === 'file:';
-    if (location.protocol === 'content:') {
-      note.textContent =
-        'A página está aberta por content://. Alguns navegadores Android ' +
-        'limitam o salvamento de arquivos nesse modo. Se o compartilhamento ' +
-        'ou download falhar, abra o mesmo HTML por uma página HTTPS.';
-    } else if (localContent || !window.isSecureContext) {
-      note.textContent =
-        'A página não está em uma origem HTTPS. Isso pode desativar o ' +
-        'salvamento direto em alguns navegadores. Se necessário, abra o HTML ' +
-        'por uma página HTTPS.';
-    } else {
-      note.textContent =
-        'Se o navegador permitir, será aberto um seletor para escolher a ' +
-        'pasta de destino. A Galeria pode exigir que o arquivo seja salvo ou ' +
-        'movido para uma pasta de mídia.';
-    }
-  }
+
   $('exportBtn').onclick = async () => {
     if (exportBusy) return;
     if (!files.length) {
@@ -2468,7 +2411,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     video.load();
     updateNavigationButtons();
   };
-  updateEnvironmentNote();
   updateNavigationButtons();
 })();
 </script>
