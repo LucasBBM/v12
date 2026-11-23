@@ -3,119 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#08080b">
 <title>App — Editor de vídeos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" rel="stylesheet">
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#08080b;
-  --panel:#17171e;
-  --panel2:#22222c;
-  --muted:#a6a6b2;
-  --line:#343440;
-}
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:var(--bg);
-  color:#f7f7fa;
+  margin:8px;
   font:16px system-ui,-apple-system,Segoe UI,sans-serif;
-  min-height:100vh;
 }
 button,input{font:inherit}
-button{
-  border:0;
-  color:#fff;
-  background:#292934;
-  border-radius:14px;
-  padding:13px 17px;
-  cursor:pointer;
-  font-weight:600;
+header,main{
+  max-width:760px;
+  margin-left:auto;
+  margin-right:auto;
 }
-button:disabled{opacity:.4;cursor:not-allowed}
-button.primary{background:#f2f2f5;color:#101014}
-button.ghost{background:transparent;border:1px solid var(--line)}
-button.wide{width:100%}
-button.danger{background:#70242b}
-button.danger:hover:not(:disabled){background:#8b2d35}
-button.delete-video{margin-top:10px}
 header{
-  height:64px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:0 16px;
-  border-bottom:1px solid #202029;
-  position:sticky;
-  top:0;
-  background:#08080bf2;
-  z-index:5;
-}
-.back{font-size:28px;background:transparent;padding:3px 8px}
-.brand{font-weight:750;letter-spacing:.3px}
-.step{margin-left:auto;color:var(--muted);font-size:13px}
-.step{display:none!important}
-main{max-width:760px;margin:auto;padding:20px 16px 44px}
-.screen{display:none}
-.screen.active{display:block}
-h1{font-size:24px;margin:6px 0 8px}
-p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
-.drop{
-  border:1.5px dashed #555565;
-  border-radius:20px;
-  padding:34px 18px;
-  text-align:center;
-  background:#111117;
-}
-.drop .symbol{font-size:38px;margin-bottom:10px}
-.drop p{color:var(--muted);margin:8px 0 18px}
-.filelist{margin:18px 0;display:grid;gap:8px}
-.file{
   display:flex;
   align-items:center;
   gap:10px;
-  background:var(--panel);
-  padding:12px;
-  border-radius:12px;
 }
-.file small{color:var(--muted);display:block}
-.file .num{color:var(--muted);font-size:13px}
+.back{font-size:24px}
+.step{display:none}
+main{padding:12px}
+.screen{display:none}
+.screen.active{display:block}
+.wide{width:100%}
+.hidden{display:none!important}
+.drop{margin:12px 0}
+.filelist{
+  display:grid;
+  gap:6px;
+  margin:12px 0;
+}
+.file{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
 .file .fname{
+  flex:1;
+  min-width:0;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  flex:1;
-  min-width:0;
 }
 .file .remove-file{
   flex:0 0 34px;
   width:34px;
   height:34px;
   padding:0;
-  border-radius:50%;
-  background:#30303a;
-  color:#fff;
-  font-size:22px;
-  line-height:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
 .player-wrap{
-  background:#000;
-  border:1px solid #282832;
-  border-radius:16px;
-  overflow:hidden;
   position:relative;
-  min-height:220px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:100%;
 }
 canvas{
   display:block;
   width:100%;
-  max-height:58vh;
+  max-width:100%;
+  max-height:65vh;
+  height:auto;
   aspect-ratio:16/9;
   object-fit:contain;
   touch-action:none;
@@ -132,58 +81,98 @@ canvas{
   position:absolute;
   width:64px;
   height:64px;
-  border:3px solid white;
+  border:2px solid white;
   border-radius:50%;
-  background:#ffffff22;
+  background:rgba(0,0,0,.2);
+  color:white;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:12px;
-  font-weight:700;
-  text-shadow:0 1px 4px #000;
   transform:translate(-50%,-50%);
   pointer-events:none;
-  box-shadow:0 0 0 2px #0005;
 }
 .countdown{
   position:absolute;
-  font-size:64px;
-  font-weight:800;
-  text-shadow:0 2px 16px #000;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  color:white;
+  font-size:48px;
+  font-weight:700;
+  text-shadow:0 1px 4px black;
   pointer-events:none;
 }
-.controls{display:flex;gap:10px;margin:14px 0}
-.controls>*{flex:1}
-.video-nav{margin-top:10px}
-.return-import{margin-top:10px}
-.timeline{
-  background:var(--panel);
-  padding:14px;
-  border-radius:14px;
-  margin:14px 0;
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:10px 0;
 }
+.controls>*{flex:1 1 130px}
+
+/* Barra de botões com ícone + texto curto (estilo editor mobile) */
+.toolbar{
+  display:grid;
+  grid-template-columns:repeat(6, minmax(0, 1fr));
+  gap:4px;
+  margin:14px 0;
+  padding:6px 0;
+}
+.tool-btn{
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:none;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+  padding:8px 2px;
+  border-radius:10px;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:opacity .15s ease, transform .1s ease, background-color .15s ease;
+}
+.tool-btn:hover:not(:disabled){
+  background:rgba(128,128,128,.1);
+}
+.tool-btn:active:not(:disabled){
+  transform:scale(.94);
+  background:rgba(128,128,128,.18);
+}
+.tool-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+.tool-btn .material-symbols-outlined{
+  font-size:28px;
+  line-height:1;
+  font-variation-settings:'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+.tool-btn .tool-label{
+  font-size:12px;
+  line-height:1.15;
+  text-align:center;
+  word-break:keep-all;
+}
+
+.timeline{margin:12px 0}
 .timeline-top{
   display:flex;
   justify-content:space-between;
-  color:var(--muted);
-  font-size:13px;
-  margin-bottom:9px;
+  gap:10px;
 }
-input[type=range]{width:100%;accent-color:#fff}
-.note{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
-  margin:12px 2px;
+input[type=range]{
+  width:100%;
+  max-width:100%;
 }
-.instruction{
-  padding:24px;
-  background:var(--panel);
-  border-radius:18px;
-  line-height:1.65;
-  font-size:18px;
-  margin:30px 0;
-}
+.note,.status{margin:10px 0}
+.instruction{margin:16px 0}
 .dial{
   display:flex;
   align-items:center;
@@ -191,10 +180,9 @@ input[type=range]{width:100%;accent-color:#fff}
   margin:18px auto;
   width:190px;
   height:190px;
-  border:10px solid #777783;
+  border:1px solid currentColor;
   border-radius:50%;
   position:relative;
-  background:#0b0b10;
   touch-action:none;
   cursor:grab;
   user-select:none;
@@ -205,65 +193,35 @@ input[type=range]{width:100%;accent-color:#fff}
   position:absolute;
   left:50%;
   top:50%;
-  width:26px;
-  height:26px;
+  width:14px;
+  height:14px;
+  border:2px solid currentColor;
   border-radius:50%;
-  background:#fff;
-  box-shadow:0 1px 8px #0008;
+  background:white;
   transform:translate(-50%,-50%) rotate(var(--dial-angle,0deg)) translateY(-85px);
   pointer-events:none;
   z-index:2;
 }
-.dial span{font-size:42px}
-.status{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:12px;
-  min-height:20px;
-  line-height:1.5;
-}
+.dial span{font-size:24px}
 .progress{
-  height:7px;
-  background:#292934;
-  border-radius:10px;
+  height:8px;
+  border:1px solid currentColor;
   overflow:hidden;
-  margin:14px 0;
+  margin:12px 0;
 }
 .progress>div{
   height:100%;
   width:0;
-  background:#eee;
-  transition:width .15s;
+  background:currentColor;
 }
-.export-info{
-  background:var(--panel);
-  padding:16px;
-  border-radius:14px;
-  line-height:1.5;
-  color:var(--muted);
-  font-size:14px;
-  margin:16px 0;
-}
+.export-info{margin:12px 0}
 .export-info p{margin:0 0 10px}
 .export-info p:last-child{margin-bottom:0}
-a.button{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  text-decoration:none;
-  border-radius:14px;
-  padding:13px 17px;
-  margin:10px 0;
-  font-weight:600;
-}
-a.button.primary{background:#f2f2f5;color:#101014}
-a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
-.hidden{display:none!important}
-@media(min-width:650px){
-  main{padding-top:28px}
-  .player-wrap{min-height:350px}
-  canvas{max-height:62vh}
+a.button{display:block;margin:8px 0}
+@media(max-width:480px){
+  .controls>*{flex-basis:100%}
+  .tool-btn .material-symbols-outlined{font-size:25px}
+  .tool-btn .tool-label{font-size:11px}
 }
 </style>
 </head>
@@ -286,6 +244,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     <div id="fileList" class="filelist"></div>
     <button id="startBtn" class="primary wide" disabled>Começar</button>
   </section>
+
   <section id="centerScreen" class="screen">
     <h1>Posicionamento do enquadramento</h1>
     <div class="player-wrap" id="centerWrap">
@@ -302,26 +261,41 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       </div>
       <input id="centerSeek" type="range" min="0" max="1000" value="0">
     </div>
-    <div class="controls">
-      <button id="centerPlay">▶ Reproduzir</button>
-      <button id="centerRestart">↻ Reiniciar ajustes</button>
+
+    <div class="toolbar" role="toolbar" aria-label="Ações de enquadramento">
+      <button id="centerPlay" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
+        <span class="tool-label">Reproduzir</span>
+      </button>
+      <button id="centerRestart" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+        <span class="tool-label">Reiniciar</span>
+      </button>
+      <button id="centerPrev" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_previous</span>
+        <span class="tool-label">Anterior</span>
+      </button>
+      <button id="centerNext" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+        <span class="tool-label">Próximo</span>
+      </button>
+      <button id="centerImport" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
+        <span class="tool-label">Importar</span>
+      </button>
+      <button id="centerDelete" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+        <span class="tool-label">Excluir</span>
+      </button>
     </div>
-    <div class="controls video-nav">
-      <button id="centerPrev" class="ghost">← Vídeo anterior</button>
-      <button id="centerNext" class="ghost">Próximo vídeo →</button>
-    </div>
-    <button id="centerImport" class="ghost wide return-import">
-      Voltar à importação
-    </button>
-    <button id="centerDelete" class="danger wide delete-video" type="button">
-      Excluir vídeo
-    </button>
+
     <div id="centerStatus" class="status" role="status"></div>
     <p class="note">
       Arraste o marcador até o ponto que deseja manter no centro. Os ajustes
       são registrados ao longo do vídeo.
     </p>
   </section>
+
   <section id="instructionScreen" class="screen">
     <h1>Orientação para rotação</h1>
     <div class="instruction">
@@ -331,6 +305,7 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     </div>
     <button id="instructionContinue" class="primary wide">Continuar</button>
   </section>
+
   <section id="rotateScreen" class="screen">
     <h1>Rotação dos vídeos</h1>
     <div class="player-wrap">
@@ -358,26 +333,41 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       </div>
       <input id="rotateSeek" type="range" min="0" max="1000" value="0">
     </div>
-    <div class="controls">
-      <button id="rotatePlay">▶ Reproduzir</button>
-      <button id="rotateRestart">↻ Reiniciar ajustes</button>
+
+    <div class="toolbar" role="toolbar" aria-label="Ações de rotação">
+      <button id="rotatePlay" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
+        <span class="tool-label">Reproduzir</span>
+      </button>
+      <button id="rotateRestart" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+        <span class="tool-label">Reiniciar</span>
+      </button>
+      <button id="rotatePrev" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_previous</span>
+        <span class="tool-label">Anterior</span>
+      </button>
+      <button id="rotateNext" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+        <span class="tool-label">Próximo</span>
+      </button>
+      <button id="rotateImport" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">folder_open</span>
+        <span class="tool-label">Importar</span>
+      </button>
+      <button id="rotateDelete" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+        <span class="tool-label">Excluir</span>
+      </button>
     </div>
-    <div class="controls video-nav">
-      <button id="rotatePrev" class="ghost">← Vídeo anterior</button>
-      <button id="rotateNext" class="ghost">Próximo vídeo →</button>
-    </div>
-    <button id="rotateImport" class="ghost wide return-import">
-      Voltar à importação
-    </button>
-    <button id="rotateDelete" class="danger wide delete-video" type="button">
-      Excluir vídeo
-    </button>
+
     <div id="rotateStatus" class="status" role="status"></div>
     <p class="note">
       Gire o controle para alinhar os ombros. Os ajustes deste vídeo são
       independentes dos ajustes dos outros vídeos.
     </p>
   </section>
+
   <section id="previewScreen" class="screen">
     <h1>Pré-visualização final</h1>
     <div class="player-wrap">
@@ -496,6 +486,16 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
   const cctx = centerCanvas.getContext('2d');
   const rctx = rotateCanvas.getContext('2d');
   const pctx = previewCanvas.getContext('2d');
+
+  function setToolButton(id, iconName, labelText) {
+    const button = $(id);
+    if (!button) return;
+    const icon = button.querySelector('.material-symbols-outlined');
+    const label = button.querySelector('.tool-label');
+    if (icon) icon.textContent = iconName;
+    if (label) label.textContent = labelText;
+  }
+
   const fmt = time => {
     if (!Number.isFinite(time) || time < 0) return '00:00';
     const seconds = Math.floor(time);
@@ -628,8 +628,8 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     }
     raf = 0;
     video.pause();
-    $('centerPlay').textContent = '▶ Reproduzir';
-    $('rotatePlay').textContent = '▶ Reproduzir';
+    setToolButton('centerPlay', 'play_arrow', 'Reproduzir');
+    setToolButton('rotatePlay', 'play_arrow', 'Reproduzir');
   }
   function cancelCountdown() {
     countdownToken++;
@@ -701,77 +701,58 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
   }
   async function deleteCurrentVideo(kind) {
     if (exportBusy || loadingVideo || !files.length) return;
-
     const index = stageIndex;
     const removedFile = files[index];
-
     if (!removedFile) return;
-
     const confirmed = window.confirm(
       'Excluir "' + removedFile.name + '" de todo o processo de edição? ' +
       'O vídeo e os ajustes de posição e rotação serão removidos, e ele ' +
       'não será incluído na pré-visualização nem na exportação.'
     );
-
     if (!confirmed) return;
-
     loadToken++;
     loadingVideo = false;
     cancelCountdown();
     stopPreviewPlayback();
     stopPlayback();
     dragging = false;
-
     const removedUrl = urls[index];
-
     files.splice(index, 1);
     urls.splice(index, 1);
     centerData.splice(index, 1);
     rotateData.splice(index, 1);
-
     clearExportResult();
     renderFileList();
-
     if (!files.length) {
       stageIndex = 0;
       mode = 'center';
       clearAllEdits();
-
       video.pause();
       video.removeAttribute('src');
       video.load();
-
       if (removedUrl) {
         URL.revokeObjectURL(removedUrl);
       }
-
       $('centerStatus').textContent = '';
       $('rotateStatus').textContent = '';
       $('rotateLoadStatus').textContent = '';
-
       updateNavigationButtons();
       show('importScreen', 'Importação', false);
       return;
     }
-
     stageIndex = Math.min(index, files.length - 1);
     mode = kind;
-
     updateNavigationButtons();
     show(
       kind === 'center' ? 'centerScreen' : 'rotateScreen',
       kind === 'center' ? 'Enquadramento' : 'Rotação'
     );
-
     try {
       const loaded = await loadAt(stageIndex, kind);
-
       if (!loaded) return;
-
       const statusId = kind === 'center'
         ? 'centerStatus'
         : 'rotateStatus';
-
       $(statusId).textContent =
         '"' + removedFile.name + '" foi excluído. Vídeo ' +
         (stageIndex + 1) + ' de ' + files.length + ' selecionado.';
@@ -779,7 +760,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       const statusId = kind === 'center'
         ? 'centerStatus'
         : 'rotateStatus';
-
       $(statusId).textContent =
         'Vídeo excluído, mas não foi possível carregar o vídeo selecionado: ' +
         error.message;
@@ -803,12 +783,16 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
     $('rotatePlay').disabled = loadingVideo || noFiles;
     $('centerDelete').disabled = loadingVideo || noFiles;
     $('rotateDelete').disabled = loadingVideo || noFiles;
-    $('centerNext').textContent = atLast
-      ? 'Concluir enquadramento →'
-      : 'Próximo vídeo →';
-    $('rotateNext').textContent = atLast
-      ? 'Concluir rotação →'
-      : 'Próximo vídeo →';
+    setToolButton(
+      'centerNext',
+      atLast ? 'check_circle' : 'skip_next',
+      atLast ? 'Concluir' : 'Próximo'
+    );
+    setToolButton(
+      'rotateNext',
+      atLast ? 'check_circle' : 'skip_next',
+      atLast ? 'Concluir' : 'Próximo'
+    );
   }
   function refreshCenterFrame() {
     if (!video.videoWidth || !files.length) return;
@@ -1054,9 +1038,9 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       await video.play();
       playing = true;
       if (kind === 'center') {
-        $('centerPlay').textContent = 'Ⅱ Pausar';
+        setToolButton('centerPlay', 'pause', 'Pausar');
       } else {
-        $('rotatePlay').textContent = 'Ⅱ Pausar';
+        setToolButton('rotatePlay', 'pause', 'Pausar');
       }
       loop();
     } catch (_) {
@@ -1185,21 +1169,18 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       await video.play();
       playing = true;
       if (kind === 'center') {
-        $('centerPlay').textContent = 'Ⅱ Pausar';
+        setToolButton('centerPlay', 'pause', 'Pausar');
       } else {
-        $('rotatePlay').textContent = 'Ⅱ Pausar';
+        setToolButton('rotatePlay', 'pause', 'Pausar');
       }
       loop();
     } catch (_) {}
   }
   async function resetSelectedEdits(kind) {
     if (loadingVideo || !files.length) return;
-
     cancelCountdown();
     stopPlayback();
-
     const index = stageIndex;
-
     if (kind === 'center') {
       centerData[index] = [
         {t:0,v:{x:0.5,y:0.5}}
@@ -1211,36 +1192,28 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       $('rotateStatus').textContent =
         'Ajustes de rotação deste vídeo reiniciados.';
     }
-
     mode = kind;
-
     try {
       await seekVideo(0);
     } catch (error) {
       const statusId = kind === 'center'
         ? 'centerStatus'
         : 'rotateStatus';
-
       $(statusId).textContent =
         'Ajustes reiniciados, mas não foi possível voltar ao início: ' +
         error.message;
       return;
     }
-
     if (stageIndex !== index || mode !== kind) return;
-
     if (kind === 'center') {
       refreshCenterFrame();
     } else {
       refreshRotateFrame();
     }
-
     const requiredScreen = kind === 'center'
       ? 'centerScreen'
       : 'rotateScreen';
-
     if (!$(requiredScreen).classList.contains('active')) return;
-
     await countdownAndPlay(kind);
   }
   async function navigateTo(index, kind) {
@@ -1964,7 +1937,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
       const extension = recorderSetup.extension;
       const actualMime = recorderSetup.mime || 'video/webm';
       sink = await createDiskSink(extension, saveSelection);
-
       if (isMobileDevice() && !sink) {
         throw new Error(
           'Exportação cancelada para evitar falta de memória. ' +
@@ -1972,7 +1944,6 @@ a.button.ghost{background:transparent;border:1px solid var(--line);color:#fff}
           'Tente salvar pelo seletor de arquivos ou use outro navegador.'
         );
       }
-
       const totalSeconds =
         durations.reduce((sum, duration) => sum + duration, 0) * 2;
       if (!sink) {
