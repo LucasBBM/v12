@@ -3,237 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>App — Editor de vídeos</title>
+<title>MAT ROOM — Video Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" rel="stylesheet">
 <style>
+
+:root{
+  color-scheme:dark;
+  --bg:#050607;
+  --panel:#0b0d0f;
+  --panel-2:#101316;
+  --line:#292e32;
+  --line-soft:#1a1e21;
+  --text:#e7e9e9;
+  --muted:#858c91;
+  --dim:#596167;
+  --white:#f4f5f5;
+  --accent:#d8dcde;
+  --danger:#b7a5a5;
+}
 *{box-sizing:border-box}
+html{min-height:100%;background:var(--bg)}
 body{
-  margin:8px;
-  font:16px system-ui,-apple-system,Segoe UI,sans-serif;
+  margin:0;
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
+    var(--bg);
+  background-size:32px 32px,32px 32px,auto;
+  color:var(--text);
+  font:14px/1.5 Arial,system-ui,-apple-system,"Segoe UI",sans-serif;
+  letter-spacing:normal;
 }
 button,input{font:inherit}
-header,main{
-  max-width:760px;
-  margin-left:auto;
-  margin-right:auto;
+button{
+  color:var(--text);
+  background:#171b1e;
+  border:1px solid #3a4146;
+  border-radius:2px;
+  padding:10px 14px;
+  min-height:40px;
+  cursor:pointer;
+  text-transform:uppercase;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  transition:background .15s,border-color .15s,transform .15s;
 }
+button:hover:not(:disabled){background:#242a2e;border-color:#737b80}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.32;cursor:not-allowed}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{
+  outline:1px solid #dfe3e5;outline-offset:3px
+}
+header,main{max-width:1120px;margin:0 auto}
 header{
+  min-height:66px;
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:16px;
+  padding:12px 24px;
+  border-bottom:1px solid var(--line);
+  background:rgba(5,6,7,.94);
 }
-.back{font-size:24px}
-.step{display:none}
-main{padding:12px}
-.screen{display:none}
+
+
+
+
+.back{
+  min-width:36px;width:36px;height:36px;padding:0;
+  font-size:22px;line-height:1;background:transparent
+}
+main{padding:30px 24px 60px}
+.screen{display:none;animation:screenIn .22s ease-out}
 .screen.active{display:block}
+@keyframes screenIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
+h1{
+  margin:0 0 22px;padding:0 0 13px;
+  color:var(--white);font-size:clamp(20px,3vw,27px);
+  font-weight:650;letter-spacing:.035em;text-transform:uppercase;
+  border-bottom:1px solid var(--line);
+}
+
+#importScreen h1:before{content:"01 / MEDIA INGEST"}
+#centerScreen h1:before{content:"02 / FRAME POSITIONING"}
+#instructionScreen h1:before{content:"03 / ROTATION PROTOCOL"}
+#rotateScreen h1:before{content:"04 / HORIZONTAL ALIGNMENT"}
+#previewScreen h1:before{content:"05 / OUTPUT MONITOR"}
 .wide{width:100%}
 .hidden{display:none!important}
-.drop{margin:12px 0}
-.filelist{
-  display:grid;
-  gap:6px;
-  margin:12px 0;
+.primary{
+  background:#dfe2e3;color:#080a0b;border-color:#f0f2f2;
 }
-.file{
-  display:flex;
-  align-items:center;
-  gap:8px;
+.primary:hover:not(:disabled){background:#fff;color:#000;border-color:#fff}
+.ghost{background:transparent;color:var(--text)}
+.drop{
+  position:relative;margin:18px 0;padding:34px 24px;
+  min-height:190px;display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:center;gap:9px;
+  border:1px dashed #50585e;background:linear-gradient(135deg,#101316,#080a0b);
 }
-.file .fname{
-  flex:1;
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.file .remove-file{
-  flex:0 0 34px;
-  width:34px;
-  height:34px;
-  padding:0;
-}
-.player-wrap{
-  position:relative;
-  width:100%;
-}
-canvas{
-  display:block;
-  width:100%;
-  max-width:100%;
-  max-height:65vh;
-  height:auto;
-  aspect-ratio:16/9;
-  object-fit:contain;
-  touch-action:none;
-}
-.overlay{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-}
-.marker{
-  position:absolute;
-  width:64px;
-  height:64px;
-  border:2px solid white;
-  border-radius:50%;
-  background:rgba(0,0,0,.2);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-}
-.countdown{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  color:white;
-  font-size:48px;
-  font-weight:700;
-  text-shadow:0 1px 4px black;
-  pointer-events:none;
-}
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin:10px 0;
-}
-.controls>*{flex:1 1 130px}
 
-/* Barra de botões com ícone + texto curto (estilo editor mobile) */
+.drop .symbol{font-size:27px;line-height:1;color:#cdd1d3}
+.drop strong{font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.drop p,.note,.instruction{color:var(--muted);font-size:12px}
+.drop p{margin:0 0 8px}
+.filelist{display:grid;gap:5px;margin:14px 0}
+.file{
+  min-width:0;display:flex;align-items:center;gap:12px;
+  padding:9px 10px;border:1px solid var(--line-soft);background:#0a0c0e;
+  color:var(--muted);font:11px ui-monospace,monospace
+}
+.file .num{color:#dfe2e3}
+.file .fname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.file .remove-file{flex:0 0 32px;width:32px;min-height:30px;height:30px;padding:0;color:#a9afb2}
+.player-wrap{
+  position:relative;width:100%;padding:8px;
+  border:1px solid #3a4146;background:#020303;
+  box-shadow:0 10px 30px #0008;
+}
+
+canvas{
+  display:block;width:100%;max-width:100%;max-height:65vh;height:auto;
+  aspect-ratio:16/9;object-fit:contain;touch-action:none;background:#000
+}
+.overlay{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.marker{
+  position:absolute;width:64px;height:64px;border:1px solid #f2f4f4;
+  border-radius:50%;background:#0003;color:white;display:flex;align-items:center;
+  justify-content:center;font:9px ui-monospace,monospace;text-transform:uppercase;
+  transform:translate(-50%,-50%);pointer-events:none;
+  box-shadow:0 0 0 5px #fff1
+}
+.marker:before,.marker:after{
+  content:"";position:absolute;background:#fff9
+}
+.marker:before{width:1px;height:82px}
+.marker:after{height:1px;width:82px}
+.countdown{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  color:white;font:700 54px/1 ui-monospace,monospace;
+  text-shadow:0 2px 12px #000;pointer-events:none
+}
+.timeline{
+  margin:12px 0 16px;padding:12px 14px;
+  border:1px solid var(--line);background:#090b0d
+}
+.timeline-top{
+  display:flex;justify-content:space-between;gap:10px;
+  color:#d9dddf;font:11px ui-monospace,monospace;letter-spacing:.08em
+}
+.timeline-top span:last-child{color:var(--muted)}
+input[type=range]{
+  display:block;width:100%;max-width:100%;height:18px;margin:7px 0 0;
+  accent-color:#dfe2e3;cursor:pointer
+}
 .toolbar{
-  display:grid;
-  grid-template-columns:repeat(6, minmax(0, 1fr));
-  gap:4px;
-  margin:14px 0;
-  padding:6px 0;
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:5px;margin:14px 0;padding:8px 0;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
 }
 .tool-btn{
-  appearance:none;
-  -webkit-appearance:none;
-  background:transparent;
-  border:none;
-  color:inherit;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  gap:6px;
-  padding:8px 2px;
-  border-radius:10px;
-  cursor:pointer;
-  user-select:none;
-  -webkit-user-select:none;
+  appearance:none;-webkit-appearance:none;background:transparent;
+  border:1px solid transparent;color:#c7cccf;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:7px;min-width:0;min-height:64px;padding:8px 2px;border-radius:2px;
+  cursor:pointer;user-select:none;-webkit-user-select:none;
   -webkit-tap-highlight-color:transparent;
-  transition:opacity .15s ease, transform .1s ease, background-color .15s ease;
+  transition:opacity .15s,transform .1s,background-color .15s
 }
-.tool-btn:hover:not(:disabled){
-  background:rgba(128,128,128,.1);
-}
-.tool-btn:active:not(:disabled){
-  transform:scale(.94);
-  background:rgba(128,128,128,.18);
-}
-.tool-btn:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-}
+.tool-btn:hover:not(:disabled){background:#171b1e;border-color:#30373b}
+.tool-btn:active:not(:disabled){transform:scale(.96);background:#252b2f}
+.tool-btn:disabled{opacity:.28;cursor:not-allowed}
 .tool-btn .material-symbols-outlined{
-  font-size:28px;
-  line-height:1;
-  font-variation-settings:'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  font-size:25px;line-height:1;
+  font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24
 }
 .tool-btn .tool-label{
-  font-size:12px;
-  line-height:1.15;
-  text-align:center;
-  word-break:keep-all;
+  color:#aeb5b9;font:9px/1.15 ui-monospace,monospace;
+  text-align:center;text-transform:uppercase;letter-spacing:.08em;
+  word-break:keep-all
 }
-
-.timeline{margin:12px 0}
-.timeline-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
+.status{
+  min-height:18px;margin:12px 0;padding:7px 10px;
+  border-left:2px solid #7b858b;background:#0d1012;
+  color:#c2c8cb;font:11px/1.5 ui-monospace,monospace
 }
-input[type=range]{
-  width:100%;
-  max-width:100%;
+.note{margin:12px 0;padding-left:12px;border-left:1px solid #454d52}
+.instruction{
+  margin:18px 0;padding:20px;border:1px solid var(--line);
+  background:linear-gradient(120deg,#101316,#080a0b);
+  font-size:13px;line-height:1.8;color:#c0c6c9
 }
-.note,.status{margin:10px 0}
-.instruction{margin:16px 0}
+#instructionContinue{margin-top:8px}
 .dial{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:18px auto;
-  width:190px;
-  height:190px;
-  border:1px solid currentColor;
-  border-radius:50%;
-  position:relative;
-  touch-action:none;
-  cursor:grab;
-  user-select:none;
-  -webkit-user-select:none;
+  display:flex;align-items:center;justify-content:center;
+  margin:22px auto;width:190px;height:190px;border:1px solid #50585e;
+  border-radius:50%;position:relative;touch-action:none;cursor:grab;
+  user-select:none;-webkit-user-select:none;
+  background:radial-gradient(circle,#15191c 0 2px,transparent 3px),
+    repeating-conic-gradient(from 0deg,#343b40 0deg 1deg,transparent 1deg 15deg);
+  box-shadow:inset 0 0 0 9px #090b0d,inset 0 0 0 10px #343b40,0 0 25px #0009
+}
+.dial:before{
+  content:"ROTATION / DEG";position:absolute;top:29px;
+  color:#879096;font:8px ui-monospace,monospace;letter-spacing:.14em
+}
+.dial:after{
+  content:"−180        0        +180";position:absolute;bottom:28px;
+  color:#737c81;font:8px ui-monospace,monospace;white-space:pre
 }
 .dial:active{cursor:grabbing}
 .dial-knob{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:14px;
-  height:14px;
-  border:2px solid currentColor;
-  border-radius:50%;
-  background:white;
-  transform:translate(-50%,-50%) rotate(var(--dial-angle,0deg)) translateY(-85px);
-  pointer-events:none;
-  z-index:2;
+  position:absolute;left:50%;top:50%;width:13px;height:13px;
+  border:2px solid #080a0b;border-radius:50%;background:#e7e9e9;
+  transform:translate(-50%,-50%) rotate(var(--dial-angle,0deg)) translateY(-75px);
+  pointer-events:none;z-index:2;box-shadow:0 0 0 3px #dfe3e533
 }
-.dial span{font-size:24px}
-.progress{
-  height:8px;
-  border:1px solid currentColor;
-  overflow:hidden;
-  margin:12px 0;
+.dial span{font:25px ui-monospace,monospace;color:#f1f3f4;z-index:1}
+.progress{height:5px;border:1px solid #424a4f;overflow:hidden;margin:12px 0;background:#090b0d}
+.progress>div{height:100%;width:0;background:#e1e4e5;transition:width .15s}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.controls>*{flex:1 1 130px}
+a.button{
+  display:block;margin:8px 0;padding:11px 14px;text-align:center;
+  color:var(--text);border:1px solid var(--line);background:#111518;
+  text-decoration:none;text-transform:uppercase;font-size:11px;font-weight:700;
+  letter-spacing:.1em
 }
-.progress>div{
-  height:100%;
-  width:0;
-  background:currentColor;
+a.button:hover{border-color:#858d92;background:#1a1f22}
+.export-info{
+  margin:18px 0;padding:15px;border:1px solid var(--line-soft);
+  background:#090b0d;color:#858d92;font-size:11px;line-height:1.7
 }
-.export-info{margin:12px 0}
 .export-info p{margin:0 0 10px}
 .export-info p:last-child{margin-bottom:0}
-a.button{display:block;margin:8px 0}
-@media(max-width:480px){
-  .controls>*{flex-basis:100%}
-  .tool-btn .material-symbols-outlined{font-size:25px}
-  .tool-btn .tool-label{font-size:11px}
+#startOver{margin-top:14px}
+@media(min-width:800px){
+  main{padding-top:38px}
+  #importScreen{max-width:820px;margin:0 auto}
+  #centerScreen,#rotateScreen,#previewScreen{max-width:1000px;margin:0 auto}
+  .player-wrap{padding:10px}
+  .overlay{inset:10px}
 }
+@media(max-width:600px){
+  header{min-height:58px;padding:10px 14px}
+  .brand{font-size:11px;letter-spacing:.14em}
+  .brand:after{font-size:8px;padding-left:8px}
+  main{padding:22px 14px 42px}
+  .drop{padding:28px 18px}
+  .toolbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+  .tool-btn{min-height:62px}
+  .tool-btn .material-symbols-outlined{font-size:24px}
+  .tool-btn .tool-label{font-size:9px}
+  .controls>*{flex-basis:100%}
+  .player-wrap{padding:5px}
+  .overlay{inset:5px}
+  .player-wrap:before{left:10px;top:9px;font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
 </style>
 </head>
 <body>
 <header>
   <button id="backBtn" class="back hidden" aria-label="Voltar">‹</button>
-  <div class="brand">App</div>
-  <div class="step" id="stepLabel" aria-hidden="true"></div>
 </header>
 <main>
   <section id="importScreen" class="screen active">
-    <h1>Importar vídeos</h1>
+    <h1></h1>
     <div class="drop">
       <div class="symbol">＋</div>
       <strong>Escolha vídeos do dispositivo</strong>
@@ -246,7 +288,7 @@ a.button{display:block;margin:8px 0}
   </section>
 
   <section id="centerScreen" class="screen">
-    <h1>Posicionamento do enquadramento</h1>
+    <h1></h1>
     <div class="player-wrap" id="centerWrap">
       <canvas id="centerCanvas"></canvas>
       <div class="overlay">
@@ -290,14 +332,10 @@ a.button{display:block;margin:8px 0}
     </div>
 
     <div id="centerStatus" class="status" role="status"></div>
-    <p class="note">
-      Arraste o marcador até o ponto que deseja manter no centro. Os ajustes
-      são registrados ao longo do vídeo.
-    </p>
   </section>
 
   <section id="instructionScreen" class="screen">
-    <h1>Orientação para rotação</h1>
+    <h1></h1>
     <div class="instruction">
       Em cada vídeo, mantenha a linha dos ombros do lutador desejado alinhada
       com a horizontal, com o ombro direito à direita e o ombro esquerdo à
@@ -307,7 +345,7 @@ a.button{display:block;margin:8px 0}
   </section>
 
   <section id="rotateScreen" class="screen">
-    <h1>Rotação dos vídeos</h1>
+    <h1></h1>
     <div class="player-wrap">
       <canvas id="rotateCanvas"></canvas>
       <div id="rotateCount" class="countdown"></div>
@@ -362,21 +400,17 @@ a.button{display:block;margin:8px 0}
     </div>
 
     <div id="rotateStatus" class="status" role="status"></div>
-    <p class="note">
-      Gire o controle para alinhar os ombros. Os ajustes deste vídeo são
-      independentes dos ajustes dos outros vídeos.
-    </p>
   </section>
 
   <section id="previewScreen" class="screen">
-    <h1>Pré-visualização final</h1>
+    <h1></h1>
     <div class="player-wrap">
       <canvas id="previewCanvas"></canvas>
     </div>
     <div class="timeline">
       <div class="timeline-top">
         <span id="previewTime">Pronto para reproduzir</span>
-        <span id="previewDuration">Compilação</span>
+        <span id="previewDuration" class="hidden">Compilação</span>
       </div>
       <div class="progress">
         <div id="exportProgress"></div>
@@ -519,7 +553,6 @@ a.button{display:block;margin:8px 0}
     screens.forEach(screenId => {
       $(screenId).classList.toggle('active', screenId === id);
     });
-    $('stepLabel').textContent = label;
     $('backBtn').classList.toggle('hidden', !back);
   }
   function getCappedDimensions(width, height, maxDimension) {
