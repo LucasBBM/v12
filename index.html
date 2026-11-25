@@ -410,6 +410,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     'previewScreen'
   ];
   const EXPORT_FPS = 30;
+  const EDIT_PLAYBACK_RATE = 0.25;
+  const ORIGINAL_PLAYBACK_RATE = EDIT_PLAYBACK_RATE * 4;
   const MOBILE_MAX_DIMENSION = 854;
   const DESKTOP_MAX_DIMENSION = 1280;
   const MOBILE_VIDEO_BITRATE = 700000;
@@ -918,6 +920,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     updateNavigationButtons();
     try {
       await setVideoSource(index, true);
+      video.playbackRate = EDIT_PLAYBACK_RATE;
       if (token !== loadToken) return false;
       if (kind === 'center') {
         dims(centerCanvas);
@@ -1362,6 +1365,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   };
   async function preparePreview() {
     if (!files.length) return;
+    video.playbackRate = ORIGINAL_PLAYBACK_RATE;
     stageIndex = 0;
     mode = 'preview';
     await setVideoSource(0, true);
@@ -1858,7 +1862,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     let writeChain = Promise.resolve();
     const chunks = [];
     try {
+      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
       await setVideoSource(0, true);
+      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
       const mobile = isMobileDevice();
       const maxDimension = mobile
         ? MOBILE_MAX_DIMENSION
@@ -1880,6 +1886,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       const durations = [];
       for (let index = 0; index < files.length; index++) {
         await setVideoSource(index, true);
+        video.playbackRate = ORIGINAL_PLAYBACK_RATE;
         if (!Number.isFinite(video.duration) || video.duration <= 0) {
           throw new Error(
             'Duração inválida no vídeo ' + (index + 1) + '.'
@@ -1888,6 +1895,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         durations.push(video.duration);
       }
       await setVideoSource(0, true);
+      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
       if (typeof previewCanvas.captureStream !== 'function') {
         throw new Error(
           'Este navegador não permite capturar o vídeo final. ' +
@@ -2117,6 +2125,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         if (index > 0) {
           pauseRecorder(recorder);
           await setVideoSource(index, true);
+          video.playbackRate = ORIGINAL_PLAYBACK_RATE;
           resumeRecorder(recorder);
         }
         for (let mirrored = 0; mirrored < 2; mirrored++) {
