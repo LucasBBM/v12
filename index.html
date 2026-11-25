@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" rel="stylesheet">
 <style>
-
 :root{
   color-scheme:dark;
   --bg:#050607;
@@ -64,10 +63,6 @@ header{
   border-bottom:0;
   background:rgba(5,6,7,.94);
 }
-
-
-
-
 .back{
   min-width:36px;width:36px;height:36px;padding:0;
   font-size:22px;line-height:1;background:transparent
@@ -77,7 +72,6 @@ main{padding:30px 24px 60px}
 .screen.active{display:block}
 @keyframes screenIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
 h1{display:none}
-
 .wide{width:100%}
 .hidden{display:none!important}
 .primary{
@@ -98,7 +92,6 @@ h1{display:none}
   justify-content:center;gap:9px;
   border:1px dashed #50585e;background:linear-gradient(135deg,#101316,#080a0b);
 }
-
 .drop .symbol{font-size:27px;line-height:1;color:#cdd1d3}
 .drop strong{font-size:15px;letter-spacing:.08em;text-transform:uppercase}
 .drop p,.note,.instruction{color:var(--muted);font-size:12px}
@@ -117,7 +110,6 @@ h1{display:none}
   border:1px solid #3a4146;background:#020303;
   box-shadow:0 10px 30px #0008;
 }
-
 canvas{
   display:block;width:100%;max-width:100%;max-height:65vh;height:auto;
   aspect-ratio:16/9;object-fit:contain;touch-action:none;background:#000
@@ -175,7 +167,6 @@ input[type=range]{
   word-break:keep-all
 }
 .status{display:none!important}
-
 .note{margin:12px 0;padding-left:12px;border-left:1px solid #454d52}
 .instruction{
   margin:18px 0;padding:20px;border:1px solid var(--line);
@@ -235,7 +226,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
-
 </style>
 </head>
 <body>
@@ -253,7 +243,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     <div id="fileList" class="filelist"></div>
     <button id="startBtn" class="primary wide" disabled>Começar</button>
   </section>
-
   <section id="centerScreen" class="screen">
     <h1></h1>
     <div class="player-wrap" id="centerWrap">
@@ -270,7 +259,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       </div>
       <input id="centerSeek" type="range" min="0" max="1000" value="0">
     </div>
-
     <div class="toolbar" role="toolbar" aria-label="Ações de enquadramento">
       <button id="centerPlay" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
@@ -293,10 +281,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         <span class="tool-label">Excluir</span>
       </button>
     </div>
-
     <div id="centerStatus" class="status" role="status"></div>
   </section>
-
   <section id="instructionScreen" class="screen">
     <h1></h1>
     <div class="instruction">
@@ -306,7 +292,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     </div>
     <button id="instructionContinue" class="primary wide">Continuar</button>
   </section>
-
   <section id="rotateScreen" class="screen">
     <h1></h1>
     <div class="player-wrap">
@@ -334,7 +319,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       </div>
       <input id="rotateSeek" type="range" min="0" max="1000" value="0">
     </div>
-
     <div class="toolbar" role="toolbar" aria-label="Ações de rotação">
       <button id="rotatePlay" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
@@ -357,10 +341,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         <span class="tool-label">Excluir</span>
       </button>
     </div>
-
     <div id="rotateStatus" class="status" role="status"></div>
   </section>
-
   <section id="previewScreen" class="screen">
     <h1></h1>
     <div class="player-wrap">
@@ -386,7 +368,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       Baixar vídeo
     </a>
     <div id="exportStatus" class="status" role="status"></div>
-
     <button class="ghost wide" id="startOver">Começar novamente</button>
   </section>
 </main>
@@ -464,7 +445,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   const cctx = centerCanvas.getContext('2d');
   const rctx = rotateCanvas.getContext('2d');
   const pctx = previewCanvas.getContext('2d');
-
   function setToolButton(id, iconName, labelText) {
     const button = $(id);
     if (!button) return;
@@ -473,7 +453,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     if (icon) icon.textContent = iconName;
     if (label) label.textContent = labelText;
   }
-
   const fmt = time => {
     if (!Number.isFinite(time) || time < 0) return '00:00';
     const seconds = Math.floor(time);
@@ -533,6 +512,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     }
     array.sort((a, b) => a.t - b.t);
   }
+  function normalizeAngle(angle) {
+    return ((angle + 180) % 360 + 360) % 360 - 180;
+  }
   function valueAt(array, time, fallback) {
     if (!array || !array.length) return fallback;
     if (time <= array[0].t) return array[0].v;
@@ -548,7 +530,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
           typeof first.v === 'number' &&
           typeof second.v === 'number'
         ) {
-          return first.v + (second.v - first.v) * portion;
+          const delta = normalizeAngle(second.v - first.v);
+          return normalizeAngle(first.v + delta * portion);
         }
         return {
           x:first.v.x + (second.v.x - first.v.x) * portion,
@@ -2291,7 +2274,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       }
     }
   };
-
   $('exportBtn').onclick = async () => {
     if (exportBusy) return;
     if (!files.length) {
@@ -2401,5 +2383,3 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 </script>
 </body>
 </html>
-
-
