@@ -114,18 +114,51 @@ canvas{
   display:block;width:100%;max-width:100%;max-height:65vh;height:auto;
   aspect-ratio:16/9;object-fit:contain;touch-action:none;background:#000
 }
-.overlay{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.overlay{
+  position:absolute;inset:8px;display:flex;align-items:center;
+  justify-content:center;pointer-events:none
+}
+.reference-grid{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,.17) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(255,255,255,.17) 1px,transparent 1px);
+  background-size:10% 10%;
+}
+.reference-grid::before,
+.reference-grid::after{
+  content:"";
+  position:absolute;
+  background:rgba(255,255,255,.28);
+}
+.reference-grid::before{
+  left:0;
+  right:0;
+  top:50%;
+  height:1px;
+  transform:translateY(-.5px);
+}
+.reference-grid::after{
+  top:0;
+  bottom:0;
+  left:50%;
+  width:1px;
+  transform:translateX(-.5px);
+}
 .marker{
   position:absolute;width:64px;height:64px;border:1px solid #f2f4f4;
   border-radius:50%;background:#0003;color:white;display:flex;align-items:center;
   justify-content:center;font:9px ui-monospace,monospace;text-transform:uppercase;
-  transform:translate(-50%,-50%);pointer-events:none;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:2;
   box-shadow:0 0 0 5px #fff1
 }
 .countdown{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   color:white;font:700 54px/1 ui-monospace,monospace;
-  text-shadow:0 2px 12px #000;pointer-events:none
+  text-shadow:0 2px 12px #000;pointer-events:none;z-index:3
 }
 .timeline{
   margin:12px 0 16px;padding:12px 14px;
@@ -296,7 +329,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     <h1></h1>
     <div class="player-wrap">
       <canvas id="rotateCanvas"></canvas>
-      <div id="rotateCount" class="countdown"></div>
+      <div class="overlay">
+        <div class="reference-grid" aria-hidden="true"></div>
+        <div id="rotateCount" class="countdown"></div>
+      </div>
     </div>
     <div
       class="dial"
