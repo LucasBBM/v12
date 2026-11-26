@@ -51,46 +51,38 @@ button:hover:not(:disabled){background:#242a2e;border-color:#737b80}
 button:active:not(:disabled){transform:translateY(1px)}
 button:disabled{opacity:.32;cursor:not-allowed}
 button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{
-  outline:1px solid #dfe3e5;outline-offset:3px
+  outline:1px solid #dfe3e5;
+  outline-offset:3px
 }
-header,main{max-width:1120px;margin:0 auto}
-header{
-  min-height:66px;
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:12px 24px;
-  border-bottom:0;
-  background:rgba(5,6,7,.94);
-}
-.back{
-  min-width:36px;width:36px;height:36px;padding:0;
-  font-size:22px;line-height:1;background:transparent
-}
-main{padding:30px 24px 60px}
+main{max-width:1120px;margin:0 auto;padding:30px 24px 60px}
 .screen{display:none;animation:screenIn .22s ease-out}
 .screen.active{display:block}
-@keyframes screenIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes screenIn{
+  from{opacity:.4;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
 h1{display:none}
 .wide{width:100%}
 .hidden{display:none!important}
 .primary{
-  background:#dfe2e3;color:#080a0b;border-color:#f0f2f2;
+  background:#dfe2e3;
+  color:#080a0b;
+  border-color:#f0f2f2;
 }
 .primary:hover:not(:disabled){background:#fff;color:#000;border-color:#fff}
-#startBtn:disabled{
-  opacity:1;
-  background:#4b4d4e;
-  color:#080a0b;
-  border-color:#4b4d4e;
-  cursor:not-allowed
-}
 .ghost{background:transparent;color:var(--text)}
 .drop{
-  position:relative;margin:18px 0;padding:34px 24px;
-  min-height:190px;display:flex;flex-direction:column;align-items:flex-start;
-  justify-content:center;gap:9px;
-  border:1px dashed #50585e;background:linear-gradient(135deg,#101316,#080a0b);
+  position:relative;
+  margin:18px 0;
+  padding:34px 24px;
+  min-height:190px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:9px;
+  border:1px dashed #50585e;
+  background:linear-gradient(135deg,#101316,#080a0b);
 }
 .drop .symbol{font-size:27px;line-height:1;color:#cdd1d3}
 .drop strong{font-size:15px;letter-spacing:.08em;text-transform:uppercase}
@@ -98,25 +90,59 @@ h1{display:none}
 .drop p{margin:0 0 8px}
 .filelist{display:grid;gap:5px;margin:14px 0}
 .file{
-  min-width:0;display:flex;align-items:center;gap:12px;
-  padding:9px 10px;border:1px solid var(--line-soft);background:#0a0c0e;
-  color:var(--muted);font:11px ui-monospace,monospace
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:9px 10px;
+  border:1px solid var(--line-soft);
+  background:#0a0c0e;
+  color:var(--muted);
+  font:11px ui-monospace,monospace
 }
 .file .num{color:#dfe2e3}
-.file .fname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
-.file .remove-file{flex:0 0 32px;width:32px;min-height:30px;height:30px;padding:0;color:#a9afb2}
+.file .fname{
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text)
+}
+.file .remove-file{
+  flex:0 0 32px;
+  width:32px;
+  min-height:30px;
+  height:30px;
+  padding:0;
+  color:#a9afb2
+}
 .player-wrap{
-  position:relative;width:100%;padding:8px;
-  border:1px solid #3a4146;background:#020303;
+  position:relative;
+  width:100%;
+  padding:8px;
+  border:1px solid #3a4146;
+  background:#020303;
   box-shadow:0 10px 30px #0008;
 }
 canvas{
-  display:block;width:100%;max-width:100%;max-height:65vh;height:auto;
-  aspect-ratio:16/9;object-fit:contain;touch-action:none;background:#000
+  display:block;
+  width:100%;
+  max-width:100%;
+  max-height:65vh;
+  height:auto;
+  aspect-ratio:16/9;
+  object-fit:contain;
+  touch-action:none;
+  background:#000
 }
 .overlay{
-  position:absolute;inset:8px;display:flex;align-items:center;
-  justify-content:center;pointer-events:none
+  position:absolute;
+  inset:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none
 }
 .reference-grid{
   position:absolute;
@@ -149,41 +175,88 @@ canvas{
   transform:translateX(-.5px);
 }
 .marker{
-  position:absolute;width:64px;height:64px;border:1px solid #f2f4f4;
-  border-radius:50%;background:#0003;color:white;display:flex;align-items:center;
-  justify-content:center;font:9px ui-monospace,monospace;text-transform:uppercase;
-  transform:translate(-50%,-50%);pointer-events:none;z-index:2;
+  position:absolute;
+  width:64px;
+  height:64px;
+  border:1px solid #f2f4f4;
+  border-radius:50%;
+  background:#0003;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:9px ui-monospace,monospace;
+  text-transform:uppercase;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:2;
   box-shadow:0 0 0 5px #fff1
 }
 .countdown{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  color:white;font:700 54px/1 ui-monospace,monospace;
-  text-shadow:0 2px 12px #000;pointer-events:none;z-index:3
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  color:white;
+  font:700 54px/1 ui-monospace,monospace;
+  text-shadow:0 2px 12px #000;
+  pointer-events:none;
+  z-index:3
 }
 .timeline{
-  margin:12px 0 16px;padding:12px 14px;
-  border:1px solid var(--line);background:#090b0d
+  margin:12px 0 16px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  background:#090b0d
 }
 .timeline-top{
-  display:flex;justify-content:space-between;gap:10px;
-  color:#d9dddf;font:11px ui-monospace,monospace;letter-spacing:.08em
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#d9dddf;
+  font:11px ui-monospace,monospace;
+  letter-spacing:.08em
 }
 .timeline-top span:last-child{color:var(--muted)}
 input[type=range]{
-  display:block;width:100%;max-width:100%;height:18px;margin:7px 0 0;
-  accent-color:#dfe2e3;cursor:pointer
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:18px;
+  margin:7px 0 0;
+  accent-color:#dfe2e3;
+  cursor:pointer
 }
 .toolbar{
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:5px;margin:14px 0;padding:8px 0;border-top:0;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:5px;
+  margin:14px 0;
+  padding:8px 0;
+  border-top:0;
   border-bottom:0
 }
+.toolbar.navigation-toolbar{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+}
 .tool-btn{
-  appearance:none;-webkit-appearance:none;background:transparent;
-  border:1px solid transparent;color:#c7cccf;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:7px;min-width:0;min-height:64px;padding:8px 2px;border-radius:2px;
-  cursor:pointer;user-select:none;-webkit-user-select:none;
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:1px solid transparent;
+  color:#c7cccf;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-width:0;
+  min-height:64px;
+  padding:8px 2px;
+  border-radius:2px;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
   -webkit-tap-highlight-color:transparent;
   transition:opacity .15s,transform .1s,background-color .15s
 }
@@ -191,45 +264,89 @@ input[type=range]{
 .tool-btn:active:not(:disabled){transform:scale(.96);background:#252b2f}
 .tool-btn:disabled{opacity:.28;cursor:not-allowed}
 .tool-btn .material-symbols-outlined{
-  font-size:25px;line-height:1;
+  font-size:25px;
+  line-height:1;
   font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24
 }
 .tool-btn .tool-label{
-  color:#aeb5b9;font:9px/1.15 ui-monospace,monospace;
-  text-align:center;text-transform:uppercase;letter-spacing:.08em;
+  color:#aeb5b9;
+  font:9px/1.15 ui-monospace,monospace;
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.08em;
   word-break:keep-all
 }
 .status{display:none!important}
 .note{margin:12px 0;padding-left:12px;border-left:1px solid #454d52}
 .instruction{
-  margin:18px 0;padding:20px;border:1px solid var(--line);
+  margin:18px 0;
+  padding:20px;
+  border:1px solid var(--line);
   background:linear-gradient(120deg,#101316,#080a0b);
-  font-size:13px;line-height:1.8;color:#c0c6c9
+  font-size:13px;
+  line-height:1.8;
+  color:#c0c6c9
 }
-#instructionContinue{margin-top:0}
 .dial{
-  display:flex;align-items:center;justify-content:center;
-  margin:22px auto;width:190px;height:190px;border:1px solid #50585e;
-  border-radius:50%;position:relative;touch-action:none;cursor:grab;
-  user-select:none;-webkit-user-select:none;
-  background:transparent;box-shadow:none
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:22px auto;
+  width:190px;
+  height:190px;
+  border:1px solid #50585e;
+  border-radius:50%;
+  position:relative;
+  touch-action:none;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  background:transparent;
+  box-shadow:none
 }
 .dial:active{cursor:grabbing}
 .dial-knob{
-  position:absolute;left:50%;top:50%;width:13px;height:13px;
-  border:2px solid #080a0b;border-radius:50%;background:#e7e9e9;
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:13px;
+  height:13px;
+  border:2px solid #080a0b;
+  border-radius:50%;
+  background:#e7e9e9;
   transform:translate(-50%,-50%) rotate(var(--dial-angle,0deg)) translateY(-75px);
-  pointer-events:none;z-index:2;box-shadow:0 0 0 3px #dfe3e533
+  pointer-events:none;
+  z-index:2;
+  box-shadow:0 0 0 3px #dfe3e533
 }
 .dial span{font:25px ui-monospace,monospace;color:#f1f3f4;z-index:1}
-.progress{height:5px;border:1px solid #424a4f;overflow:hidden;margin:12px 0;background:#090b0d}
-.progress>div{height:100%;width:0;background:#e1e4e5;transition:width .15s}
+.progress{
+  height:5px;
+  border:1px solid #424a4f;
+  overflow:hidden;
+  margin:12px 0;
+  background:#090b0d
+}
+.progress>div{
+  height:100%;
+  width:0;
+  background:#e1e4e5;
+  transition:width .15s
+}
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .controls>*{flex:1 1 130px}
 a.button{
-  display:block;margin:8px 0;padding:11px 14px;text-align:center;
-  color:var(--text);border:1px solid var(--line);background:#111518;
-  text-decoration:none;text-transform:uppercase;font-size:11px;font-weight:700;
+  display:block;
+  margin:8px 0;
+  padding:11px 14px;
+  text-align:center;
+  color:var(--text);
+  border:1px solid var(--line);
+  background:#111518;
+  text-decoration:none;
+  text-transform:uppercase;
+  font-size:11px;
+  font-weight:700;
   letter-spacing:.1em
 }
 a.button:hover{border-color:#858d92;background:#1a1f22}
@@ -242,12 +359,12 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   .overlay{inset:10px}
 }
 @media(max-width:600px){
-  header{min-height:58px;padding:10px 14px}
-  .brand{font-size:11px;letter-spacing:.14em}
-  .brand:after{font-size:8px;padding-left:8px}
   main{padding:22px 14px 42px}
   .drop{padding:28px 18px}
-  .toolbar{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+  .toolbar:not(.navigation-toolbar){
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:3px
+  }
   .tool-btn{min-height:62px}
   .tool-btn .material-symbols-outlined{font-size:24px}
   .tool-btn .tool-label{font-size:9px}
@@ -257,28 +374,38 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   .player-wrap:before{left:10px;top:9px;font-size:8px}
 }
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important
+  }
 }
 </style>
 </head>
 <body>
-<header>
-  <button id="backBtn" class="back hidden" aria-label="Voltar">‹</button>
-</header>
 <main>
   <section id="importScreen" class="screen active">
-    <h1></h1>
+    <h1>Importação</h1>
     <div class="drop">
       <strong>Escolha vídeos do dispositivo</strong>
-      <button class="primary" id="pickBtn">Selecionar vídeos</button>
+      <button class="primary" id="pickBtn" type="button">Selecionar vídeos</button>
       <input id="fileInput" type="file" accept="video/*" multiple class="hidden">
     </div>
     <div id="fileList" class="filelist"></div>
-    <button id="startBtn" class="primary wide" disabled>Começar</button>
+
+    <div class="toolbar navigation-toolbar" role="toolbar" aria-label="Navegação da importação">
+      <button id="importPrev" class="tool-btn" type="button" disabled>
+        <span class="material-symbols-outlined" aria-hidden="true">skip_previous</span>
+        <span class="tool-label">Anterior</span>
+      </button>
+      <button id="importNext" class="tool-btn" type="button" disabled>
+        <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+        <span class="tool-label">Próximo</span>
+      </button>
+    </div>
   </section>
 
   <section id="centerScreen" class="screen">
-    <h1></h1>
+    <h1>Enquadramento</h1>
     <div class="player-wrap" id="centerWrap">
       <canvas id="centerCanvas"></canvas>
       <div class="overlay">
@@ -286,6 +413,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         <div id="centerCount" class="countdown"></div>
       </div>
     </div>
+
     <div class="timeline">
       <div class="timeline-top">
         <span id="centerTime">00:00</span>
@@ -293,6 +421,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       </div>
       <input id="centerSeek" type="range" min="0" max="1000" value="0">
     </div>
+
     <div class="toolbar" role="toolbar" aria-label="Ações de enquadramento">
       <button id="centerPlay" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
@@ -319,18 +448,25 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   </section>
 
   <section id="instructionScreen" class="screen">
-    <h1></h1>
+    <h1>Orientação</h1>
     <div class="instruction">
       Mantenha, suprimindo detalhes, a linha dos ombros alinhada com a horizontal e o ombro esquerdo à esquerda e o ombro direito à direita.
     </div>
-    <div class="controls workflow-nav">
-      <button id="instructionPrev" class="ghost" type="button">Anterior</button>
-      <button id="instructionContinue" class="primary" type="button">Próximo</button>
+
+    <div class="toolbar navigation-toolbar" role="toolbar" aria-label="Navegação das instruções">
+      <button id="instructionPrev" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_previous</span>
+        <span class="tool-label">Anterior</span>
+      </button>
+      <button id="instructionNext" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_next</span>
+        <span class="tool-label">Próximo</span>
+      </button>
     </div>
   </section>
 
   <section id="rotateScreen" class="screen">
-    <h1></h1>
+    <h1>Rotação</h1>
     <div class="player-wrap">
       <canvas id="rotateCanvas"></canvas>
       <div class="overlay">
@@ -338,6 +474,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         <div id="rotateCount" class="countdown"></div>
       </div>
     </div>
+
     <div
       class="dial"
       id="rotateDial"
@@ -351,7 +488,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       <span id="angleReadout">0°</span>
       <i class="dial-knob" id="dialKnob"></i>
     </div>
+
     <div id="rotateLoadStatus" class="status" role="status"></div>
+
     <div class="timeline">
       <div class="timeline-top">
         <span id="rotateTime">00:00</span>
@@ -359,6 +498,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       </div>
       <input id="rotateSeek" type="range" min="0" max="1000" value="0">
     </div>
+
     <div class="toolbar" role="toolbar" aria-label="Ações de rotação">
       <button id="rotatePlay" class="tool-btn" type="button">
         <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
@@ -385,10 +525,11 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   </section>
 
   <section id="previewScreen" class="screen">
-    <h1></h1>
+    <h1>Exportação</h1>
     <div class="player-wrap">
       <canvas id="previewCanvas"></canvas>
     </div>
+
     <div class="timeline">
       <div class="timeline-top">
         <span id="previewTime">Pronto para reproduzir</span>
@@ -398,19 +539,30 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         <div id="exportProgress"></div>
       </div>
     </div>
-    <div class="controls workflow-nav">
-      <button id="previewPrev" class="ghost" type="button">Anterior</button>
-      <button id="previewPlay" type="button">▶ Reproduzir compilação</button>
-      <button id="exportBtn" class="primary" type="button">Exportar</button>
+
+    <div class="toolbar navigation-toolbar" role="toolbar" aria-label="Navegação da exportação">
+      <button id="previewPrev" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">skip_previous</span>
+        <span class="tool-label">Anterior</span>
+      </button>
+      <button id="exportBtn" class="tool-btn" type="button">
+        <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+        <span class="tool-label">Concluir</span>
+      </button>
     </div>
-    <button id="shareBtn" class="primary wide hidden">
+
+    <div class="controls">
+      <button id="previewPlay" type="button">▶ Reproduzir compilação</button>
+    </div>
+
+    <button id="shareBtn" class="primary wide hidden" type="button">
       Compartilhar/salvar no dispositivo
     </button>
     <a id="downloadLink" class="button ghost wide hidden" href="#" download>
       Baixar vídeo
     </a>
     <div id="exportStatus" class="status" role="status"></div>
-    <button class="ghost wide" id="startOver">Começar novamente</button>
+    <button class="ghost wide" id="startOver" type="button">Começar novamente</button>
   </section>
 </main>
 
@@ -473,13 +625,12 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   let centerIndex = 0;
   let rotateIndex = 0;
   let mode = 'import';
-  let workflowStarted = false;
-  let previewPrepared = false;
 
   let playing = false;
   let raf = 0;
   let dragging = false;
   let loadingVideo = false;
+  let navigationBusy = false;
   let loadToken = 0;
 
   let countdownTimer = null;
@@ -489,6 +640,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   let previewRunning = false;
   let previewRaf = 0;
   let previewStopResolver = null;
+  let previewPrepared = false;
 
   let exportBusy = false;
   let outputObjectUrl = '';
@@ -545,12 +697,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
   }
 
-  function show(id, label, back = true) {
+  function show(id) {
     screens.forEach(screenId => {
       $(screenId).classList.toggle('active', screenId === id);
     });
-
-    $('backBtn').classList.toggle('hidden', !back);
   }
 
   function getCappedDimensions(width, height, maxDimension) {
@@ -800,8 +950,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     centerIndex = 0;
     rotateIndex = 0;
     stageIndex = 0;
-
-    workflowStarted = false;
     previewPrepared = false;
   }
 
@@ -814,9 +962,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     clearExportResult();
     $('exportProgress').style.width = '0%';
 
-    $('exportStatus').textContent = hadResult
-      ? 'Os ajustes mudaram. Exporte novamente para atualizar a compilação.'
-      : '';
+    if (hadResult) {
+      $('exportStatus').textContent =
+        'Os ajustes mudaram. Exporte novamente para atualizar a compilação.';
+    }
   }
 
   function shiftIndexAfterRemoval(current, removed, newLength) {
@@ -867,6 +1016,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 
     loadToken++;
     loadingVideo = false;
+    navigationBusy = false;
 
     cancelCountdown();
     stopPreviewPlayback();
@@ -876,12 +1026,19 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     video.muted = true;
     mode = 'import';
 
-    show('importScreen', 'Importação', false);
+    show('importScreen');
     updateNavigationButtons();
   }
 
   async function deleteCurrentVideo(kind) {
-    if (exportBusy || loadingVideo || !files.length) return;
+    if (
+      exportBusy ||
+      loadingVideo ||
+      navigationBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     const index = stageIndex;
     const removedFile = files[index];
@@ -929,7 +1086,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       $('rotateLoadStatus').textContent = '';
 
       updateNavigationButtons();
-      show('importScreen', 'Importação', false);
+      show('importScreen');
       return;
     }
 
@@ -938,14 +1095,12 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       : rotateIndex;
 
     stageIndex = targetIndex;
+
     video.pause();
     video.removeAttribute('src');
     video.load();
 
-    show(
-      kind === 'center' ? 'centerScreen' : 'rotateScreen',
-      kind === 'center' ? 'Enquadramento' : 'Rotação'
-    );
+    show(kind === 'center' ? 'centerScreen' : 'rotateScreen');
 
     try {
       const loaded = await loadAt(targetIndex, kind);
@@ -975,35 +1130,37 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 
   function updateNavigationButtons() {
     const noFiles = files.length === 0;
-    const busy = loadingVideo || exportBusy;
+    const busy = loadingVideo || navigationBusy || exportBusy;
 
     const centerAtLast =
       noFiles || centerIndex >= files.length - 1;
     const rotateAtLast =
       noFiles || rotateIndex >= files.length - 1;
 
+    $('importPrev').disabled = true;
+    $('importNext').disabled = busy || noFiles;
+
     $('centerPrev').disabled = busy || noFiles;
-    $('rotatePrev').disabled = busy || noFiles;
-
     $('centerNext').disabled = busy || noFiles;
-    $('rotateNext').disabled = busy || noFiles;
-
     $('centerRestart').disabled = busy || noFiles;
-    $('rotateRestart').disabled = busy || noFiles;
-
     $('centerPlay').disabled = busy || noFiles;
-    $('rotatePlay').disabled = busy || noFiles;
-
     $('centerDelete').disabled = busy || noFiles;
-    $('rotateDelete').disabled = busy || noFiles;
 
     $('instructionPrev').disabled = busy || noFiles;
-    $('instructionContinue').disabled = busy || noFiles;
-    $('previewPrev').disabled = busy || noFiles;
+    $('instructionNext').disabled = busy || noFiles;
 
-    $('backBtn').disabled = busy;
-    $('startBtn').disabled = busy || noFiles;
-    $('startBtn').textContent = workflowStarted ? 'Continuar' : 'Começar';
+    $('rotatePrev').disabled = busy || noFiles;
+    $('rotateNext').disabled = busy || noFiles;
+    $('rotateRestart').disabled = busy || noFiles;
+    $('rotatePlay').disabled = busy || noFiles;
+    $('rotateDelete').disabled = busy || noFiles;
+
+    $('previewPrev').disabled = busy || noFiles;
+    $('exportBtn').disabled = busy || noFiles;
+    $('previewPlay').disabled = busy || noFiles;
+
+    $('pickBtn').disabled = busy;
+    $('startOver').disabled = busy;
 
     setToolButton(
       'centerNext',
@@ -1435,16 +1592,31 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       $('fileList').appendChild(row);
     });
 
-    $('startBtn').disabled = !files.length;
-    $('startBtn').textContent = workflowStarted ? 'Continuar' : 'Começar';
+    updateNavigationButtons();
   }
 
   function removeImportedFile(index) {
-    if (exportBusy || loadingVideo || index < 0 || index >= files.length) {
+    if (
+      exportBusy ||
+      loadingVideo ||
+      navigationBusy ||
+      index < 0 ||
+      index >= files.length
+    ) {
       return;
     }
 
+    const loadedSource = video.currentSrc || video.src;
     const removedUrl = removeFileDataAt(index);
+
+    if (
+      removedUrl &&
+      loadedSource === removedUrl
+    ) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    }
 
     if (!files.length) {
       clearAllEdits();
@@ -1464,7 +1636,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     }
 
     renderFileList();
-    updateNavigationButtons();
   }
 
   $('fileInput').onchange = event => {
@@ -1474,6 +1645,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     if (!incoming.length) return;
 
     stopPlayback();
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
 
     urls.forEach(url => URL.revokeObjectURL(url));
 
@@ -1484,41 +1658,93 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     clearExportResult();
 
     mode = 'import';
-
     $('exportStatus').textContent = '';
     $('exportProgress').style.width = '0%';
 
     renderFileList();
-    updateNavigationButtons();
   };
 
-  $('startBtn').onclick = async () => {
-    if (!files.length || loadingVideo || exportBusy) return;
+  async function navigateTo(index, kind) {
+    if (
+      navigationBusy ||
+      loadingVideo ||
+      index < 0 ||
+      index >= files.length
+    ) {
+      return;
+    }
 
-    const index = Math.min(centerIndex, files.length - 1);
-
-    show('centerScreen', 'Enquadramento');
+    navigationBusy = true;
+    updateNavigationButtons();
 
     try {
+      const loaded = await loadAt(index, kind);
+      if (!loaded) return;
+
+      const requiredScreen = kind === 'center'
+        ? 'centerScreen'
+        : 'rotateScreen';
+
+      if ($(requiredScreen).classList.contains('active')) {
+        await countdownAndPlay(kind);
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      navigationBusy = false;
+      updateNavigationButtons();
+    }
+  }
+
+  $('importPrev').onclick = () => {
+    /*
+      A importação é a primeira tela do fluxo. O botão é mantido visível
+      para que todas as telas tenham o mesmo conjunto de navegação.
+    */
+  };
+
+  $('importNext').onclick = async () => {
+    if (
+      !files.length ||
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy
+    ) {
+      return;
+    }
+
+    navigationBusy = true;
+    updateNavigationButtons();
+    show('centerScreen');
+
+    try {
+      const index = Math.min(centerIndex, files.length - 1);
       const loaded = await loadAt(index, 'center');
 
-      if (!loaded || !$('centerScreen').classList.contains('active')) {
-        return;
+      if (
+        loaded &&
+        $('centerScreen').classList.contains('active')
+      ) {
+        await countdownAndPlay('center');
       }
-
-      workflowStarted = true;
-      $('startBtn').textContent = 'Continuar';
-
-      await countdownAndPlay('center');
     } catch (error) {
-      mode = 'import';
-      show('importScreen', 'Importação', false);
+      show('importScreen');
       alert(error.message);
+    } finally {
+      navigationBusy = false;
+      updateNavigationButtons();
     }
   };
 
   centerCanvas.addEventListener('pointerdown', event => {
-    if (loadingVideo || !files.length) return;
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     dragging = true;
 
@@ -1536,7 +1762,14 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   });
 
   centerCanvas.addEventListener('pointermove', event => {
-    if (!dragging || loadingVideo) return;
+    if (
+      !dragging ||
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy
+    ) {
+      return;
+    }
 
     const point = pointFromEvent(event);
     const time = video.currentTime || 0;
@@ -1556,7 +1789,14 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   });
 
   async function toggleStagePlayback(kind) {
-    if (loadingVideo || !files.length) return;
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     if (playing) {
       stopPlayback();
@@ -1593,7 +1833,14 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   }
 
   async function resetSelectedEdits(kind) {
-    if (loadingVideo || !files.length) return;
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     cancelCountdown();
     stopPlayback();
@@ -1654,25 +1901,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     await countdownAndPlay(kind);
   }
 
-  async function navigateTo(index, kind) {
-    if (loadingVideo || index < 0 || index >= files.length) return;
-
-    try {
-      const loaded = await loadAt(index, kind);
-      if (!loaded) return;
-
-      const requiredScreen = kind === 'center'
-        ? 'centerScreen'
-        : 'rotateScreen';
-
-      if ($(requiredScreen).classList.contains('active')) {
-        await countdownAndPlay(kind);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
   $('centerPlay').onclick = () => toggleStagePlayback('center');
   $('rotatePlay').onclick = () => toggleStagePlayback('rotate');
 
@@ -1683,7 +1911,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   $('rotateDelete').onclick = () => deleteCurrentVideo('rotate');
 
   $('centerSeek').oninput = event => {
-    if (loadingVideo) return;
+    if (loadingVideo || navigationBusy || exportBusy) return;
 
     cancelCountdown();
     stopPlayback();
@@ -1701,7 +1929,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   };
 
   $('rotateSeek').oninput = event => {
-    if (loadingVideo) return;
+    if (loadingVideo || navigationBusy || exportBusy) return;
 
     cancelCountdown();
     stopPlayback();
@@ -1719,7 +1947,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   };
 
   $('centerPrev').onclick = () => {
-    if (loadingVideo || !files.length) return;
+    if (loadingVideo || navigationBusy || exportBusy || !files.length) {
+      return;
+    }
 
     if (centerIndex > 0) {
       navigateTo(centerIndex - 1, 'center');
@@ -1729,7 +1959,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   };
 
   $('centerNext').onclick = () => {
-    if (loadingVideo || !files.length) return;
+    if (loadingVideo || navigationBusy || exportBusy || !files.length) {
+      return;
+    }
 
     if (centerIndex + 1 < files.length) {
       navigateTo(centerIndex + 1, 'center');
@@ -1738,51 +1970,70 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
 
     cancelCountdown();
     stopPlayback();
-    show('instructionScreen', 'Instruções');
+    show('instructionScreen');
   };
 
   $('instructionPrev').onclick = () => {
-    if (loadingVideo || exportBusy || !files.length) return;
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
-    show('centerScreen', 'Enquadramento');
+    show('centerScreen');
     navigateTo(centerIndex, 'center');
   };
 
-  $('instructionContinue').onclick = async () => {
-    const button = $('instructionContinue');
+  $('instructionNext').onclick = async () => {
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
-    if (button.disabled || !files.length) return;
-
-    button.disabled = true;
-    button.textContent = 'Carregando vídeo…';
+    navigationBusy = true;
+    updateNavigationButtons();
 
     $('rotateLoadStatus').textContent =
       'Preparando o vídeo reenquadrado…';
 
-    show('rotateScreen', 'Rotação');
+    show('rotateScreen');
 
     try {
       const index = Math.min(rotateIndex, files.length - 1);
       const loaded = await loadAt(index, 'rotate');
 
-      if (!loaded || !$('rotateScreen').classList.contains('active')) {
-        return;
+      if (
+        loaded &&
+        $('rotateScreen').classList.contains('active')
+      ) {
+        $('rotateLoadStatus').textContent = '';
+        await countdownAndPlay('rotate');
       }
-
-      $('rotateLoadStatus').textContent = '';
-      await countdownAndPlay('rotate');
     } catch (error) {
       $('rotateLoadStatus').textContent = error.message;
       console.error(error);
     } finally {
-      button.disabled = false;
-      button.textContent = 'Próximo';
+      navigationBusy = false;
       updateNavigationButtons();
     }
   };
 
   function setRotationAngle(angle) {
-    if (!files.length || loadingVideo) return;
+    if (
+      !files.length ||
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy
+    ) {
+      return;
+    }
 
     const roundedAngle = Math.max(-180, Math.min(180, Math.round(angle)));
     const time = video.currentTime || 0;
@@ -1821,7 +2072,14 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   let dialDragging = false;
 
   $('rotateDial').addEventListener('pointerdown', event => {
-    if (loadingVideo || !files.length) return;
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     dialDragging = true;
 
@@ -1863,36 +2121,51 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   });
 
   $('rotatePrev').onclick = () => {
-    if (loadingVideo || !files.length) return;
+    if (loadingVideo || navigationBusy || exportBusy || !files.length) {
+      return;
+    }
 
     if (rotateIndex > 0) {
       navigateTo(rotateIndex - 1, 'rotate');
     } else {
       cancelCountdown();
       stopPlayback();
-      show('instructionScreen', 'Instruções');
+      show('instructionScreen');
     }
   };
 
   $('rotateNext').onclick = async () => {
-    if (loadingVideo || !files.length) return;
-
-    if (rotateIndex + 1 < files.length) {
-      await navigateTo(rotateIndex + 1, 'rotate');
+    if (
+      loadingVideo ||
+      navigationBusy ||
+      exportBusy ||
+      !files.length
+    ) {
       return;
     }
+
+    if (rotateIndex + 1 < files.length) {
+      navigateTo(rotateIndex + 1, 'rotate');
+      return;
+    }
+
+    navigationBusy = true;
+    updateNavigationButtons();
 
     cancelCountdown();
     stopPlayback();
 
     mode = 'preview';
-    show('previewScreen', 'Pré-visualização', true);
+    show('previewScreen');
 
     try {
       await preparePreview();
     } catch (error) {
       $('exportStatus').textContent =
         'Não foi possível preparar a pré-visualização: ' + error.message;
+    } finally {
+      navigationBusy = false;
+      updateNavigationButtons();
     }
   };
 
@@ -2009,6 +2282,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   }
 
   $('previewPlay').onclick = async () => {
+    if (exportBusy || navigationBusy) return;
+
     if (previewRunning) {
       stopPreviewPlayback();
       return;
@@ -2048,10 +2323,17 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   };
 
   $('previewPrev').onclick = () => {
-    if (exportBusy || loadingVideo || !files.length) return;
+    if (
+      exportBusy ||
+      loadingVideo ||
+      navigationBusy ||
+      !files.length
+    ) {
+      return;
+    }
 
     stopPreviewPlayback();
-    show('rotateScreen', 'Rotação');
+    show('rotateScreen');
     navigateTo(rotateIndex, 'rotate');
   };
 
@@ -3078,11 +3360,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     const preferred = getPreferredProfile();
 
     exportBusy = true;
-    $('exportBtn').disabled = true;
-    $('previewPlay').disabled = true;
-    $('startOver').disabled = true;
-    $('backBtn').disabled = true;
-
     updateNavigationButtons();
 
     stopPreviewPlayback();
@@ -3158,34 +3435,16 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     } finally {
       video.muted = true;
       exportBusy = false;
-
-      $('exportBtn').disabled = false;
-      $('previewPlay').disabled = false;
-      $('startOver').disabled = false;
-
       updateNavigationButtons();
     }
   };
 
-  $('backBtn').onclick = () => {
-    if (exportBusy) return;
-
-    if ($('centerScreen').classList.contains('active')) {
-      $('centerPrev').click();
-    } else if ($('instructionScreen').classList.contains('active')) {
-      $('instructionPrev').click();
-    } else if ($('rotateScreen').classList.contains('active')) {
-      $('rotatePrev').click();
-    } else if ($('previewScreen').classList.contains('active')) {
-      $('previewPrev').click();
-    }
-  };
-
   $('startOver').onclick = () => {
-    if (exportBusy) return;
+    if (exportBusy || navigationBusy) return;
 
     loadToken++;
     loadingVideo = false;
+    navigationBusy = false;
 
     cancelCountdown();
     stopPreviewPlayback();
@@ -3211,7 +3470,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     mode = 'import';
 
     renderFileList();
-    show('importScreen', 'Importação', false);
+    show('importScreen');
     updateNavigationButtons();
   };
 
