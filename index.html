@@ -32,7 +32,7 @@ body{
   font:14px/1.5 Arial,system-ui,-apple-system,"Segoe UI",sans-serif;
   letter-spacing:normal;
 }
-button,input{font:inherit}
+button,input,select{font:inherit}
 button{
   color:var(--text);
   background:#171b1e;
@@ -50,7 +50,7 @@ button{
 button:hover:not(:disabled){background:#242a2e;border-color:#737b80}
 button:active:not(:disabled){transform:translateY(1px)}
 button:disabled{opacity:.32;cursor:not-allowed}
-button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[tabindex]:focus-visible{
   outline:1px solid #dfe3e5;
   outline-offset:3px
 }
@@ -88,6 +88,29 @@ h1{display:none}
 .drop strong{font-size:15px;letter-spacing:.08em;text-transform:uppercase}
 .drop p,.note,.instruction{color:var(--muted);font-size:12px}
 .drop p{margin:0 0 8px}
+.speed-control{
+  display:grid;
+  gap:6px;
+  width:100%;
+  margin:8px 0
+}
+.speed-control label{
+  color:var(--muted);
+  font:10px/1.4 ui-monospace,monospace;
+  text-transform:uppercase;
+  letter-spacing:.08em
+}
+.speed-control select{
+  width:100%;
+  min-height:40px;
+  padding:9px 12px;
+  border:1px solid #3a4146;
+  border-radius:2px;
+  color:var(--text);
+  background:#111518;
+  cursor:pointer
+}
+.speed-control select:hover{border-color:#737b80}
 .filelist{display:grid;gap:5px;margin:14px 0}
 .file{
   min-width:0;
@@ -387,6 +410,17 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     <h1>Importação</h1>
     <div class="drop">
       <strong>Escolha vídeos do dispositivo</strong>
+      <div class="speed-control">
+        <label for="editSpeed">Velocidade durante a edição</label>
+        <select id="editSpeed" name="editSpeed">
+          <option value="1.5">x1,5</option>
+          <option value="1">x1</option>
+          <option value="0.5">x0,5</option>
+          <option value="0.25" selected>x0,25</option>
+          <option value="0.2">x0,2</option>
+          <option value="0.1">x0,1</option>
+        </select>
+      </div>
       <button class="primary" id="pickBtn" type="button">Selecionar vídeos</button>
       <input id="fileInput" type="file" accept="video/*" multiple class="hidden">
     </div>
@@ -569,8 +603,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     'previewScreen'
   ];
   const EXPORT_FPS = 30;
-  const EDIT_PLAYBACK_RATE = 0.25;
-  const ORIGINAL_PLAYBACK_RATE = EDIT_PLAYBACK_RATE * 4;
+  const DEFAULT_EDIT_PLAYBACK_RATE = 0.25;
+  let editPlaybackRate =
+    Number($('editSpeed').value) || DEFAULT_EDIT_PLAYBACK_RATE;
   const MOBILE_MAX_DIMENSION = 854;
   const DESKTOP_MAX_DIMENSION = 1280;
   const MOBILE_VIDEO_BITRATE = 700000;
@@ -655,6 +690,10 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   }
   function isMobileDevice() {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  }
+  function getOriginalPlaybackRate() {
+    const compensationFactor = 1 / editPlaybackRate;
+    return editPlaybackRate * compensationFactor;
   }
   function show(id) {
     screens.forEach(screenId => {
@@ -1017,6 +1056,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     $('exportBtn').disabled = busy || noFiles;
     $('previewPlay').disabled = busy || noFiles;
     $('pickBtn').disabled = busy;
+    $('editSpeed').disabled = busy;
     $('startOver').disabled = busy;
     setToolButton(
       'centerNext',
@@ -1186,7 +1226,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     updateNavigationButtons();
     try {
       await setVideoSource(index, true);
-      video.playbackRate = EDIT_PLAYBACK_RATE;
+      video.playbackRate = editPlaybackRate;
       if (token !== loadToken) return false;
       const timeArray = kind === 'center'
         ? centerTimes
@@ -1325,6 +1365,12 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     };
   }
   $('pickBtn').onclick = () => $('fileInput').click();
+  $('editSpeed').addEventListener('change', event => {
+    const selectedRate = Number(event.currentTarget.value);
+    if (Number.isFinite(selectedRate) && selectedRate > 0) {
+      editPlaybackRate = selectedRate;
+    }
+  });
   function renderFileList() {
     $('fileList').innerHTML = '';
     files.forEach((file, index) => {
@@ -1415,7 +1461,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     }
     navigationBusy = true;
     updateNavigationButtons();
-
     let loaded = false;
     try {
       loaded = await loadAt(index, kind);
@@ -1425,7 +1470,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       navigationBusy = false;
       updateNavigationButtons();
     }
-
     if (!loaded) return;
     const requiredScreen = kind === 'center'
       ? 'centerScreen'
@@ -1452,7 +1496,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     navigationBusy = true;
     updateNavigationButtons();
     show('centerScreen');
-
     let loaded = false;
     try {
       const index = Math.min(centerIndex, files.length - 1);
@@ -1464,7 +1507,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       navigationBusy = false;
       updateNavigationButtons();
     }
-
     if (
       loaded &&
       $('centerScreen').classList.contains('active')
@@ -1681,7 +1723,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     $('rotateLoadStatus').textContent =
       'Preparando o vídeo reenquadrado…';
     show('rotateScreen');
-
     let loaded = false;
     try {
       const index = Math.min(rotateIndex, files.length - 1);
@@ -1696,7 +1737,6 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       navigationBusy = false;
       updateNavigationButtons();
     }
-
     if (
       loaded &&
       $('rotateScreen').classList.contains('active')
@@ -1824,7 +1864,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
   async function preparePreview() {
     if (!files.length) return;
     const wasPrepared = previewPrepared;
-    video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+    video.playbackRate = getOriginalPlaybackRate();
     mode = 'preview';
     await setVideoSource(0, true);
     dims(previewCanvas);
@@ -2341,9 +2381,9 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     let writeChain = Promise.resolve();
     const chunks = [];
     try {
-      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+      video.playbackRate = getOriginalPlaybackRate();
       await setVideoSource(0, true);
-      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+      video.playbackRate = getOriginalPlaybackRate();
       const mobile = isMobileDevice();
       const maxDimension = mobile
         ? MOBILE_MAX_DIMENSION
@@ -2365,7 +2405,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
       const durations = [];
       for (let index = 0; index < files.length; index++) {
         await setVideoSource(index, true);
-        video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+        video.playbackRate = getOriginalPlaybackRate();
         if (!Number.isFinite(video.duration) || video.duration <= 0) {
           throw new Error(
             'Duração inválida no vídeo ' + (index + 1) + '.'
@@ -2374,7 +2414,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         durations.push(video.duration);
       }
       await setVideoSource(0, true);
-      video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+      video.playbackRate = getOriginalPlaybackRate();
       if (typeof previewCanvas.captureStream !== 'function') {
         throw new Error(
           'Este navegador não permite capturar o vídeo final. ' +
@@ -2604,7 +2644,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         if (index > 0) {
           pauseRecorder(recorder);
           await setVideoSource(index, true);
-          video.playbackRate = ORIGINAL_PLAYBACK_RATE;
+          video.playbackRate = getOriginalPlaybackRate();
           resumeRecorder(recorder);
         }
         for (let mirrored = 0; mirrored < 2; mirrored++) {
