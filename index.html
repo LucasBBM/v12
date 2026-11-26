@@ -427,8 +427,8 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     'previewScreen'
   ];
   const EXPORT_FPS = 30;
-  const EDIT_PLAYBACK_RATE = 0.1;
-  const ORIGINAL_PLAYBACK_RATE = EDIT_PLAYBACK_RATE * 10;
+  const EDIT_PLAYBACK_RATE = 0.25;
+  const ORIGINAL_PLAYBACK_RATE = EDIT_PLAYBACK_RATE * 4;
   const MOBILE_MAX_DIMENSION = 854;
   const DESKTOP_MAX_DIMENSION = 1280;
   const MOBILE_VIDEO_BITRATE = 700000;
@@ -1545,7 +1545,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     const suffix = extension === 'mp4' ? '.mp4' : '.webm';
     try {
       return window.showSaveFilePicker({
-        suggestedName:'bjjvideo' + suffix,
+        suggestedName:'App-compilacao' + suffix,
         types:[{
           description:extension === 'mp4' ? 'Vídeo MP4' : 'Vídeo WebM',
           accept:{[mime]:[suffix]}
@@ -1708,7 +1708,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
           type:'picker',
           handle:saveSelection.handle,
           writable,
-          name:saveSelection.handle.name || ('bjjvideo.' + extension)
+          name:saveSelection.handle.name || ('App-compilacao.' + extension)
         };
       } catch (error) {
         console.warn('Não foi possível abrir o arquivo escolhido:', error);
@@ -1722,7 +1722,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         const directory = await navigator.storage.getDirectory();
         const randomPart = Math.random().toString(36).slice(2, 9);
         const name =
-          'bjjvideo-' + Date.now() + '-' + randomPart +
+          'App-compilacao-' + Date.now() + '-' + randomPart +
           '.' + extension;
         const handle = await directory.getFileHandle(
           name,
@@ -2185,7 +2185,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
         }
       } else {
         const mime = actualMime || 'video/webm';
-        const name = 'bjjvideo.' + extension;
+        const name = 'App-compilacao.' + extension;
         if (typeof File === 'function') {
           file = new File(chunks, name, {
             type:mime,
@@ -2263,7 +2263,7 @@ a.button:hover{border-color:#858d92;background:#1a1f22}
     outputOpfsEntry = result.opfsEntry || null;
     outputObjectUrl = URL.createObjectURL(result.file);
     const name = result.file.name ||
-      ('bjjvideo.' + result.extension);
+      ('App-compilacao.' + result.extension);
     const link = $('downloadLink');
     link.href = outputObjectUrl;
     link.download = name;
